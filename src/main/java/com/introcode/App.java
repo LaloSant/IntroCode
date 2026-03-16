@@ -23,9 +23,12 @@ public class App extends Application {
 	private static Scene scene;
 	private static Stage stage;
 	private static File workingFile;
+	private static final String sep = File.separator;
 
 	//System.getProperty("user.dir")
-	public static final String defaultDir = "C:\\Users\\eduar\\Documents\\Programacion\\Java\\Proyectos\\IntroCode\\src\\main\\resources\\com\\introcode\\codigo";
+	//public static final String defaultDir = "C:\\Users\\eduar\\Documents\\Programacion\\Java\\Proyectos\\IntroCode\\src\\main\\resources\\com\\introcode\\codigo";
+	public static final String defaultDir = System.getProperty("user.dir")
+			+ " src main resources com introcode codigo".replace(" ", sep);
 
 	public static Stage getStage() {
 		return stage;
