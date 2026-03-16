@@ -83,7 +83,7 @@
                      <content>
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                            <children>
-                              <TextArea fx:id="txtAreaTokensLexico" prefHeight="255.0" prefWidth="980.0" promptText="Aqui Aparecera el resultado">
+                              <TextArea fx:id="txtAreaTokensLexico" editable="false" prefHeight="255.0" prefWidth="980.0" promptText="Aqui Aparecera el resultado">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -91,7 +91,7 @@
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </VBox.margin>
                               </TextArea>
-                              <TextArea fx:id="txtAreaErrores" prefHeight="255.0" prefWidth="980.0" promptText="Aqui Apareceran Errores">
+                              <TextArea fx:id="txtAreaErrores" editable="false" prefHeight="255.0" prefWidth="980.0" promptText="Aqui Apareceran Errores">
                                  <font>
                                     <Font size="14.0" />
                                  </font>

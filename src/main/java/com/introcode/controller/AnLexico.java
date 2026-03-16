@@ -14,7 +14,7 @@ import javafx.scene.control.TextArea;
 public class AnLexico {
 	private TreeSet<Character> alfabeto = new TreeSet<>();
 
-	private TreeMap<Character, AtomicInteger> mapa = new TreeMap<>();
+	private TreeMap<String, AtomicInteger> mapa = new TreeMap<>();
 
 	public AnLexico() {
 		Character[] alfabetoArr = {
@@ -28,15 +28,14 @@ public class AnLexico {
 				'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
 				// símbolos
 				'+', '-', '*', '/', '=', '>', '<', '!', '(', ')', '[', ']', '\"',
-				',',
-				//' ', ';',
+				',', ' ', ';', '#', '.',
 				// Otros
 				' ', '\n', '\t'
 		};
 		this.alfabeto = new TreeSet<>(Arrays.asList(alfabetoArr));
-		for (Character c : alfabeto) {
+		/* for (Character c : alfabeto) {
 			mapa.put(c, new AtomicInteger(0));
-		}
+		} */
 	}
 
 	public void analisisLexico(TextArea textAreaErrores, TextArea textAreaResultado) {
@@ -52,19 +51,36 @@ public class AnLexico {
 				int indiceColumna = 1;
 				for (char c : line.toCharArray()) {
 					if (!this.alfabeto.contains(c)) {
-						sbErrores.append("Error Elemento no reconocido en alfabeto: ").append(c)
-								.append(" En linea ").append(indiceLinea)
-								.append(" En columna ").append(indiceColumna)
+						sbErrores.append("Error! Elemento no reconocido en alfabeto: ").append(c)
+								.append(". En ").append(indiceLinea)
+								.append(" : ").append(indiceColumna)
 								.append('\n');
 					}
 					indiceColumna++;
-					mapa.putIfAbsent(c, new AtomicInteger(0));
-					mapa.get(c).incrementAndGet();
+					String display = "";
+					switch (c) {
+						case '\t' -> {
+							display = "(\\t)";
+						}
+						case '\n' -> {
+							display = "(\\n)";
+						}
+						case ' ' -> {
+							display = "( )";
+						}
+						default -> {
+							display = String.valueOf(c);
+						}
+					}
+					mapa.putIfAbsent(display, new AtomicInteger(0));
+					mapa.get(display).incrementAndGet();
 				}
 				indiceLinea++;
 			}
-			mapa.forEach((key, value) -> sbResultado.append(key).append(" -->").append(value).append("\n"));
-			textAreaErrores.setText(sbErrores.toString());
+			mapa.forEach((display, valor) -> sbResultado.append(display).append("\t").append(" <---> Coincidencias: ").append(valor)
+					.append("\n"));
+			String errString = sbErrores.toString();
+			textAreaErrores.setText(errString.isBlank() ? "Sin errores lexicos" : errString);
 			textAreaResultado.setText(sbResultado.toString());
 			buffer.close();
 		} catch (Exception e) {
