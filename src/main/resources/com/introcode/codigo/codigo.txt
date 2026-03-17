@@ -53,7 +53,7 @@ INICIO
 
 	PARA ( DECLARAR ENTERO x = 15 ) HASTA ( cond ) DECREMENTA ( 1 ) HACER
 	FINPARA ;
-	gi
-}}]]]
+]]]]
+	
 
 FIN

@@ -27,10 +27,8 @@ public class AnLexico {
 				'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
 				'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
 				// símbolos
-				'+', '-', '*', '/', '=', '>', '<', '!', '(', ')', '[', ']', '\"',
-				',', ' ', ';', '#', '.',
-				// Otros
-				' ', '\n', '\t'
+				'+', '-', '*', '/', '=', '>', '<', '!', '(', ')', '\"',
+				',', ' ', ';', '#', '.', '\n', '\t'
 		};
 		this.alfabeto = new TreeSet<>(Arrays.asList(alfabetoArr));
 		/* for (Character c : alfabeto) {
@@ -55,6 +53,8 @@ public class AnLexico {
 								.append(". En ").append(indiceLinea)
 								.append(" : ").append(indiceColumna)
 								.append('\n');
+								indiceColumna++;
+								continue;
 					}
 					indiceColumna++;
 					String display = "";
