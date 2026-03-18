@@ -28,7 +28,8 @@ public class App extends Application {
 
 	//System.getProperty("user.dir")
 	//public static final String defaultDir = "C:\\Users\\eduar\\Documents\\Programacion\\Java\\Proyectos\\IntroCode\\src\\main\\resources\\com\\introcode\\codigo";
-	public static final String defaultDir = System.getProperty("user.dir") + " src main resources com introcode codigo".replaceAll(" ", sep);
+	public static final String defaultDir = System.getProperty("user.dir")
+			+ " src main resources com introcode codigo".replaceAll(" ", sep);
 
 	public static Stage getStage() {
 		return stage;
@@ -44,6 +45,7 @@ public class App extends Application {
 
 	public static void main(String[] args) {
 		launch();
+
 	}
 
 	private static Parent loadFXML(String fxml) throws IOException {

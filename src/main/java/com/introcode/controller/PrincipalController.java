@@ -67,10 +67,16 @@ public class PrincipalController implements Initializable {
 	//Tab Analisis Lexico
 
 	@FXML
+	private TextArea txtAreaCaracLexico;
+
+	@FXML
+	private TextArea txtAreaErroresCarac;
+
+	@FXML
 	private TextArea txtAreaTokensLexico;
 
 	@FXML
-	private TextArea txtAreaErrores;
+	private TextArea txtAreaErroresTokens;
 
 	@FXML
 	private Button btnAnLexico;
@@ -151,9 +157,14 @@ public class PrincipalController implements Initializable {
 
 	@FXML
 	private void btnAnLexicoOnAction() {
-		txtAreaErrores.setText(null);
-		AnLexico analisis = new AnLexico();
-		analisis.analisisLexico(txtAreaErrores, txtAreaTokensLexico);
+		txtAreaErroresCarac.setText(null);
+		AnLexico lexico = new AnLexico();
+		boolean huboError = lexico.analisisLexico(txtAreaErroresCarac, txtAreaCaracLexico);
+		if (huboError) {
+			lexico.alertaError();
+			return;
+		}
+		lexico.tokenizar(txtAreaTokensLexico, txtAreaErroresTokens);
 	}
 
 	@FXML
