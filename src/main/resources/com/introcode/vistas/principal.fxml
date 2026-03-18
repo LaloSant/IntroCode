@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Button?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" minHeight="700.0" minWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.introcode.controller.PrincipalController">
+<VBox alignment="CENTER" minHeight="700.0" minWidth="1000.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.introcode.controller.PrincipalController">
    <children>
       <VBox prefHeight="720.0" prefWidth="1000.0">
          <children>
@@ -36,8 +41,11 @@
             </MenuBar>
             <HBox prefHeight="37.0" prefWidth="950.0" spacing="10.0">
                <children>
-                  <Label prefHeight="23.0" prefWidth="87.0" text="Archivo:" />
-                  <TextField fx:id="lblFilePath" editable="false" prefHeight="25.0" prefWidth="882.0" promptText="Sin archivo cargado" />
+                  <Label prefHeight="23.0" prefWidth="87.0" text="Archivo:">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin></Label>
+                  <TextField fx:id="lblFilePath" editable="false" prefHeight="36.0" prefWidth="915.0" promptText="Sin archivo cargado" />
                </children>
                <VBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -83,27 +91,65 @@
                      <content>
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                            <children>
-                              <TextArea fx:id="txtAreaTokensLexico" prefHeight="255.0" prefWidth="980.0" promptText="Aqui Aparecera el resultado">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </VBox.margin>
-                              </TextArea>
-                              <TextArea fx:id="txtAreaErrores" prefHeight="255.0" prefWidth="980.0" promptText="Aqui Apareceran Errores">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </VBox.margin>
-                              </TextArea>
                               <Button fx:id="btnAnLexico" mnemonicParsing="false" onAction="#btnAnLexicoOnAction" text="Realizar Analisis Lexico">
                                  <VBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </VBox.margin>
                               </Button>
+                              <VBox prefHeight="399.0" prefWidth="990.0">
+                                 <children>
+                                    <HBox alignment="CENTER" prefHeight="42.0" prefWidth="990.0" spacing="400.0">
+                                       <children>
+                                          <Label prefWidth="150.0" text="Resultados Tokens" />
+                                          <Label prefWidth="150.0" text="Errores encontrados" />
+                                       </children>
+                                    </HBox>
+                                    <HBox prefHeight="247.0" prefWidth="990.0" spacing="5.0">
+                                       <children>
+                                          <TextArea fx:id="txtAreaCaracLexico" editable="false" prefHeight="255.0" prefWidth="980.0" promptText="Numero de caracteres">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </TextArea>
+                                          <TextArea fx:id="txtAreaErroresCarac" editable="false" prefHeight="255.0" prefWidth="980.0" promptText="Errores de caracteres">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </TextArea>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets />
+                                       </VBox.margin>
+                                    </HBox>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </VBox>
+                              <VBox prefHeight="406.0" prefWidth="980.0">
+                                 <children>
+                                    <HBox prefHeight="265.0" prefWidth="990.0" spacing="5.0">
+                                       <children>
+                                          <TextArea fx:id="txtAreaTokensLexico" editable="false" prefHeight="255.0" prefWidth="980.0" promptText="Numero de tokens">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </TextArea>
+                                          <TextArea fx:id="txtAreaErroresTokens" editable="false" prefHeight="255.0" prefWidth="980.0" promptText="Errores de tokens">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </TextArea>
+                                       </children>
+                                       <VBox.margin>
+                                          <Insets />
+                                       </VBox.margin>
+                                    </HBox>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets />
+                                 </VBox.margin>
+                              </VBox>
                            </children>
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
