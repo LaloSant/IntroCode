@@ -157,7 +157,10 @@ public class PrincipalController implements Initializable {
 
 	@FXML
 	private void btnAnLexicoOnAction() {
+		txtAreaCaracLexico.setText(null);
 		txtAreaErroresCarac.setText(null);
+		txtAreaTokensLexico.setText(null);
+		txtAreaErroresTokens.setText(null);
 		AnLexico lexico = new AnLexico();
 		boolean huboError = lexico.analisisLexico(txtAreaErroresCarac, txtAreaCaracLexico);
 		if (huboError) {

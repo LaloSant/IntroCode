@@ -55,6 +55,6 @@ INICIO
 	FINPARA ;
 
 	
-
+]
 FIN
 	

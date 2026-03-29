@@ -1,4 +1,4 @@
-module com.javafxprueba {
+module com.introcode {
 	requires javafx.controls;
 	requires javafx.fxml;
 	requires transitive javafx.graphics;
