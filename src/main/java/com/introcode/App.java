@@ -3,6 +3,7 @@ package com.introcode;
 import java.io.File;
 import java.io.IOException;
 
+
 //import atlantafx.base.theme.PrimerDark;
 import atlantafx.base.theme.Dracula;
 import javafx.application.Application;
@@ -11,6 +12,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * JavaFX App
@@ -21,9 +24,19 @@ import javafx.stage.Stage;
  */
 public class App extends Application {
 
+	@Getter
+	@Setter
 	private static Scene scene;
+
+	@Getter
+	@Setter
 	private static Stage stage;
+
+	@Getter
+	@Setter
 	private static File workingFile;
+
+	@Getter
 	private static final String sep = File.separator;
 
 	//System.getProperty("user.dir")
@@ -31,21 +44,8 @@ public class App extends Application {
 	public static final String defaultDir = System.getProperty("user.dir")
 			+ " src main resources com introcode codigo".replaceAll(" ", sep);
 
-	public static Stage getStage() {
-		return stage;
-	}
-
-	public static File getWorkingFile() {
-		return workingFile;
-	}
-
-	public static void setWorkingFile(File f) {
-		workingFile = f;
-	}
-
 	public static void main(String[] args) {
 		launch();
-
 	}
 
 	private static Parent loadFXML(String fxml) throws IOException {

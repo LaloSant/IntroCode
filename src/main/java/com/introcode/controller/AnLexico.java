@@ -5,38 +5,36 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.StringTokenizer;
-import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.introcode.App;
+import com.introcode.automatas.AutomNumeros;
 import com.introcode.entity.PReservada;
 import com.introcode.entity.PToken;
-import com.introcode.entity.Palabra;
+import com.introcode.entity.RegistroLexico;
+import com.introcode.entity.Token;
 
+import javafx.collections.FXCollections;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 public class AnLexico {
 
-	@Getter
-	@Setter
 	private TreeSet<Character> alfabeto = new TreeSet<>();
 
-	@Getter
-	@Setter
 	private TreeSet<String> palabrasReserv = new TreeSet<>();
 
-	@Getter
-	@Setter
-	private TreeMap<String, AtomicInteger> caracteresUsados = new TreeMap<>();
+	private ArrayList<String> texto = new ArrayList<>();
 
-	@Getter
-	@Setter
-	ArrayList<String> texto = new ArrayList<>();
+	private ArrayList<RegistroLexico> registroLexico = new ArrayList<>();
+
+	private final AutomNumeros automNumeros = new AutomNumeros();
 
 	public AnLexico() {
 		Character[] alfabetoArr = {
@@ -52,7 +50,7 @@ public class AnLexico {
 				'+', '-', '*', '/', '=', '>', '<', '!', '(', ')', '\"',
 				',', ' ', ';', '#', '.', '\n', '\t'
 		};
-		String[] palabras = {
+		String[] pR = {
 				"INICIO", "FIN", "LEER", "IMPRIMIR", "ENTER", "EN",
 				"DECLARAR", "ENTERO", "REAL", "CADENA", "BOOLEANO", "FLOTANTE",
 				"VERDADERO", "FALSO", "SOBREESCRIBIR",
@@ -62,18 +60,12 @@ public class AnLexico {
 		};
 
 		this.alfabeto = new TreeSet<>(Arrays.asList(alfabetoArr));
-		this.palabrasReserv = new TreeSet<>(Arrays.asList(palabras));
-
-		/* for (Character c : alfabeto) {
-			mapa.put(c, new AtomicInteger(0));
-		} */
-
+		this.palabrasReserv = new TreeSet<>(Arrays.asList(pR));
 	}
 
-	public boolean analisisLexico(TextArea textAreaErrores, TextArea textAreaResultado) {
+	public boolean analisisLexico(TextArea textAreaErrores) {
 		String line;
 		StringBuilder sbErrores = new StringBuilder();
-		StringBuilder sbResultado = new StringBuilder();
 		boolean huboError = false;
 
 		try {
@@ -91,16 +83,11 @@ public class AnLexico {
 								.append(". En ").append(indiceLinea).append(" : ").append(indiceColumna).append('\n');
 						continue;
 					}
-					aniadirCaracter(c);
 				}
 				indiceLinea++;
 			}
-			caracteresUsados.forEach((display, valor) -> sbResultado.append(display).append("\t")
-					.append(" <---> Coincidencias: ").append(valor)
-					.append("\n"));
 			String errString = sbErrores.toString();
 			textAreaErrores.setText(errString.isBlank() ? "Sin errores lexicos" : errString);
-			textAreaResultado.setText(sbResultado.toString());
 			buffer.close();
 			return huboError;
 		} catch (Exception e) {
@@ -109,52 +96,41 @@ public class AnLexico {
 		return huboError;
 	}
 
-	public void tokenizar(TextArea txtAreaTokensLexico, TextArea txtAreaErroresTokens) {
-		ArrayList<Palabra> tokens = new ArrayList<>();
-		StringBuilder sbResultado = new StringBuilder();
-		//StringBuilder sbErrores = new StringBuilder();
+	public void tokenizar(TableView<RegistroLexico> tabla) {
+		ArrayList<RegistroLexico> listaRegistros = new ArrayList<>();
+		int iCol = 0;
+		int iRow = 0;
 		for (String linea : this.texto) {
+			iRow++;
 			StringTokenizer st = new StringTokenizer(linea, " ");
 			String lineaLimpia = linea.trim();
 			if (lineaLimpia.startsWith("#") || lineaLimpia.isBlank()) {
 				continue;
 			}
 			while (st.hasMoreTokens()) {
+				iCol++;
 				String token = st.nextToken().trim();
+				RegistroLexico rl = new RegistroLexico(iRow, iCol++);
 				if (this.palabrasReserv.contains(token)) {
-					sbResultado.append("Palabra reservada: ");
-					PReservada p = new PReservada(token);
-					tokens.add(p);
+					rl.setLexema(new PReservada(token));
+					rl.setToken(Token.PALABRA_RESERVADA);
+					listaRegistros.add(rl);
+					continue;
+				} // Analisis con automatas para: Variable, Numero entero, numero Real
+				int resultAutomNum = automNumeros.simulate(token, true);
+				if (resultAutomNum == 1) {
+					rl.setToken(Token.NUMERO_ENTERO);
+				} else if (resultAutomNum == 3) {
+					rl.setToken(Token.NUMERO_REAL);
 				} else {
-					sbResultado.append("Token: ");
-					PToken t = new PToken(token);
-					tokens.add(t);
+					rl.setToken(Token.VARIABLE);
 				}
-				sbResultado.append(token).append("\n");
+				rl.setLexema(new PToken(token));
+				listaRegistros.add(rl);
 			}
-			txtAreaTokensLexico.setText(sbResultado.toString());
 		}
-	}
+		tabla.setItems(FXCollections.observableArrayList(listaRegistros));
 
-	private String aniadirCaracter(char c) {
-		String display = "";
-		switch (c) {
-			case '\t' -> {
-				display = "(\\t)";
-			}
-			case '\n' -> {
-				display = "(\\n)";
-			}
-			case ' ' -> {
-				display = "( )";
-			}
-			default -> {
-				display = String.valueOf(c);
-			}
-		}
-		caracteresUsados.putIfAbsent(display, new AtomicInteger(0));
-		caracteresUsados.get(display).incrementAndGet();
-		return display;
 	}
 
 	public void alertaError() {
