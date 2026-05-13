@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @AllArgsConstructor
-public abstract class Palabra {
+public class Lexema {
 
 	@Getter
 	@Setter

@@ -31,19 +31,15 @@ public class AFD {
 			// Validar que exista transición
 			if (!transitions.containsKey(current) ||
 					!transitions.get(current).containsKey(c)) {
-				System.out.printf("[Rechazo] No hay transición desde q%d con '%c'%n", current, c);
 				return false;
 			}
 			int next = transitions.get(current).get(c);
-			System.out.printf("q%d --%c--> q%d%n", current, c, next);
 			current = next;
 		}
 
 		if (finalStates.contains(current)) {
-			System.out.printf("[Aceptación] Estado q%d es final.%n", current);
 			return true;
 		} else {
-			System.out.printf("[Rechazo] Estado q%d no es final.%n", current);
 			return false;
 		}
 	}

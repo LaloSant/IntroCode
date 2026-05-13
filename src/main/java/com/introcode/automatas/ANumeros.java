@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class AutomNumeros extends AFD {
-	public AutomNumeros() {
+public class ANumeros extends AFD {
+	public ANumeros() {
 		char[] numeros = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 		Set<Integer> finales = new HashSet<>(Arrays.stream(new int[] { 1, 3 }).boxed().toList());
 		Map<Integer, Map<Character, Integer>> tabla = new HashMap<>();

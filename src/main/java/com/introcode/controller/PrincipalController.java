@@ -2,17 +2,13 @@ package com.introcode.controller;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import com.introcode.App;
-import com.introcode.entity.PReservada;
 import com.introcode.entity.RegistroLexico;
-import com.introcode.entity.Token;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -79,7 +75,7 @@ public class PrincipalController implements Initializable {
 	//Tab Analisis Lexico
 
 	@FXML
-	private TextArea txtAreaErroresCarac;
+	private TextArea txtAreaErroresLexico;
 
 	@FXML
 	private Button btnAnLexico;
@@ -156,9 +152,7 @@ public class PrincipalController implements Initializable {
 		tblColColumn
 				.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getColumn()).asObject());
 
-		ArrayList<RegistroLexico> lista = new ArrayList<>();
-		lista.add(new RegistroLexico(new PReservada("SI"), Token.PALABRA_RESERVADA, 1, 1, 1));
-		tblAnalisLexico.setItems(FXCollections.observableArrayList(lista));
+		tblAnalisLexico.setItems(null);
 	}
 
 	private void tabAnLexicoOnChange() {
@@ -209,15 +203,18 @@ public class PrincipalController implements Initializable {
 
 	@FXML
 	private void btnAnLexicoOnAction() {
-		txtAreaErroresCarac.setText(null);
+		txtAreaErroresLexico.setText(null);
 		AnLexico lexico = new AnLexico();
-		boolean huboError = lexico.analisisLexico(txtAreaErroresCarac);
+		boolean huboError = lexico.analisisLexico(txtAreaErroresLexico);
 		if (huboError) {
 			lexico.alertaError();
 			tblAnalisLexico.setItems(null);
 			return;
 		}
-		lexico.tokenizar(tblAnalisLexico);
+		huboError = lexico.tokenizar(tblAnalisLexico, txtAreaErroresLexico);
+		if (huboError) {
+			lexico.alertaError();
+		}
 	}
 
 	@FXML

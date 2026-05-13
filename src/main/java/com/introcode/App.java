@@ -3,7 +3,6 @@ package com.introcode;
 import java.io.File;
 import java.io.IOException;
 
-
 //import atlantafx.base.theme.PrimerDark;
 import atlantafx.base.theme.Dracula;
 import javafx.application.Application;
@@ -58,7 +57,7 @@ public class App extends Application {
 		//App.setUserAgentStylesheet(STYLESHEET_CASPIAN);
 		//App.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
 		App.setUserAgentStylesheet(new Dracula().getUserAgentStylesheet());
-		scene = new Scene(loadFXML("vistas/principal"), 1000, 700);
+		scene = new Scene(loadFXML("vistas/principal"), 1280, 900);
 		stage.setTitle("INTROCODE");
 		stage.setScene(scene);
 		stage.setResizable(false);

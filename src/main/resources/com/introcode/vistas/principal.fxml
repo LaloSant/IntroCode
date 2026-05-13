@@ -6,7 +6,6 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
@@ -18,9 +17,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" minHeight="700.0" minWidth="1000.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.introcode.controller.PrincipalController">
+<VBox alignment="CENTER" minHeight="900.0" minWidth="1280.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.introcode.controller.PrincipalController">
    <children>
-      <VBox prefHeight="720.0" prefWidth="1000.0">
+      <VBox prefHeight="900.0" prefWidth="1280.0">
          <children>
             <MenuBar>
               <menus>
@@ -54,15 +53,15 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </VBox.margin>
             </HBox>
-            <TabPane fx:id="tabPane" prefHeight="695.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="Infinity">
+            <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="Infinity">
               <tabs>
                 <Tab fx:id="tabEditor" text="Editor">
                      <content>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                        <VBox alignment="CENTER" prefHeight="841.0" prefWidth="1280.0" spacing="5.0">
                            <children>
-                              <VBox alignment="CENTER_RIGHT" prefHeight="660.0" prefWidth="990.0">
+                              <VBox alignment="CENTER_RIGHT" prefHeight="825.0" prefWidth="1270.0">
                                  <children>
-                                    <TextArea fx:id="txtAreaEditor" prefHeight="640.0" promptText="Empieze a escribir Codigo">
+                                    <TextArea fx:id="txtAreaEditor" prefHeight="741.0" prefWidth="1270.0" promptText="Empieze a escribir Codigo">
                                        <VBox.margin>
                                           <Insets />
                                        </VBox.margin>
@@ -94,40 +93,36 @@
                      <content>
                         <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                            <children>
-                              <ScrollPane fitToWidth="true">
-                                 <content>
-                                    <VBox alignment="CENTER" spacing="10.0">
+                              <Button fx:id="btnAnLexico" alignment="CENTER" mnemonicParsing="false" onAction="#btnAnLexicoOnAction" text="Realizar Analisis Lexico" />
+                              <HBox prefHeight="704.0" prefWidth="1270.0">
+                                 <children>
+                                    <TableView fx:id="tblAnalisLexico" prefHeight="704.0" prefWidth="1594.0">
+                                      <columns>
+                                        <TableColumn fx:id="tblColLexema" maxWidth="-1.0" minWidth="256.0" prefWidth="196.0" text="LEXEMA" />
+                                        <TableColumn fx:id="tblColToken" maxWidth="-1.0" minWidth="256.0" prefWidth="196.0" text="TOKEN" />
+                                          <TableColumn fx:id="tblColId" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" text="ID" />
+                                          <TableColumn fx:id="tblColRow" maxWidth="96.0" minWidth="96.0" prefWidth="96.0" resizable="false" text="ROW" />
+                                          <TableColumn fx:id="tblColColumn" maxWidth="96.0" minWidth="96.0" prefWidth="96.0" resizable="false" text="COLUMN" />
+                                      </columns>
+                                    </TableView>
+                                    <VBox alignment="CENTER" prefHeight="297.0" prefWidth="972.0" spacing="10.0">
                                        <children>
-                                          <Button fx:id="btnAnLexico" alignment="CENTER" mnemonicParsing="false" onAction="#btnAnLexicoOnAction" text="Realizar Analisis Lexico" />
-                                          <TableView fx:id="tblAnalisLexico" prefHeight="434.0" prefWidth="972.0">
-                                            <columns>
-                                              <TableColumn fx:id="tblColLexema" maxWidth="-1.0" minWidth="256.0" prefWidth="196.0" text="LEXEMA" />
-                                              <TableColumn fx:id="tblColToken" maxWidth="-1.0" minWidth="256.0" prefWidth="196.0" text="TOKEN" />
-                                                <TableColumn fx:id="tblColId" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" text="ID" />
-                                                <TableColumn fx:id="tblColRow" maxWidth="190.0" minWidth="100.0" prefWidth="140.0" text="ROW" />
-                                                <TableColumn fx:id="tblColColumn" maxWidth="-1.0" minWidth="100.0" prefWidth="100.0" text="COLUMN" />
-                                            </columns>
-                                          </TableView>
-                                          <VBox alignment="CENTER" prefHeight="297.0" prefWidth="972.0">
-                                             <children>
-                                                <Label prefWidth="150.0" text="Errores encontrados" />
-                                                <TextArea fx:id="txtAreaErroresCarac" editable="false" prefHeight="255.0" prefWidth="980.0" promptText="Errores de caracteres">
-                                                   <font>
-                                                      <Font size="14.0" />
-                                                   </font>
-                                                </TextArea>
-                                             </children>
-                                             <VBox.margin>
-                                                <Insets />
-                                             </VBox.margin>
-                                          </VBox>
+                                          <Label prefWidth="150.0" text="Errores encontrados" />
+                                          <TextArea fx:id="txtAreaErroresLexico" editable="false" prefHeight="655.0" prefWidth="314.0" promptText="Errores de caracteres">
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </TextArea>
                                        </children>
-                                       <padding>
+                                       <HBox.margin>
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                       </padding>
+                                       </HBox.margin>
                                     </VBox>
-                                 </content>
-                              </ScrollPane>
+                                 </children>
+                                 <VBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </VBox.margin>
+                              </HBox>
                            </children>
                            <padding>
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
