@@ -125,19 +125,8 @@ public class AnLexico {
 		try {
 			FileReader fileReader = new FileReader(App.getWorkingFile());
 			BufferedReader buffer = new BufferedReader(fileReader);
-			int iRow = 1;
 			while ((line = buffer.readLine()) != null) {
 				this.texto.add(line);
-				int iCol = 0;
-				// for (char c : line.toCharArray()) {
-				// 	iCol++;
-				// 	if (!this.ALFABETO.contains(c)) {
-				// 		huboError = true;
-				// 		sbErrores.append(String.format("Error lexico (0) en %d:%d -> %c", iRow, iCol, c));
-				// 		continue;
-				// 	}
-				// }
-				iRow++;
 			}
 			String errString = sbErrores.toString();
 			txtAreaErrores.setText(errString.isBlank() ? "Sin errores lexicos individuales" : errString);
