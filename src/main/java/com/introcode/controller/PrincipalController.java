@@ -98,6 +98,9 @@ public class PrincipalController implements Initializable {
 	@FXML
 	private TableColumn<RegistroLexico, Integer> tblColColumn;
 
+	@FXML
+	private TableColumn<RegistroLexico, Integer> tblColConsecutivo;
+
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
 		inicializarTabla();
@@ -134,7 +137,7 @@ public class PrincipalController implements Initializable {
 					column++;
 				}
 			}
-			lblPosCursor.setText("Linea: " + line + ", Columna: " + column);
+			lblPosCursor.setText("Row: " + line + ", Column: " + column);
 		});
 
 	}
@@ -151,6 +154,8 @@ public class PrincipalController implements Initializable {
 		tblColRow.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getRow()).asObject());
 		tblColColumn
 				.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getColumn()).asObject());
+		tblColConsecutivo
+				.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getConsecutivoID()).asObject());
 
 		tblAnalisLexico.setItems(null);
 	}
@@ -167,6 +172,8 @@ public class PrincipalController implements Initializable {
 		lblFilePath.setText(f.getAbsolutePath());
 		App.setWorkingFile(f);
 		btnAnLexico.setDisable(false);
+		tblAnalisLexico.setItems(null);
+		txtAreaErroresLexico.setText(null);
 	}
 
 	//Tab Editor

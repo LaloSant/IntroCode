@@ -10,15 +10,19 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegistroLexico {
+	private static int consecutivo = 0;
+
 	private Lexema lexema;
 	private Token token;
 	private int id;
 	private int row;
 	private int column;
+	private int consecutivoID;
 
-	public RegistroLexico(String lexema, int row, int column){
+	public RegistroLexico(String lexema, int row, int column) {
 		this.lexema = new Lexema(lexema);
 		this.row = row;
 		this.column = column;
+		this.consecutivoID = consecutivo++;
 	}
 }

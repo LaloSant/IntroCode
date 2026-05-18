@@ -141,14 +141,22 @@ public class AnLexico {
 	public boolean tokenizar(TableView<RegistroLexico> tabla, TextArea txtAreaErrores) {
 		boolean huboError = false;
 		ArrayList<RegistroLexico> listaRegistros = new ArrayList<>();
+		ArrayList<Integer> listaColumnLexemas = new ArrayList<>();
 		int iCol = 0;
 		int iRow = 0;
+
 		StringBuilder sb = new StringBuilder();
 		for (String linea : this.texto) {
-			iCol = 0;
 			iRow++;
+			iCol = 1;
+			int iLcol = 0;
+			listaColumnLexemas.clear();
+			listaColumnLexemas.add(iCol);
 			for (char c : linea.toCharArray()) {
 				iCol++;
+				if (c == ' ') {
+					listaColumnLexemas.add(iCol);
+				}
 				if (!this.ALFABETO.contains(c)) {
 					huboError = true;
 					sb.append(String.format("Error lexico (0) en %d:%d -> %c%n", iRow, iCol, c));
@@ -161,14 +169,15 @@ public class AnLexico {
 				continue;
 			}
 			while (st.hasMoreTokens()) {
-				//iCol++;
 				String lexema = st.nextToken().trim();
-				RegistroLexico rl = crearRegistro(lexema, iCol, iRow);
+				RegistroLexico rl = crearRegistro(lexema, listaColumnLexemas.get(iLcol), iRow);
 				if (rl.getToken().equals(Token.ERROR_LEXICO)) {
 					huboError = true;
-					sb.append(String.format("Error lexico (1) en %d:%d -> %s%n", iRow, iCol, lexema));
+					sb.append(String.format("Error lexico (1) en %d:%d -> %s%n", iRow, listaColumnLexemas.get(iLcol),
+							lexema));
 				}
 				listaRegistros.add(rl);
+				iLcol++;
 			}
 		}
 		txtAreaErrores.setText(sb.toString());
@@ -178,7 +187,7 @@ public class AnLexico {
 
 	@SuppressWarnings("rawtypes")
 	private RegistroLexico crearRegistro(String lexema, int iCol, int iRow) {
-		RegistroLexico rl = new RegistroLexico(lexema, iRow, iCol++);
+		RegistroLexico rl = new RegistroLexico(lexema, iRow, iCol);
 		TreeSet[] categoria = { this.PALABRASRESERVADAS, this.OPERADORESARITMETICOS, this.OPERADORESRELACIONALES,
 				this.OPERADORESLOGICOS, this.SEPARADORES };
 

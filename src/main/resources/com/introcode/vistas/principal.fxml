@@ -96,13 +96,14 @@
                               <Button fx:id="btnAnLexico" alignment="CENTER" mnemonicParsing="false" onAction="#btnAnLexicoOnAction" text="Realizar Analisis Lexico" />
                               <HBox prefHeight="704.0" prefWidth="1270.0">
                                  <children>
-                                    <TableView fx:id="tblAnalisLexico" prefHeight="704.0" prefWidth="1594.0">
+                                    <TableView fx:id="tblAnalisLexico" prefWidth="1590.0">
                                       <columns>
-                                        <TableColumn fx:id="tblColLexema" maxWidth="-1.0" minWidth="256.0" prefWidth="196.0" text="LEXEMA" />
-                                        <TableColumn fx:id="tblColToken" maxWidth="-1.0" minWidth="256.0" prefWidth="196.0" text="TOKEN" />
-                                          <TableColumn fx:id="tblColId" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" text="ID" />
-                                          <TableColumn fx:id="tblColRow" maxWidth="96.0" minWidth="96.0" prefWidth="96.0" resizable="false" text="ROW" />
-                                          <TableColumn fx:id="tblColColumn" maxWidth="96.0" minWidth="96.0" prefWidth="96.0" resizable="false" text="COLUMN" />
+                                          <TableColumn fx:id="tblColConsecutivo" maxWidth="80.0" minWidth="80.0" resizable="false" text="#" />
+                                        <TableColumn fx:id="tblColLexema" maxWidth="275.0" minWidth="275.0" prefWidth="275.0" resizable="false" text="LEXEMA" />
+                                        <TableColumn fx:id="tblColToken" maxWidth="284.0" minWidth="284.0" prefWidth="284.0" resizable="false" text="TOKEN" />
+                                          <TableColumn fx:id="tblColId" maxWidth="135.0" minWidth="135.0" prefWidth="135.0" resizable="false" text="ID" />
+                                          <TableColumn fx:id="tblColRow" maxWidth="80.0" minWidth="80.0" resizable="false" text="ROW" />
+                                          <TableColumn fx:id="tblColColumn" maxWidth="80.0" minWidth="80.0" resizable="false" text="COLUMN" />
                                       </columns>
                                     </TableView>
                                     <VBox alignment="CENTER" prefHeight="297.0" prefWidth="972.0" spacing="10.0">

@@ -44,7 +44,6 @@ public class ANumeros extends AFD {
 		int current = this.getInitialState();
 
 		for (char c : input.toCharArray()) {
-			// Validar que exista transición
 			if (!transitions.containsKey(current) ||
 					!transitions.get(current).containsKey(c)) {
 				return -1;
