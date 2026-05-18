@@ -107,14 +107,14 @@ public class AnLexico {
 			IDTOKENS.put(s, consecutivoID++);
 		}
 
-		IDTOKENS.put("=", 42);
+		IDTOKENS.put("=", consecutivoID++);
 
 		String[] sep = { ";", "(", ")", ",", "\"", "#" };
 		this.SEPARADORES = new TreeSet<>(Arrays.asList(sep));
 		for (String s : sep) {
 			IDTOKENS.put(s, consecutivoID++);
 		}
-
+		
 	}
 
 	public boolean analisisLexico(TextArea txtAreaErrores) {
@@ -225,19 +225,19 @@ public class AnLexico {
 		int resultAutomNum = automNumeros.simulate(lexema, true);
 		if (resultAutomNum == 1 || resultAutomNum == 3) {
 			rl.setToken(resultAutomNum == 1 ? Token.NUMERO_ENTERO : Token.NUMERO_REAL);
-			rl.setId(consecutivoID++);
+			rl.setId(consecutivoID);
 			return rl;
 		}
 
 		if (automCadenas.simulate(lexema)) {
 			rl.setToken(Token.CADENA);
-			rl.setId(consecutivoID++);
+			rl.setId(consecutivoID);
 			return rl;
 		}
 
 		if (automVariables.simulate(lexema)) {
 			rl.setToken(Token.VARIABLE);
-			rl.setId(consecutivoID++);
+			rl.setId(consecutivoID);
 			return rl;
 		}
 
