@@ -31,7 +31,7 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Acciones">
                   <items>
-                    <MenuItem fx:id="mnuBorrarArch" mnemonicParsing="false" text="Delete" />
+                    <MenuItem fx:id="mnuBorrarArch" mnemonicParsing="false" text="" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Ayuda">
