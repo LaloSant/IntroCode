@@ -9,7 +9,6 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
@@ -61,7 +60,7 @@ public class App extends Application {
 		stage.setTitle("INTROCODE");
 		stage.setScene(scene);
 		stage.setResizable(false);
-		stage.getIcons().add(new Image(getClass().getResourceAsStream("img/Mio.png")));
+		//stage.getIcons().add(new Image(getClass().getResourceAsStream("img/Mio.png")));
 		stage.show();
 	}
 
