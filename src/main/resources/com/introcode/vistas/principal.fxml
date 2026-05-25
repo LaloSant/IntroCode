@@ -131,12 +131,12 @@
                         </VBox>
                      </content>
                 </Tab>
-                  <Tab disable="true" fx:id="tabAnSintactico" text="Análisis Sintactico">
+                  <Tab fx:id="tabAnSintactico" disable="true" text="_">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                      </content>
                   </Tab>
-                  <Tab disable="true" text="Análisis Semantico">
+                  <Tab disable="true" text="_">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="597.0" prefWidth="1000.0" />
                      </content>

@@ -154,7 +154,7 @@ public class AnLexico {
 			listaColumnLexemas.add(iCol);
 			for (char c : linea.toCharArray()) {
 				iCol++;
-				if (c == ' ') {
+				if (c == ' ' || c =='\t') {
 					listaColumnLexemas.add(iCol);
 				}
 				if (!this.ALFABETO.contains(c)) {
@@ -163,7 +163,7 @@ public class AnLexico {
 				}
 			}
 
-			StringTokenizer st = new StringTokenizer(linea, " ");
+			StringTokenizer st = new StringTokenizer(linea, " \t");
 			String lineaLimpia = linea.trim();
 			if (lineaLimpia.startsWith("#") || lineaLimpia.isBlank()) {
 				continue;
@@ -214,7 +214,7 @@ public class AnLexico {
 						rl.setToken(Token.OPERADOR_LOGICO);
 					}
 					case 4 -> {
-						rl.setToken(Token.SEPARADOR);
+						rl.setToken(Token.DELIMITADOR);
 					}
 				}
 				return rl;

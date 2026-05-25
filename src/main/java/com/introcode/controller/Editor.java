@@ -44,7 +44,7 @@ public class Editor {
 		return null;
 	}
 
-	public static void guardarArchivo(TextArea txtAr) {
+	public static void guardarArchivo(TextArea txtAr, boolean printAlert) {
 		File archivoNuevo = null;
 		if (App.getWorkingFile() == null) {
 			FileChooser fc = new FileChooser();
@@ -64,7 +64,9 @@ public class Editor {
 		String texto = (txtAr.getText() == null) ? "" : txtAr.getText();
 		try (FileWriter writer = new FileWriter(fileName)) {
 			writer.write(texto);
-			new Alert(AlertType.INFORMATION, "Guardado Exitosamente").show();
+			if (printAlert) {
+				new Alert(AlertType.INFORMATION, "Guardado Exitosamente").show();
+			}
 		} catch (IOException ex) {
 			new Alert(AlertType.ERROR, ex.getMessage()).show();
 		}

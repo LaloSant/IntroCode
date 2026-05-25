@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegistroLexico {
-	private static int consecutivo = 0;
+	public static int consecutivo = 0;
 
 	private Lexema lexema;
 	private Token token;

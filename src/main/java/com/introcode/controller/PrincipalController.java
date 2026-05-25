@@ -115,6 +115,9 @@ public class PrincipalController implements Initializable {
 				switch (newTab.getId()) {
 					case "tabAnLexico" -> {
 						tabAnLexicoOnChange();
+						if (App.getWorkingFile() != null) {
+							Editor.guardarArchivo(txtAreaEditor, false);
+						}
 					}
 				}
 
@@ -155,7 +158,8 @@ public class PrincipalController implements Initializable {
 		tblColColumn
 				.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getColumn()).asObject());
 		tblColConsecutivo
-				.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getConsecutivoID()).asObject());
+				.setCellValueFactory(
+						cellData -> new SimpleIntegerProperty(cellData.getValue().getConsecutivoID()).asObject());
 
 		tblAnalisLexico.setItems(null);
 	}
@@ -187,7 +191,7 @@ public class PrincipalController implements Initializable {
 		if (App.getWorkingFile() == null) {
 			return;
 		}
-		Editor.guardarArchivo(txtAreaEditor);
+		Editor.guardarArchivo(txtAreaEditor, true);
 	}
 
 	@FXML
@@ -210,6 +214,7 @@ public class PrincipalController implements Initializable {
 
 	@FXML
 	private void btnAnLexicoOnAction() {
+		RegistroLexico.consecutivo = 0;
 		txtAreaErroresLexico.setText(null);
 		AnLexico lexico = new AnLexico();
 		boolean huboError = lexico.analisisLexico(txtAreaErroresLexico);

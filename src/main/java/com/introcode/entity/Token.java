@@ -6,7 +6,7 @@ public enum Token {
 	OPERADOR_RELACIONAL("Operador Relacional"),
 	OPERADOR_LOGICO("Operador Logico"),
 	OPERADOR_ASIGNACION("Operador de Asignacion"),
-	SEPARADOR("Separador"),
+	DELIMITADOR("Delimitador"),
 	VARIABLE("Variable"),
 	CADENA("Cadena"),
 	NUMERO_ENTERO("Numero Entero"),
