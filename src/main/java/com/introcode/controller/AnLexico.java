@@ -109,12 +109,12 @@ public class AnLexico {
 
 		IDTOKENS.put("=", consecutivoID++);
 
-		String[] sep = { ";", "(", ")", ",", "\"", "#" };
+		String[] sep = { ";", "(", ")", ",", "\"", " ", "#" };
 		this.SEPARADORES = new TreeSet<>(Arrays.asList(sep));
 		for (String s : sep) {
 			IDTOKENS.put(s, consecutivoID++);
 		}
-		
+
 	}
 
 	public boolean analisisLexico(TextArea txtAreaErrores) {
@@ -140,6 +140,7 @@ public class AnLexico {
 
 	public boolean tokenizar(TableView<RegistroLexico> tabla, TextArea txtAreaErrores) {
 		boolean huboError = false;
+		registroLexico.clear();
 		ArrayList<RegistroLexico> listaRegistros = new ArrayList<>();
 		ArrayList<Integer> listaColumnLexemas = new ArrayList<>();
 		int iCol = 0;
@@ -154,7 +155,7 @@ public class AnLexico {
 			listaColumnLexemas.add(iCol);
 			for (char c : linea.toCharArray()) {
 				iCol++;
-				if (c == ' ' || c =='\t') {
+				if (c == ' ' || c == '\t') {
 					listaColumnLexemas.add(iCol);
 				}
 				if (!this.ALFABETO.contains(c)) {
@@ -177,6 +178,7 @@ public class AnLexico {
 							lexema));
 				}
 				listaRegistros.add(rl);
+				registroLexico.add(rl);
 				iLcol++;
 			}
 		}
@@ -225,19 +227,19 @@ public class AnLexico {
 		int resultAutomNum = automNumeros.simulate(lexema, true);
 		if (resultAutomNum == 1 || resultAutomNum == 3) {
 			rl.setToken(resultAutomNum == 1 ? Token.NUMERO_ENTERO : Token.NUMERO_REAL);
-			rl.setId(resultAutomNum == 1 ? 51 : 52);
+			rl.setId(resultAutomNum == 1 ? 52 : 53);
 			return rl;
 		}
 
 		if (automCadenas.simulate(lexema)) {
 			rl.setToken(Token.CADENA);
-			rl.setId(50);
+			rl.setId(51);
 			return rl;
 		}
 
 		if (automVariables.simulate(lexema)) {
 			rl.setToken(Token.VARIABLE);
-			rl.setId(49);
+			rl.setId(50);
 			return rl;
 		}
 

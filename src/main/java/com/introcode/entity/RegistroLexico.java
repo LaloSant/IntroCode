@@ -19,6 +19,30 @@ public class RegistroLexico {
 	private int column;
 	private int consecutivoID;
 
+	public Lexema getLexema() {
+		return lexema;
+	}
+
+	public Token getToken() {
+		return token;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public int getRow() {
+		return row;
+	}
+
+	public int getColumn() {
+		return column;
+	}
+
+	public int getConsecutivoID() {
+		return consecutivoID;
+	}
+
 	public RegistroLexico(String lexema, int row, int column) {
 		this.lexema = new Lexema(lexema);
 		this.row = row;

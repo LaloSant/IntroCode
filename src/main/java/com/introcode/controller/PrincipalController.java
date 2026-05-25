@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 
 import com.introcode.App;
 import com.introcode.entity.RegistroLexico;
+import com.introcode.entity.ResultadoSintactico;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -100,6 +101,16 @@ public class PrincipalController implements Initializable {
 
 	@FXML
 	private TableColumn<RegistroLexico, Integer> tblColConsecutivo;
+
+	//Tab An Sintactico
+
+	@FXML
+	private Button btnAnSintactico;
+
+	@FXML
+	private TextArea txtAreaSintactico;
+
+	private AnLexico analizadorLexico;
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
@@ -216,17 +227,51 @@ public class PrincipalController implements Initializable {
 	private void btnAnLexicoOnAction() {
 		RegistroLexico.consecutivo = 0;
 		txtAreaErroresLexico.setText(null);
-		AnLexico lexico = new AnLexico();
-		boolean huboError = lexico.analisisLexico(txtAreaErroresLexico);
+		analizadorLexico = new AnLexico();
+		boolean huboError = analizadorLexico.analisisLexico(txtAreaErroresLexico);
 		if (huboError) {
-			lexico.alertaError();
+			analizadorLexico.alertaError();
 			tblAnalisLexico.setItems(null);
 			return;
 		}
-		huboError = lexico.tokenizar(tblAnalisLexico, txtAreaErroresLexico);
+		huboError = analizadorLexico.tokenizar(tblAnalisLexico, txtAreaErroresLexico);
 		if (huboError) {
-			lexico.alertaError();
+			analizadorLexico.alertaError();
 		}
+	}
+
+	@FXML
+	private void btnAnSintacticoOnAction() {
+		if (analizadorLexico == null) {
+			txtAreaSintactico.setText("Ejecute primero el análisis léxico antes del análisis sintáctico.");
+			return;
+		}
+
+		if (analizadorLexico.getRegistroLexico().isEmpty()) {
+			txtAreaSintactico.setText("No hay tokens disponibles. Ejecute el análisis léxico.");
+			return;
+		}
+
+		AnSintactico an = new AnSintactico();
+		ResultadoSintactico resultado = an.analizar(analizadorLexico.getRegistroLexico());
+		StringBuilder salida = new StringBuilder();
+
+		if (resultado.esValido()) {
+			salida.append("Analisis sintactico correcto.\n\n");
+			salida.append("Arbol sintactico:\n");
+			salida.append(resultado.getRaiz().toString());
+		} else {
+			salida.append("Errores sintacticos:\n");
+			for (String error : resultado.getErrores()) {
+				salida.append(error).append("\n");
+			}
+			if (resultado.getRaiz() != null) {
+				salida.append("\nArbol sintactico parcial:\n");
+				salida.append(resultado.getRaiz().toString());
+			}
+		}
+
+		txtAreaSintactico.setText(salida.toString());
 	}
 
 	@FXML
