@@ -128,6 +128,16 @@ public class PrincipalController implements Initializable {
 						tabAnLexicoOnChange();
 						if (App.getWorkingFile() != null) {
 							Editor.guardarArchivo(txtAreaEditor, false);
+							btnAnLexicoOnAction();
+						}
+					}
+					case "tabAnSintactico" -> {
+						tabAnSintacticoOnChange();
+						if (App.getWorkingFile() != null) {
+							Editor.guardarArchivo(txtAreaEditor, false);
+							if (!btnAnLexico.isDisabled()) {
+								btnAnLexicoOnAction();
+							}
 						}
 					}
 				}
@@ -181,6 +191,12 @@ public class PrincipalController implements Initializable {
 		}
 	}
 
+	private void tabAnSintacticoOnChange() {
+		if (App.getWorkingFile() == null) {
+			btnAnSintactico.setDisable(true);
+		}
+	}
+
 	@FXML
 	private void mnuAbirArchOnAction() {
 		File f = Editor.setTextArea(txtAreaEditor);
@@ -225,6 +241,7 @@ public class PrincipalController implements Initializable {
 
 	@FXML
 	private void btnAnLexicoOnAction() {
+		btnAnSintactico.setDisable(false);
 		RegistroLexico.consecutivo = 0;
 		txtAreaErroresLexico.setText(null);
 		analizadorLexico = new AnLexico();
@@ -232,10 +249,12 @@ public class PrincipalController implements Initializable {
 		if (huboError) {
 			analizadorLexico.alertaError();
 			tblAnalisLexico.setItems(null);
+			btnAnSintactico.setDisable(true);
 			return;
 		}
 		huboError = analizadorLexico.tokenizar(tblAnalisLexico, txtAreaErroresLexico);
 		if (huboError) {
+			btnAnSintactico.setDisable(true);
 			analizadorLexico.alertaError();
 		}
 	}

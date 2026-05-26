@@ -5,7 +5,7 @@ INICIO
 	DECLARAR ENTERO edad = 18 ;
 	DECLARAR REAL calificacion = 9.5 ;
 	DECLARAR REAL suma = 0 ;
-	DECLARAR ENTERO contador = 1 ;
+	DECLARAR ENTERO contador = s ;
 	DECLARAR BOOLEANO aprobado = FALSO ;
 
 	#MENSAJE INICIAL

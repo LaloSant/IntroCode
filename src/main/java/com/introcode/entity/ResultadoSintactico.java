@@ -6,23 +6,23 @@ import java.util.List;
 
 public class ResultadoSintactico {
 
-    private final NodoSintactico raiz;
-    private final List<String> errores;
+	private final NodoSintactico raiz;
+	private final List<String> errores;
 
-    public ResultadoSintactico(NodoSintactico raiz, List<String> errores) {
-        this.raiz = raiz;
-        this.errores = new ArrayList<>(errores);
-    }
+	public ResultadoSintactico(NodoSintactico raiz, List<String> errores) {
+		this.raiz = raiz;
+		this.errores = new ArrayList<>(errores);
+	}
 
-    public NodoSintactico getRaiz() {
-        return raiz;
-    }
+	public NodoSintactico getRaiz() {
+		return raiz;
+	}
 
-    public List<String> getErrores() {
-        return Collections.unmodifiableList(errores);
-    }
+	public List<String> getErrores() {
+		return Collections.unmodifiableList(errores);
+	}
 
-    public boolean esValido() {
-        return errores.isEmpty() && raiz != null;
-    }
+	public boolean esValido() {
+		return errores.isEmpty() && raiz != null;
+	}
 }

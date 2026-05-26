@@ -133,17 +133,17 @@
                 </Tab>
                   <Tab fx:id="tabAnSintactico" text="Análisis Sintáctico">
                      <content>
-                        <VBox>
+                        <VBox alignment="CENTER">
                            <children>
                               <Button fx:id="btnAnSintactico" alignment="CENTER" mnemonicParsing="false" onAction="#btnAnSintacticoOnAction" text="Realizar Analisis Sintactico" />
-                              <HBox prefHeight="704.0" prefWidth="1270.0">
+                              <HBox>
                                  <children>
-                                    <VBox alignment="CENTER" prefHeight="297.0" prefWidth="972.0" spacing="10.0">
+                                    <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="685.0" prefWidth="1263.0" spacing="10.0">
                                        <children>
-                                          <Label prefWidth="150.0" text="Salida" />
-                                          <TextArea fx:id="txtAreaSintactico" editable="false" prefHeight="655.0" prefWidth="314.0" promptText="Errores de caracteres">
+                                          <Label text="Salida" />
+                                          <TextArea fx:id="txtAreaSintactico" editable="false" prefHeight="655.0" prefWidth="314.0" promptText="Salida Analisis Léxico">
                                              <font>
-                                                <Font size="14.0" />
+                                                <Font size="18.0" />
                                              </font>
                                           </TextArea>
                                        </children>
