@@ -82,7 +82,7 @@ public class AnLexico {
 
 		this.ALFABETO = new TreeSet<>(Arrays.asList(alfabetoArr));
 		this.PALABRASRESERVADAS = new TreeSet<>(listaPR);
-		this.automCadenas = new ACadenas(alfabetoArr);
+		this.automCadenas = new ACadenas();
 
 		for (String palReserv : listaPR) {
 			IDTOKENS.put(palReserv, consecutivoID++);
