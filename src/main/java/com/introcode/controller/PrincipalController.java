@@ -146,7 +146,19 @@ public class PrincipalController implements Initializable {
 		});
 	}
 
+	private void limpiarAnalizadores() {
+		tblAnalisLexico.setItems(null);
+		txtAreaErroresLexico.setText(null);
+		txtAreaSintactico.setText(null);
+		btnAnSintactico.setDisable(true);
+	}
+
 	private void inicializarEditor() {
+		txtAreaEditor.textProperty().addListener((obs, oldValue, newValue) -> {
+			limpiarAnalizadores();
+			App.changeTitle("INTROCODE*");
+		});
+
 		txtAreaEditor.caretPositionProperty().addListener((obs, oldPos, newPos) -> {
 			int caretPos = newPos.intValue();
 			String text = txtAreaEditor.getText();
@@ -241,6 +253,7 @@ public class PrincipalController implements Initializable {
 
 	@FXML
 	private void btnAnLexicoOnAction() {
+		//txtAreaSintactico.setText(null);
 		btnAnSintactico.setDisable(false);
 		RegistroLexico.consecutivo = 0;
 		txtAreaErroresLexico.setText(null);

@@ -56,12 +56,17 @@ public class App extends Application {
 		//App.setUserAgentStylesheet(STYLESHEET_CASPIAN);
 		//App.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
 		App.setUserAgentStylesheet(new Dracula().getUserAgentStylesheet());
+		App.setStage(stage);
 		scene = new Scene(loadFXML("vistas/principal"), 1280, 900);
 		stage.setTitle("INTROCODE");
 		stage.setScene(scene);
 		stage.setResizable(false);
 		//stage.getIcons().add(new Image(getClass().getResourceAsStream("img/Mio.png")));
 		stage.show();
+	}
+
+	public static void changeTitle(String title) {
+		stage.setTitle(title);
 	}
 
 }

@@ -64,8 +64,9 @@ public class Editor {
 		String texto = (txtAr.getText() == null) ? "" : txtAr.getText();
 		try (FileWriter writer = new FileWriter(fileName)) {
 			writer.write(texto);
+			App.changeTitle("INTROCODE");
 			if (printAlert) {
-				new Alert(AlertType.INFORMATION, "Guardado Exitosamente").show();
+				new Alert(AlertType.INFORMATION, "Guardado Exitosamente");
 			}
 		} catch (IOException ex) {
 			new Alert(AlertType.ERROR, ex.getMessage()).show();
