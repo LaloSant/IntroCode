@@ -1,5 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+>
+
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.introcode</groupId>
 	<artifactId>introcode</artifactId>
@@ -41,6 +45,15 @@
 				<version>3.8.0</version>
 				<configuration>
 					<release>25</release>
+					<source>25</source>
+					<target>25</target>
+					<annotationProcessorPaths>
+                    <path>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok</artifactId>
+                        <version>1.18.42</version>
+                    </path>
+                </annotationProcessorPaths>
 				</configuration>
 			</plugin>
 			<plugin>
