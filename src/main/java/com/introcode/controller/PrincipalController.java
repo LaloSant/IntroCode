@@ -135,8 +135,8 @@ public class PrincipalController implements Initializable {
 						tabAnSintacticoOnChange();
 						if (App.getWorkingFile() != null) {
 							Editor.guardarArchivo(txtAreaEditor, false);
-							if (!btnAnLexico.isDisabled()) {
-								btnAnLexicoOnAction();
+							if (!btnAnSintactico.isDisabled()) {
+								btnAnSintacticoOnAction();
 							}
 						}
 					}
