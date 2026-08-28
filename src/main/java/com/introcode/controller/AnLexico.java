@@ -4,39 +4,55 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.StringTokenizer;
-import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.introcode.App;
-import com.introcode.entity.PReservada;
-import com.introcode.entity.PToken;
-import com.introcode.entity.Palabra;
+import com.introcode.automatas.ACadenas;
+import com.introcode.automatas.ANumeros;
+import com.introcode.automatas.AVariables;
+import com.introcode.entity.RegistroLexico;
+import com.introcode.entity.Token;
 
+import javafx.collections.FXCollections;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import lombok.Getter;
 import lombok.Setter;
 
+@Getter
+@Setter
 public class AnLexico {
 
-	@Getter
-	@Setter
-	private TreeSet<Character> alfabeto = new TreeSet<>();
+	private final TreeSet<Character> ALFABETO;
 
-	@Getter
-	@Setter
-	private TreeSet<String> palabrasReserv = new TreeSet<>();
+	private final TreeSet<String> PALABRASRESERVADAS;
 
-	@Getter
-	@Setter
-	private TreeMap<String, AtomicInteger> caracteresUsados = new TreeMap<>();
+	private final TreeSet<String> OPERADORESARITMETICOS;
 
-	@Getter
-	@Setter
-	ArrayList<String> texto = new ArrayList<>();
+	private final TreeSet<String> OPERADORESRELACIONALES;
+
+	private final TreeSet<String> OPERADORESLOGICOS;
+
+	private final TreeSet<String> SEPARADORES;
+
+	private final HashMap<String, Integer> IDTOKENS = new HashMap<>();
+
+	private int consecutivoID = 1;
+
+	private final ArrayList<String> texto = new ArrayList<>();
+
+	private final ArrayList<RegistroLexico> registroLexico = new ArrayList<>();
+
+	private final ANumeros automNumeros = new ANumeros();
+
+	private final AVariables automVariables = new AVariables();
+
+	private final ACadenas automCadenas;
 
 	public AnLexico() {
 		Character[] alfabetoArr = {
@@ -49,58 +65,71 @@ public class AnLexico {
 				'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
 				'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
 				// símbolos
-				'+', '-', '*', '/', '=', '>', '<', '!', '(', ')', '\"',
+				'+', '-', '*', '/', '=', '^', '>', '<', '!', '(', ')', '\"',
 				',', ' ', ';', '#', '.', '\n', '\t'
 		};
-		String[] palabras = {
-				"INICIO", "FIN", "LEER", "IMPRIMIR", "ENTER", "EN",
-				"DECLARAR", "ENTERO", "REAL", "CADENA", "BOOLEANO", "FLOTANTE",
-				"VERDADERO", "FALSO", "SOBREESCRIBIR",
-				"SI", "ENTONCES", "FINSI", "SINO", "FINSINO",
+
+		String[] pR = {
+				"INICIO", "FIN", "LEER", "EN", "IMPRIMIR", "ENTER",
+				"DECLARAR", "SOBREESCRIBIR", "ENTERO", "REAL", "CADENA", "BOOLEANO",
+				"VERDADERO", "FALSO",
+				"SI", "ENTONCES", "SINO", "FINSI", "FINSINO",
 				"MIENTRAS", "HACER", "FINMIENTRAS",
 				"PARA", "HASTA", "INCREMENTA", "DECREMENTA", "FINPARA"
 		};
 
-		this.alfabeto = new TreeSet<>(Arrays.asList(alfabetoArr));
-		this.palabrasReserv = new TreeSet<>(Arrays.asList(palabras));
+		List<String> listaPR = Arrays.asList(pR);
 
-		/* for (Character c : alfabeto) {
-			mapa.put(c, new AtomicInteger(0));
-		} */
+		this.ALFABETO = new TreeSet<>(Arrays.asList(alfabetoArr));
+		this.PALABRASRESERVADAS = new TreeSet<>(listaPR);
+		this.automCadenas = new ACadenas();
+
+		for (String palReserv : listaPR) {
+			IDTOKENS.put(palReserv, consecutivoID++);
+		}
+
+		String[] opArit = { "+", "-", "*", "/", "^" };
+		this.OPERADORESARITMETICOS = new TreeSet<>(Arrays.asList(opArit));
+		for (String s : opArit) {
+			IDTOKENS.put(s, consecutivoID++);
+		}
+
+		String[] opRela = { "==", "!=", "<", ">", "<=", ">=" };
+		this.OPERADORESRELACIONALES = new TreeSet<>(Arrays.asList(opRela));
+
+		for (String s : opRela) {
+			IDTOKENS.put(s, consecutivoID++);
+		}
+
+		String[] opLog = { "AND", "OR", "NOT" };
+		this.OPERADORESLOGICOS = new TreeSet<>(Arrays.asList(opLog));
+		for (String s : opLog) {
+			IDTOKENS.put(s, consecutivoID++);
+		}
+
+		IDTOKENS.put("=", consecutivoID++);
+
+		String[] sep = { ";", "(", ")", ",", "\"", " ", "#" };
+		this.SEPARADORES = new TreeSet<>(Arrays.asList(sep));
+		for (String s : sep) {
+			IDTOKENS.put(s, consecutivoID++);
+		}
 
 	}
 
-	public boolean analisisLexico(TextArea textAreaErrores, TextArea textAreaResultado) {
+	public boolean analisisLexico(TextArea txtAreaErrores) {
 		String line;
 		StringBuilder sbErrores = new StringBuilder();
-		StringBuilder sbResultado = new StringBuilder();
 		boolean huboError = false;
 
 		try {
 			FileReader fileReader = new FileReader(App.getWorkingFile());
 			BufferedReader buffer = new BufferedReader(fileReader);
-			int indiceLinea = 1;
 			while ((line = buffer.readLine()) != null) {
 				this.texto.add(line);
-				int indiceColumna = 0;
-				for (char c : line.toCharArray()) {
-					indiceColumna++;
-					if (!this.alfabeto.contains(c)) {
-						huboError = true;
-						sbErrores.append("Error! Elemento no reconocido en alfabeto: ").append(c)
-								.append(". En ").append(indiceLinea).append(" : ").append(indiceColumna).append('\n');
-						continue;
-					}
-					aniadirCaracter(c);
-				}
-				indiceLinea++;
 			}
-			caracteresUsados.forEach((display, valor) -> sbResultado.append(display).append("\t")
-					.append(" <---> Coincidencias: ").append(valor)
-					.append("\n"));
 			String errString = sbErrores.toString();
-			textAreaErrores.setText(errString.isBlank() ? "Sin errores lexicos" : errString);
-			textAreaResultado.setText(sbResultado.toString());
+			txtAreaErrores.setText(errString.isBlank() ? "Sin errores lexicos individuales" : errString);
 			buffer.close();
 			return huboError;
 		} catch (Exception e) {
@@ -109,52 +138,115 @@ public class AnLexico {
 		return huboError;
 	}
 
-	public void tokenizar(TextArea txtAreaTokensLexico, TextArea txtAreaErroresTokens) {
-		ArrayList<Palabra> tokens = new ArrayList<>();
-		StringBuilder sbResultado = new StringBuilder();
-		//StringBuilder sbErrores = new StringBuilder();
+	public boolean tokenizar(TableView<RegistroLexico> tabla, TextArea txtAreaErrores) {
+		boolean huboError = false;
+		registroLexico.clear();
+		ArrayList<RegistroLexico> listaRegistros = new ArrayList<>();
+		ArrayList<Integer> listaColumnLexemas = new ArrayList<>();
+		int iCol = 0;
+		int iRow = 0;
+
+		StringBuilder sb = new StringBuilder();
 		for (String linea : this.texto) {
-			StringTokenizer st = new StringTokenizer(linea, " ");
+			iRow++;
+			iCol = 1;
+			int iLcol = 0;
+			listaColumnLexemas.clear();
+			listaColumnLexemas.add(iCol);
+			for (char c : linea.toCharArray()) {
+				iCol++;
+				if (c == ' ' || c == '\t') {
+					listaColumnLexemas.add(iCol);
+				}
+				if (!this.ALFABETO.contains(c)) {
+					huboError = true;
+					sb.append(String.format("Error lexico (0) en %d:%d -> %c%n", iRow, iCol, c));
+				}
+			}
+
+			StringTokenizer st = new StringTokenizer(linea, " \t");
 			String lineaLimpia = linea.trim();
 			if (lineaLimpia.startsWith("#") || lineaLimpia.isBlank()) {
 				continue;
 			}
 			while (st.hasMoreTokens()) {
-				String token = st.nextToken().trim();
-				if (this.palabrasReserv.contains(token)) {
-					sbResultado.append("Palabra reservada: ");
-					PReservada p = new PReservada(token);
-					tokens.add(p);
-				} else {
-					sbResultado.append("Token: ");
-					PToken t = new PToken(token);
-					tokens.add(t);
+				String lexema = st.nextToken().trim();
+				RegistroLexico rl = crearRegistro(lexema, listaColumnLexemas.get(iLcol), iRow);
+				if (rl.getToken().equals(Token.ERROR_LEXICO)) {
+					huboError = true;
+					sb.append(String.format("Error lexico (1) en %d:%d -> %s%n", iRow, listaColumnLexemas.get(iLcol),
+							lexema));
 				}
-				sbResultado.append(token).append("\n");
+				listaRegistros.add(rl);
+				registroLexico.add(rl);
+				iLcol++;
 			}
-			txtAreaTokensLexico.setText(sbResultado.toString());
 		}
+		txtAreaErrores.setText(sb.toString());
+		tabla.setItems(FXCollections.observableArrayList(listaRegistros));
+		return huboError;
 	}
 
-	private String aniadirCaracter(char c) {
-		String display = "";
-		switch (c) {
-			case '\t' -> {
-				display = "(\\t)";
-			}
-			case '\n' -> {
-				display = "(\\n)";
-			}
-			case ' ' -> {
-				display = "( )";
-			}
-			default -> {
-				display = String.valueOf(c);
-			}
+	@SuppressWarnings("rawtypes")
+	private RegistroLexico crearRegistro(String lexema, int iCol, int iRow) {
+		RegistroLexico rl = new RegistroLexico(lexema, iRow, iCol);
+		TreeSet[] categoria = { this.PALABRASRESERVADAS, this.OPERADORESARITMETICOS, this.OPERADORESRELACIONALES,
+				this.OPERADORESLOGICOS, this.SEPARADORES };
+
+		int i = 0;
+		if (lexema.equals("=")) {
+			rl.setId(IDTOKENS.get("="));
+			rl.setToken(Token.OPERADOR_ASIGNACION);
+			return rl;
 		}
-		caracteresUsados.putIfAbsent(display, new AtomicInteger(0));
-		caracteresUsados.get(display).incrementAndGet();
-		return display;
+		for (TreeSet set : categoria) {
+			if (set.contains(lexema)) {
+				rl.setId(IDTOKENS.get(lexema));
+				switch (i) {
+					case 0 -> {
+						rl.setToken(Token.PALABRA_RESERVADA);
+					}
+					case 1 -> {
+						rl.setToken(Token.OPERADOR_ARITMETICO);
+					}
+					case 2 -> {
+						rl.setToken(Token.OPERADOR_RELACIONAL);
+					}
+					case 3 -> {
+						rl.setToken(Token.OPERADOR_LOGICO);
+					}
+					case 4 -> {
+						rl.setToken(Token.DELIMITADOR);
+					}
+				}
+				return rl;
+			}
+			i++;
+		}
+
+		int resultAutomNum = automNumeros.simulate(lexema, true);
+		if (resultAutomNum == 1 || resultAutomNum == 3) {
+			rl.setToken(resultAutomNum == 1 ? Token.NUMERO_ENTERO : Token.NUMERO_REAL);
+			rl.setId(resultAutomNum == 1 ? 52 : 53);
+			return rl;
+		}
+
+		if (automCadenas.simulate(lexema)) {
+			rl.setToken(Token.CADENA);
+			rl.setId(51);
+			return rl;
+		}
+
+		if (automVariables.simulate(lexema)) {
+			rl.setToken(Token.VARIABLE);
+			rl.setId(50);
+			return rl;
+		}
+
+		rl.setToken(Token.ERROR_LEXICO);
+		rl.setId(-1);
+		return rl;
+
 	}
 
 	public void alertaError() {

@@ -9,8 +9,9 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * JavaFX App
@@ -21,9 +22,19 @@ import javafx.stage.Stage;
  */
 public class App extends Application {
 
+	@Getter
+	@Setter
 	private static Scene scene;
+
+	@Getter
+	@Setter
 	private static Stage stage;
+
+	@Getter
+	@Setter
 	private static File workingFile;
+
+	@Getter
 	private static final String sep = File.separator;
 
 	//System.getProperty("user.dir")
@@ -31,21 +42,8 @@ public class App extends Application {
 	public static final String defaultDir = System.getProperty("user.dir")
 			+ " src main resources com introcode codigo".replaceAll(" ", sep);
 
-	public static Stage getStage() {
-		return stage;
-	}
-
-	public static File getWorkingFile() {
-		return workingFile;
-	}
-
-	public static void setWorkingFile(File f) {
-		workingFile = f;
-	}
-
 	public static void main(String[] args) {
 		launch();
-
 	}
 
 	private static Parent loadFXML(String fxml) throws IOException {
@@ -58,12 +56,17 @@ public class App extends Application {
 		//App.setUserAgentStylesheet(STYLESHEET_CASPIAN);
 		//App.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
 		App.setUserAgentStylesheet(new Dracula().getUserAgentStylesheet());
-		scene = new Scene(loadFXML("vistas/principal"), 1000, 700);
+		App.setStage(stage);
+		scene = new Scene(loadFXML("vistas/principal"), 1280, 900);
 		stage.setTitle("INTROCODE");
 		stage.setScene(scene);
 		stage.setResizable(false);
-		stage.getIcons().add(new Image(getClass().getResourceAsStream("img/Mio.png")));
+		//stage.getIcons().add(new Image(getClass().getResourceAsStream("img/Mio.png")));
 		stage.show();
+	}
+
+	public static void changeTitle(String title) {
+		stage.setTitle(title);
 	}
 
 }

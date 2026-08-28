@@ -1,0 +1,42 @@
+Se esperaba la palabra reservada INICIO al inicio del programa.
+Se esperaba la palabra reservada FIN al final del programa.
+Se esperaba DECLARAR en la declaración.
+Se esperaba un identificador después del tipo.
+Se esperaba ';' al final de la declaración.
+Se esperaba un tipo de dato (ENTERO, REAL, CADENA, BOOLEANO).
+Se esperaba SOBREESCRIBIR al inicio de la sentencia.
+Se esperaba un identificador después de SOBREESCRIBIR.
+Se esperaba el operador de asignación '=' en la sobrescritura.
+Se esperaba ';' al final de la sobrescritura.
+Se esperaba EN después de LEER.
+Se esperaba un identificador después de EN.
+Se esperaba ';' al final de la sentencia LEER.
+Se esperaba IMPRIMIR al inicio de la sentencia.
+Se esperaba ';' al final de la sentencia IMPRIMIR.
+Se esperaba SI al inicio de la condicional.
+Se esperaba ENTONCES después de la condición.
+Se esperaba FINSI al final de la condicional.
+Se esperaba ';' después de FINSI.
+Se esperaba ENTONCES después de SINO.
+Se esperaba FINSINO al final de la rama SINO.
+Se esperaba ';' después de FINSINO.
+Se esperaba MIENTRAS al inicio del ciclo.
+Se esperaba HACER después de la condición del ciclo.
+Se esperaba FINMIENTRAS al final del ciclo.
+Se esperaba ';' después de FINMIENTRAS.
+Se esperaba PARA al inicio del ciclo para.
+Se esperaba '(' después de PARA.
+Se esperaba ')' después de la declaración inicial del ciclo PARA.
+Se esperaba HASTA después de la declaración del ciclo PARA.
+Se esperaba HACER antes del cuerpo del ciclo PARA.
+Se esperaba FINPARA al final del ciclo.
+Se esperaba ';' después de FINPARA.
+Se esperaba '(' después de {Operador}.
+Se esperaba ')' después del número en el paso de incremento/decremento
+Se esperaba un número entero en el paso de incremento/decremento.
+Se esperaba INCREMENTA o DECREMENTA en el paso del ciclo PARA.
+Se esperaba '(' al inicio de la condición.
+Se esperaba ')' al final de la condición.
+Se esperaba '(' después de NOT.
+Se esperaba ')' después de la expresión de NOT.
+Se esperaba ')' después de la expresión entre paréntesis.
