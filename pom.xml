@@ -48,12 +48,12 @@
 					<source>25</source>
 					<target>25</target>
 					<annotationProcessorPaths>
-                    <path>
-                        <groupId>org.projectlombok</groupId>
-                        <artifactId>lombok</artifactId>
-                        <version>1.18.42</version>
-                    </path>
-                </annotationProcessorPaths>
+					<path>
+						<groupId>org.projectlombok</groupId>
+						<artifactId>lombok</artifactId>
+						<version>1.18.42</version>
+					</path>
+				</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -73,4 +73,12 @@
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+	</profiles>
 </project>

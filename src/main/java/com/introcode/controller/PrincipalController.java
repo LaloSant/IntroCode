@@ -1,13 +1,12 @@
 package com.introcode.controller;
 
-import java.io.File;
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import com.introcode.App;
 import com.introcode.entity.RegistroLexico;
 import com.introcode.entity.ResultadoSintactico;
-
+import com.introcode.helpers.FileUtilities;
+import java.io.File;
+import java.net.URL;
+import java.util.ResourceBundle;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
@@ -27,51 +26,42 @@ import javafx.scene.control.TextField;
 
 public class PrincipalController implements Initializable {
 
+	//Menu Bar
 	@FXML
-	private MenuItem mnuAbrirArch;
+	private MenuItem mnuItAbrirArch;
 
 	@FXML
-	private MenuItem mnuCerrarArch;
+	private MenuItem mnuItCerrarArch;
 
 	@FXML
-	private MenuItem mnuAcercaDe;
+	private MenuItem mnuItGuardarArch;
 
 	@FXML
-	private MenuItem mnuBorrarArch;
+	private MenuItem mnuItGuardarComoArch;
 
+	@FXML
+	private MenuItem mnuItAcercaDe;
+
+	// File Path
 	@FXML
 	private TextField lblFilePath;
 
-	@FXML
-	private TabPane tabPane;
-
-	@FXML
-	private Tab tabEditor;
-
-	@FXML
-	private Tab tabAnLexico;
-
-	@FXML
-	private Tab tabAnalisisLexico;
-
-	@FXML
-	private Tab tabAnSintactico;
-
-	//Tab Editor
+	//Layout Izq
 	@FXML
 	private TextArea txtAreaEditor;
 
 	@FXML
 	private Label lblPosCursor;
 
+	// Layout
 	@FXML
-	private Button btnEditorEscArch;
+	private TabPane tabPane;
 
 	@FXML
-	private Button btnEditorGuardArch;
+	private Tab tabAnalisisLexico;
 
 	@FXML
-	private Button btnEditorCerrar;
+	private Tab tabAnSintactico;
 
 	//Tab Analisis Lexico
 
@@ -80,6 +70,9 @@ public class PrincipalController implements Initializable {
 
 	@FXML
 	private Button btnAnLexico;
+
+	@FXML
+	private Button btnErroresLexicoGuardar;
 
 	@FXML
 	private TableView<RegistroLexico> tblAnalisLexico;
@@ -93,23 +86,21 @@ public class PrincipalController implements Initializable {
 	@FXML
 	private TableColumn<RegistroLexico, Integer> tblColId;
 
-	@FXML
-	private TableColumn<RegistroLexico, Integer> tblColRow;
-
-	@FXML
-	private TableColumn<RegistroLexico, Integer> tblColColumn;
-
-	@FXML
-	private TableColumn<RegistroLexico, Integer> tblColConsecutivo;
-
 	//Tab An Sintactico
 
 	@FXML
 	private Button btnAnSintactico;
 
 	@FXML
+	private Button btnErroresSintGuardar;
+
+	@FXML
 	private TextArea txtAreaSintactico;
 
+	@FXML
+	private TextArea txtAreaErroresSint;
+
+	//Propiedades
 	private AnLexico analizadorLexico;
 
 	@Override
@@ -117,82 +108,98 @@ public class PrincipalController implements Initializable {
 		inicializarTabla();
 		inicializarEditor();
 		inicializarTabPane();
-
 	}
 
 	private void inicializarTabPane() {
-		tabPane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
-			if (newTab != null) {
-				switch (newTab.getId()) {
-					case "tabAnLexico" -> {
-						tabAnLexicoOnChange();
-						if (App.getWorkingFile() != null) {
-							Editor.guardarArchivo(txtAreaEditor, false);
-							btnAnLexicoOnAction();
+		tabPane
+			.getSelectionModel()
+			.selectedItemProperty()
+			.addListener((obs, oldTab, newTab) -> {
+				if (newTab != null) {
+					switch (newTab.getId()) {
+						case "tabAnLexico" -> {
+							tabAnLexicoOnChange();
+							if (App.getWorkingFile() != null) {
+								Editor.guardarArchivoEditor(
+									txtAreaEditor,
+									false,
+									false
+								);
+								btnAnLexicoOnAction();
+							}
 						}
-					}
-					case "tabAnSintactico" -> {
-						tabAnSintacticoOnChange();
-						if (App.getWorkingFile() != null) {
-							Editor.guardarArchivo(txtAreaEditor, false);
-							if (!btnAnSintactico.isDisabled()) {
-								btnAnSintacticoOnAction();
+						case "tabAnSintactico" -> {
+							tabAnSintacticoOnChange();
+							if (App.getWorkingFile() != null) {
+								Editor.guardarArchivoEditor(
+									txtAreaEditor,
+									false,
+									false
+								);
+								if (!btnAnSintactico.isDisabled()) {
+									btnAnSintacticoOnAction();
+								}
 							}
 						}
 					}
 				}
-
-			}
-		});
+			});
 	}
 
 	private void limpiarAnalizadores() {
 		tblAnalisLexico.setItems(null);
 		txtAreaErroresLexico.setText(null);
+		txtAreaErroresSint.setText(null);
 		txtAreaSintactico.setText(null);
 		btnAnSintactico.setDisable(true);
+		btnErroresLexicoGuardar.setDisable(true);
+		btnErroresSintGuardar.setDisable(true);
 	}
 
 	private void inicializarEditor() {
 		txtAreaEditor.textProperty().addListener((obs, oldValue, newValue) -> {
 			limpiarAnalizadores();
-			App.changeTitle("INTROCODE*");
+			App.changeTitle("INTROCODE (*)");
+			Editor.isEdited = true;
+			btnAnLexico.setDisable(false);
 		});
 
-		txtAreaEditor.caretPositionProperty().addListener((obs, oldPos, newPos) -> {
-			int caretPos = newPos.intValue();
-			String text = txtAreaEditor.getText();
+		txtAreaEditor
+			.caretPositionProperty()
+			.addListener((obs, oldPos, newPos) -> {
+				int caretPos = newPos.intValue();
+				String text = txtAreaEditor.getText();
 
-			int line = 1;
-			int column = 1;
-			for (int i = 0; i < caretPos; i++) {
-				if (text.charAt(i) == '\n') {
-					line++;
-					column = 1;
-				} else {
-					column++;
+				int line = 1;
+				int column = 1;
+				for (int i = 0; i < caretPos; i++) {
+					if (text.charAt(i) == '\n') {
+						line++;
+						column = 1;
+					} else {
+						column++;
+					}
 				}
-			}
-			lblPosCursor.setText("Row: " + line + ", Column: " + column);
-		});
-
+				lblPosCursor.setText("Row: " + line + ", Column: " + column);
+			});
 	}
 
 	private void inicializarTabla() {
-		for (TableColumn<RegistroLexico, ?> column : tblAnalisLexico.getColumns()) {
+		for (TableColumn<
+			RegistroLexico,
+			?
+		> column : tblAnalisLexico.getColumns()) {
 			column.setReorderable(false);
 		}
-		tblColLexema
-				.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getLexema().toString()));
-		tblColToken
-				.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getToken().toString()));
-		tblColId.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getId()).asObject());
-		tblColRow.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getRow()).asObject());
-		tblColColumn
-				.setCellValueFactory(cellData -> new SimpleIntegerProperty(cellData.getValue().getColumn()).asObject());
-		tblColConsecutivo
-				.setCellValueFactory(
-						cellData -> new SimpleIntegerProperty(cellData.getValue().getConsecutivoID()).asObject());
+		tblColLexema.setCellValueFactory(cellData ->
+			new SimpleStringProperty(cellData.getValue().getLexema().toString())
+		);
+		tblColToken.setCellValueFactory(cellData ->
+			new SimpleStringProperty(cellData.getValue().getToken().toString())
+		);
+		tblColId.setCellValueFactory(cellData ->
+			new SimpleIntegerProperty(cellData.getValue().getId()).asObject()
+		);
 
 		tblAnalisLexico.setItems(null);
 	}
@@ -206,41 +213,61 @@ public class PrincipalController implements Initializable {
 	private void tabAnSintacticoOnChange() {
 		if (App.getWorkingFile() == null) {
 			btnAnSintactico.setDisable(true);
+			return;
 		}
+		btnAnSintactico.setDisable(false);
 	}
 
+	// Menu Bar
+
 	@FXML
-	private void mnuAbirArchOnAction() {
+	private void mnuItAbrirArchOnAction() {
 		File f = Editor.setTextArea(txtAreaEditor);
-		lblFilePath.setText(f.getAbsolutePath());
+		if (f == null) {
+			return;
+		}
+		lblFilePath.setText(f.getPath());
 		App.setWorkingFile(f);
 		btnAnLexico.setDisable(false);
 		tblAnalisLexico.setItems(null);
 		txtAreaErroresLexico.setText(null);
 	}
 
-	//Tab Editor
 	@FXML
-	private void btnEditorEscArchOnAction() {
-		mnuAbirArchOnAction();
-	}
-
-	@FXML
-	private void btnEditorGuardArchOnAction() {
+	private void mnuItGuardarArchOnAction() {
+		Editor.guardarArchivoEditor(
+			txtAreaEditor,
+			true,
+			App.getWorkingFile() == null
+		);
 		if (App.getWorkingFile() == null) {
 			return;
 		}
-		Editor.guardarArchivo(txtAreaEditor, true);
+		lblFilePath.setText(App.getWorkingFile().getPath());
 	}
 
 	@FXML
-	private void btnEditorCerrarOnAction() {
-		Alert alert = new Alert(AlertType.CONFIRMATION, "Guardar cambios?", ButtonType.YES, ButtonType.NO,
-				ButtonType.CANCEL);
+	private void mnuItGuardarComoArchOnAction() {
+		Editor.guardarArchivoEditor(txtAreaEditor, true, true);
+		if (App.getWorkingFile() == null) {
+			return;
+		}
+		lblFilePath.setText(App.getWorkingFile().getPath());
+	}
+
+	@FXML
+	private void mnuItCerrarArchOnAction() {
+		Alert alert = new Alert(
+			AlertType.CONFIRMATION,
+			"Guardar cambios?",
+			ButtonType.YES,
+			ButtonType.NO,
+			ButtonType.CANCEL
+		);
 		alert.showAndWait();
 
 		if (alert.getResult() == ButtonType.YES) {
-			btnEditorGuardArchOnAction();
+			mnuItGuardarArchOnAction();
 		} else if (alert.getResult() == ButtonType.CANCEL) {
 			return;
 		}
@@ -253,19 +280,29 @@ public class PrincipalController implements Initializable {
 
 	@FXML
 	private void btnAnLexicoOnAction() {
-		//txtAreaSintactico.setText(null);
-		btnAnSintactico.setDisable(false);
+		if (Editor.isEdited) {
+			mnuItGuardarArchOnAction();
+		}
+		if (App.getWorkingFile() == null) {
+			return;
+		}
 		RegistroLexico.consecutivo = 0;
 		txtAreaErroresLexico.setText(null);
 		analizadorLexico = new AnLexico();
-		boolean huboError = analizadorLexico.analisisLexico(txtAreaErroresLexico);
+		boolean huboError = analizadorLexico.analisisLexico(
+			txtAreaErroresLexico
+		);
+		btnErroresLexicoGuardar.setDisable(false);
 		if (huboError) {
 			analizadorLexico.alertaError();
 			tblAnalisLexico.setItems(null);
 			btnAnSintactico.setDisable(true);
 			return;
 		}
-		huboError = analizadorLexico.tokenizar(tblAnalisLexico, txtAreaErroresLexico);
+		huboError = analizadorLexico.tokenizar(
+			tblAnalisLexico,
+			txtAreaErroresLexico
+		);
 		if (huboError) {
 			btnAnSintactico.setDisable(true);
 			analizadorLexico.alertaError();
@@ -273,48 +310,70 @@ public class PrincipalController implements Initializable {
 	}
 
 	@FXML
+	private void btnErroresLexicoGuardarOnAction() {
+		FileUtilities.guardarArchivo(txtAreaErroresLexico.getText());
+	}
+
+	//Tab an Sintacito
+
+	@FXML
 	private void btnAnSintacticoOnAction() {
 		if (analizadorLexico == null) {
-			txtAreaSintactico.setText("Ejecute primero el análisis léxico antes del análisis sintáctico.");
+			txtAreaSintactico.setText(
+				"Ejecute primero el análisis léxico antes del análisis sintáctico."
+			);
 			return;
 		}
 
 		if (analizadorLexico.getRegistroLexico().isEmpty()) {
-			txtAreaSintactico.setText("No hay tokens disponibles. Ejecute el análisis léxico.");
+			txtAreaSintactico.setText(
+				"No hay tokens disponibles. Ejecute el análisis léxico."
+			);
 			return;
 		}
 
 		AnSintactico an = new AnSintactico();
-		ResultadoSintactico resultado = an.analizar(analizadorLexico.getRegistroLexico());
+		ResultadoSintactico resultado = an.analizar(
+			analizadorLexico.getRegistroLexico()
+		);
 		StringBuilder salida = new StringBuilder();
+		StringBuilder erroresSalida = new StringBuilder();
+		btnErroresSintGuardar.setDisable(false);
 
 		if (resultado.esValido()) {
 			salida.append("Analisis sintactico correcto.\n\n");
-			salida.append("Arbol sintactico:\n");
-			salida.append(resultado.getRaiz().toString());
+			// salida.append("Arbol sintactico:\n");
+			// salida.append(resultado.getRaiz().toString());
 		} else {
-			salida.append("Errores sintacticos:\n");
+			salida.append("Hubo errores sintacticos:");
 			for (String error : resultado.getErrores()) {
-				salida.append(error).append("\n");
+				erroresSalida.append(error).append("\n");
 			}
 			if (resultado.getRaiz() != null) {
-				salida.append("\nArbol sintactico parcial:\n");
-				salida.append(resultado.getRaiz().toString());
+				salida.append("\nAnalisis sintactico con errores");
+				//salida.append(resultado.getRaiz().toString());
 			}
 		}
 
 		txtAreaSintactico.setText(salida.toString());
+		txtAreaErroresSint.setText(erroresSalida.toString());
+	}
+
+	@FXML
+	private void btnErroresSintGuardarOnAction() {
+		FileUtilities.guardarArchivo(txtAreaErroresSint.getText());
 	}
 
 	@FXML
 	private void mnuAcercaDeOnAction() {
-		new Alert(Alert.AlertType.INFORMATION,
-				"Creado por: "
-						+ "\nAlan Daniel Farfan Gomez"
-						+ "\nEduardo Jair Bautista Santiesteban"
-						+ "\nXimena Itzel Jimenez Hernandez"
-						+ "\nYael Sampayo Marin",
-				ButtonType.CLOSE).show();
+		new Alert(
+			Alert.AlertType.INFORMATION,
+			"Creado por: " +
+				"\nAlan Daniel Farfan Gomez" +
+				"\nEduardo Jair Bautista Santiesteban" +
+				"\nXimena Itzel Jimenez Hernandez" +
+				"\nYael Sampayo Marin",
+			ButtonType.CLOSE
+		).show();
 	}
-
 }

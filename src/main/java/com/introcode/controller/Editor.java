@@ -15,6 +15,9 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 
 public class Editor {
+
+	public static boolean isEdited = false;
+
 	public static File setTextArea(TextArea txtAr) {
 		FileChooser fc = new FileChooser();
 		fc.setTitle("Abrir archivo IntroCode");
@@ -44,9 +47,10 @@ public class Editor {
 		return null;
 	}
 
-	public static void guardarArchivo(TextArea txtAr, boolean printAlert) {
+	public static void guardarArchivoEditor(TextArea txtAr, boolean printAlert, boolean openFileChooser) {
+		Editor.isEdited = false;
 		File archivoNuevo = null;
-		if (App.getWorkingFile() == null) {
+		if (App.getWorkingFile() == null || openFileChooser) {
 			FileChooser fc = new FileChooser();
 			fc.setTitle("Guardar archivo IntroCode");
 			fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("IntroCode", "*.txt"));
@@ -57,6 +61,7 @@ public class Editor {
 				return;
 			}
 			archivoNuevo = f;
+			App.setWorkingFile(archivoNuevo);
 		}
 		String fileName = (archivoNuevo == null) ? App.getWorkingFile().getAbsolutePath()
 				: archivoNuevo.getAbsolutePath();
@@ -65,6 +70,7 @@ public class Editor {
 		try (FileWriter writer = new FileWriter(fileName)) {
 			writer.write(texto);
 			App.changeTitle("INTROCODE");
+			
 			if (printAlert) {
 				new Alert(AlertType.INFORMATION, "Guardado Exitosamente");
 			}

@@ -1,0 +1,3 @@
+Error sintáctico en 5:2 -> Se esperaba un tipo de dato (ENTERO, REAL, CADENA, BOOLEANO).
+Error sintáctico en 6:1 -> Se esperaba un identificador después del tipo.
+Error sintáctico en 6:1 -> Se esperaba ';' al final de la declaración.

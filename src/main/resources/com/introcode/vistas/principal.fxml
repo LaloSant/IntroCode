@@ -6,32 +6,31 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" minHeight="900.0" minWidth="1280.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.introcode.controller.PrincipalController">
+<VBox alignment="CENTER" maxHeight="1080.0" maxWidth="1920.0" minHeight="1000.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.introcode.controller.PrincipalController">
    <children>
-      <VBox prefHeight="900.0" prefWidth="1280.0">
+      <VBox>
          <children>
             <MenuBar>
               <menus>
                 <Menu mnemonicParsing="false" text="Archivo">
                   <items>
-                    <MenuItem fx:id="mnuAbirArch" mnemonicParsing="false" onAction="#mnuAbirArchOnAction" text="Cargar archivo" />
-                        <MenuItem fx:id="mnuCerrarArch" mnemonicParsing="false" text="Cerrar" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Acciones">
-                  <items>
-                    <MenuItem fx:id="mnuBorrarArch" mnemonicParsing="false" text="" />
+                    <MenuItem fx:id="mnuItAbirArch" mnemonicParsing="false" onAction="#mnuItAbrirArchOnAction" text="Abrir" />
+                        <MenuItem fx:id="mnuItGuardarArch" mnemonicParsing="false" onAction="#mnuItGuardarArchOnAction" text="Guardar" />
+                        <MenuItem fx:id="mnuItGuardarComoArch" mnemonicParsing="false" onAction="#mnuItGuardarComoArchOnAction" text="Guardar Como..." />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="mnuItCerrarArch" mnemonicParsing="false" onAction="#mnuItCerrarArchOnAction" text="Cerrar archivo" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Ayuda">
@@ -41,132 +40,122 @@
                 </Menu>
               </menus>
             </MenuBar>
-            <HBox prefHeight="37.0" prefWidth="950.0" spacing="10.0">
+            <HBox spacing="5.0">
                <children>
-                  <Label prefHeight="23.0" prefWidth="87.0" text="Archivo:">
+                  <Label minWidth="60.0" text="Archivo:">
                      <HBox.margin>
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                      </HBox.margin></Label>
-                  <TextField fx:id="lblFilePath" editable="false" prefHeight="36.0" prefWidth="915.0" promptText="Sin archivo cargado" />
+                  <TextField fx:id="lblFilePath" editable="false" minWidth="100.0" prefHeight="26.0" prefWidth="9999.0" promptText="Sin archivo cargado" />
                </children>
                <VBox.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </VBox.margin>
             </HBox>
-            <TabPane fx:id="tabPane" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="Infinity">
-              <tabs>
-                <Tab fx:id="tabEditor" text="Editor">
-                     <content>
-                        <VBox alignment="CENTER" prefHeight="841.0" prefWidth="1280.0" spacing="5.0">
+            <HBox fillHeight="false" spacing="10.0">
+               <children>
+                  <VBox alignment="CENTER_RIGHT" spacing="10.0">
+                     <children>
+                        <VBox alignment="TOP_RIGHT">
                            <children>
-                              <VBox alignment="CENTER_RIGHT" prefHeight="825.0" prefWidth="1270.0">
+                              <TextArea fx:id="txtAreaEditor" prefHeight="741.0" prefWidth="1270.0" promptText="Empieze a escribir Codigo">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </TextArea>
+                              <Label fx:id="lblPosCursor" disable="true" text="Linea: N/A, Columna: N/A" />
+                              <Separator prefWidth="200.0" />
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER" maxHeight="300.0" spacing="10.0">
+                           <children>
+                              <HBox alignment="CENTER" fillHeight="false">
                                  <children>
-                                    <TextArea fx:id="txtAreaEditor" prefHeight="741.0" prefWidth="1270.0" promptText="Empieze a escribir Codigo">
-                                       <VBox.margin>
-                                          <Insets />
-                                       </VBox.margin>
+                                    <Label minWidth="114.0" text="Errores Sintácticos" />
+                                    <HBox alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="503.0">
+                                       <children>
+                                        <Button fx:id="btnErroresLexicoGuardar" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnErroresLexicoGuardarOnAction" text="Guardar Como..." />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </HBox>
+                              <TextArea fx:id="txtAreaErroresLexico" editable="false" minHeight="100.0" prefHeight="77.0" prefWidth="692.0" promptText="Errores Lexicos">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </TextArea>
+                              <Separator prefWidth="200.0" />
+                           </children>
+                        </VBox>
+                        <VBox alignment="CENTER" maxHeight="300.0" spacing="10.0">
+                           <children>
+                              <HBox alignment="CENTER" fillHeight="false">
+                                 <children>
+                                    <Label minWidth="114.0" text="Errores Lexicos" />
+                                    <HBox alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="503.0">
+                                       <children>
+                                          <Button fx:id="btnErroresSintGuardar" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnErroresSintGuardarOnAction" text="Guardar Como..." />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </HBox>
+                              <TextArea fx:id="txtAreaErroresSint" editable="false" minHeight="100.0" prefHeight="655.0" prefWidth="314.0" promptText="Errores Sintacticos">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </TextArea>
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+                  <TabPane fx:id="tabPane" prefHeight="905.0" prefWidth="1135.0" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="Infinity">
+                    <tabs>
+                      <Tab fx:id="tabAnLexico" text="Análisis Léxico">
+                           <content>
+                              <VBox alignment="TOP_CENTER" spacing="5.0">
+                                 <children>
+                                    <Button fx:id="btnAnLexico" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnAnLexicoOnAction" text="Realizar Analisis Lexico" />
+                                    <TableView fx:id="tblAnalisLexico" prefHeight="850.0">
+                                      <columns>
+                                        <TableColumn fx:id="tblColLexema" editable="false" maxWidth="250.0" minWidth="60.0" prefWidth="182.0" sortable="false" text="LEXEMA" />
+                                          <TableColumn fx:id="tblColId" editable="false" maxWidth="250.0" minWidth="60.0" prefWidth="182.0" sortable="false" text="#" />
+                                        <TableColumn fx:id="tblColToken" editable="false" maxWidth="250.0" minWidth="60.0" prefWidth="182.0" sortable="false" text="TOKEN" />
+                                      </columns>
+                                       <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
+                                    </TableView>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </VBox>
+                           </content>
+                      </Tab>
+                        <Tab fx:id="tabAnSintactico" text="Análisis Sintáctico">
+                           <content>
+                              <VBox alignment="TOP_CENTER" spacing="5.0">
+                                 <children>
+                                    <Button fx:id="btnAnSintactico" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnAnSintacticoOnAction" text="Realizar Analisis Sintactico" />
+                                    <TextArea fx:id="txtAreaSintactico" editable="false" prefHeight="900.0" prefWidth="314.0" promptText="Salida Analisis Léxico">
                                        <font>
-                                          <Font size="14.0" />
+                                          <Font size="18.0" />
                                        </font>
                                     </TextArea>
-                                    <Label fx:id="lblPosCursor" disable="true" text="Linea: N/A, Columna: N/A" />
                                  </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
                               </VBox>
-                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="25.0">
-                                 <children>
-                                    <Button fx:id="btnEditorEscArch" mnemonicParsing="false" onAction="#btnEditorEscArchOnAction" text="Escoger Archivo" />
-                                    <Button fx:id="btnEditorGuardArch" mnemonicParsing="false" onAction="#btnEditorGuardArchOnAction" text="Guardar Archivo" />
-                                    <Button fx:id="btnEditorCerrar" mnemonicParsing="false" onAction="#btnEditorCerrarOnAction" text="Cerrar Editor" />
-                                 </children>
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </VBox.margin>
-                              </HBox>
-                           </children>
-                           <padding>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </padding>
-                        </VBox>
-                     </content>
-                </Tab>
-                <Tab fx:id="tabAnLexico" text="Análisis Léxico">
-                     <content>
-                        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
-                           <children>
-                              <Button fx:id="btnAnLexico" alignment="CENTER" mnemonicParsing="false" onAction="#btnAnLexicoOnAction" text="Realizar Analisis Lexico" />
-                              <HBox prefHeight="704.0" prefWidth="1270.0">
-                                 <children>
-                                    <TableView fx:id="tblAnalisLexico" prefWidth="1590.0">
-                                      <columns>
-                                          <TableColumn fx:id="tblColConsecutivo" maxWidth="80.0" minWidth="80.0" resizable="false" text="#" />
-                                        <TableColumn fx:id="tblColLexema" maxWidth="275.0" minWidth="275.0" prefWidth="275.0" resizable="false" text="LEXEMA" />
-                                        <TableColumn fx:id="tblColToken" maxWidth="284.0" minWidth="284.0" prefWidth="284.0" resizable="false" text="TOKEN" />
-                                          <TableColumn fx:id="tblColId" maxWidth="135.0" minWidth="135.0" prefWidth="135.0" resizable="false" text="ID" />
-                                          <TableColumn fx:id="tblColRow" maxWidth="80.0" minWidth="80.0" resizable="false" text="ROW" />
-                                          <TableColumn fx:id="tblColColumn" maxWidth="80.0" minWidth="80.0" resizable="false" text="COLUMN" />
-                                      </columns>
-                                    </TableView>
-                                    <VBox alignment="CENTER" prefHeight="297.0" prefWidth="972.0" spacing="10.0">
-                                       <children>
-                                          <Label prefWidth="150.0" text="Errores encontrados" />
-                                          <TextArea fx:id="txtAreaErroresLexico" editable="false" prefHeight="655.0" prefWidth="314.0" promptText="Errores de caracteres">
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
-                                          </TextArea>
-                                       </children>
-                                       <HBox.margin>
-                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                       </HBox.margin>
-                                    </VBox>
-                                 </children>
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </VBox.margin>
-                              </HBox>
-                           </children>
-                           <padding>
-                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                           </padding>
-                        </VBox>
-                     </content>
-                </Tab>
-                  <Tab fx:id="tabAnSintactico" text="Análisis Sintáctico">
-                     <content>
-                        <VBox alignment="CENTER">
-                           <children>
-                              <Button fx:id="btnAnSintactico" alignment="CENTER" mnemonicParsing="false" onAction="#btnAnSintacticoOnAction" text="Realizar Analisis Sintactico" />
-                              <HBox>
-                                 <children>
-                                    <VBox alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="685.0" prefWidth="1263.0" spacing="10.0">
-                                       <children>
-                                          <Label text="Salida" />
-                                          <TextArea fx:id="txtAreaSintactico" editable="false" prefHeight="655.0" prefWidth="314.0" promptText="Salida Analisis Léxico">
-                                             <font>
-                                                <Font size="18.0" />
-                                             </font>
-                                          </TextArea>
-                                       </children>
-                                       <HBox.margin>
-                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                       </HBox.margin>
-                                    </VBox>
-                                 </children>
-                                 <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </VBox.margin>
-                              </HBox>
-                           </children>
-                        </VBox>
-                     </content>
-                  </Tab>
-                  <Tab disable="true" text="_">
-                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="597.0" prefWidth="1000.0" />
-                     </content>
-                  </Tab>
-              </tabs>
-            </TabPane>
+                           </content>
+                        </Tab>
+                    </tabs>
+                  </TabPane>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </VBox.margin>
+            </HBox>
          </children>
       </VBox>
    </children>
