@@ -79,7 +79,7 @@
                                     </HBox>
                                  </children>
                               </HBox>
-                              <TextArea fx:id="txtAreaErroresLexico" editable="false" minHeight="100.0" prefHeight="77.0" prefWidth="692.0" promptText="Errores Lexicos">
+                              <TextArea fx:id="txtAreaErroresLexico" editable="false" minHeight="50.0" prefHeight="77.0" prefWidth="692.0" promptText="Errores Lexicos">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
@@ -99,7 +99,7 @@
                                     </HBox>
                                  </children>
                               </HBox>
-                              <TextArea fx:id="txtAreaErroresSint" editable="false" minHeight="100.0" prefHeight="655.0" prefWidth="314.0" promptText="Errores Sintacticos">
+                              <TextArea fx:id="txtAreaErroresSint" editable="false" minHeight="50.0" prefHeight="655.0" prefWidth="314.0" promptText="Errores Sintacticos">
                                  <font>
                                     <Font size="14.0" />
                                  </font>

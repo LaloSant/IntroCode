@@ -3,7 +3,9 @@ package com.introcode.entity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import lombok.Getter;
 
+@Getter
 public class ResultadoSintactico {
 
 	private final NodoSintactico raiz;
@@ -12,10 +14,6 @@ public class ResultadoSintactico {
 	public ResultadoSintactico(NodoSintactico raiz, List<String> errores) {
 		this.raiz = raiz;
 		this.errores = new ArrayList<>(errores);
-	}
-
-	public NodoSintactico getRaiz() {
-		return raiz;
 	}
 
 	public List<String> getErrores() {

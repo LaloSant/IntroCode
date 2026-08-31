@@ -3,6 +3,7 @@ package com.introcode.controller;
 import com.introcode.App;
 import com.introcode.entity.RegistroLexico;
 import com.introcode.entity.ResultadoSintactico;
+import com.introcode.helpers.Editor;
 import com.introcode.helpers.FileUtilities;
 import java.io.File;
 import java.net.URL;
@@ -101,7 +102,7 @@ public class PrincipalController implements Initializable {
 	private TextArea txtAreaErroresSint;
 
 	//Propiedades
-	private AnLexico analizadorLexico;
+	private AnLexico analizadorLexico = new AnLexico();
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
@@ -222,7 +223,7 @@ public class PrincipalController implements Initializable {
 
 	@FXML
 	private void mnuItAbrirArchOnAction() {
-		File f = Editor.setTextArea(txtAreaEditor);
+		File f = Editor.abrirArchivo(txtAreaEditor);
 		if (f == null) {
 			return;
 		}
@@ -286,26 +287,20 @@ public class PrincipalController implements Initializable {
 		if (App.getWorkingFile() == null) {
 			return;
 		}
-		RegistroLexico.consecutivo = 0;
 		txtAreaErroresLexico.setText(null);
-		analizadorLexico = new AnLexico();
-		boolean huboError = analizadorLexico.analisisLexico(
-			txtAreaErroresLexico
-		);
-		btnErroresLexicoGuardar.setDisable(false);
-		if (huboError) {
-			analizadorLexico.alertaError();
+		try {
+			analizadorLexico.leerArchivo();
+		} catch (Exception e) {
+			analizadorLexico.alerta();
 			tblAnalisLexico.setItems(null);
 			btnAnSintactico.setDisable(true);
 			return;
 		}
-		huboError = analizadorLexico.tokenizar(
-			tblAnalisLexico,
-			txtAreaErroresLexico
-		);
-		if (huboError) {
+		btnErroresLexicoGuardar.setDisable(false);
+		txtAreaErroresLexico.setText(analizadorLexico.tokenizar(tblAnalisLexico));
+		if (!txtAreaErroresLexico.getText().isBlank()) {
 			btnAnSintactico.setDisable(true);
-			analizadorLexico.alertaError();
+			analizadorLexico.alerta();
 		}
 	}
 

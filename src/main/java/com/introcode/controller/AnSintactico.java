@@ -236,7 +236,7 @@ public class AnSintactico {
 			paso.agregarHijo(new NodoSintactico(TipoSintactico.TERMINAL, operador.getLexema().getValor(),
 					operador.getRow(), operador.getColumn()));
 			esperarLexema(44, "Se esperaba '(' después de " + operador.getLexema().getValor() + ".");
-			RegistroLexico numero = esperarTipoToken(Token.NUMERO_ENTERO,
+			RegistroLexico numero = esperarTipoToken(Token.NUMERO,
 					"Se esperaba un número entero en el paso de incremento/decremento.");
 			paso.agregarHijo(new NodoSintactico(TipoSintactico.NUM_ENTERO, numero.getLexema().getValor(),
 					numero.getRow(), numero.getColumn()));
@@ -363,7 +363,7 @@ public class AnSintactico {
 					token.getColumn());
 		}
 
-		if (token.getToken() == Token.NUMERO_ENTERO || token.getToken() == Token.NUMERO_REAL) {
+		if (token.getToken() == Token.NUMERO) {
 			avanzar();
 			int result = automNumeros.simulate(token.getLexema().getValor(), true);
 			if (result == -1) {
@@ -371,7 +371,7 @@ public class AnSintactico {
 						token.getColumn()));
 			}
 			return new NodoSintactico(
-					token.getToken() == Token.NUMERO_ENTERO ? TipoSintactico.NUM_ENTERO : TipoSintactico.NUM_REAL,
+					token.getToken() == Token.NUMERO ? TipoSintactico.NUM_ENTERO : TipoSintactico.NUM_REAL,
 					token.getLexema().getValor(), token.getRow(), token.getColumn());
 		}
 

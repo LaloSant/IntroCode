@@ -1,16 +1,15 @@
 package com.introcode.automatas;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import com.introcode.entity.Alfabeto;
 
 public class AVariables extends AFD {
 
 	public AVariables() {
-		char[] numeros = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-		Set<Integer> finales = new HashSet<>(Arrays.stream(new int[] { 1, 3 }).boxed().toList());
+		Set<Integer> finales = Set.of(1,3); // new HashSet<>(Arrays.stream(new int[] { 1, 3 }).boxed().toList());
 		Map<Integer, Map<Character, Integer>> tabla = new HashMap<>();
 
 		tabla.put(0, new HashMap<>());
@@ -28,7 +27,7 @@ public class AVariables extends AFD {
 			mapaS1.put(cUpper, 1);
 		}
 
-		for (char c : numeros) {
+		for (char c : Alfabeto.DIGITOS) {
 			mapaS1.put(c, 1);
 		}
 

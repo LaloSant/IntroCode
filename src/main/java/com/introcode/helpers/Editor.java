@@ -1,4 +1,4 @@
-package com.introcode.controller;
+package com.introcode.helpers;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,10 +18,10 @@ public class Editor {
 
 	public static boolean isEdited = false;
 
-	public static File setTextArea(TextArea txtAr) {
+	public static File abrirArchivo(TextArea txtAr) {
 		FileChooser fc = new FileChooser();
 		fc.setTitle("Abrir archivo IntroCode");
-		fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("IntroCode", "*.txt"));
+		fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Fuente de IntroLua", "*.lua"));
 		fc.setInitialDirectory(new File(App.defaultDir));
 		File f = fc.showOpenDialog(App.getStage());
 		if (f == null || !f.exists()) {
