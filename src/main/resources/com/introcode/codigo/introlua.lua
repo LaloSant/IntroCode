@@ -1,14 +1,8 @@
-[[ one]] x 
-
-[[ Another
-multi
-line string ]]
-
 -- COMENTARIO
 
 -- DECLARACION VARIABLES (Tipado dinámico mediante 'local')
 local x = 15
-local y=="CADENA" 'Cadena' --comentario
+local y="CADENA" --comentario
 local z = 15.0
 local b1 = true
 local b2 = false
@@ -18,8 +12,8 @@ local n = nil; local n2=nil
 x = 10
 
 -- LECTURA DE DATOS Y ESCRITURA EN CONSOLA
-z = --io.read()
-print(z) -- print inserta el salto de línea automáticamente
+z = 9 --io.read()
+--print(z) -- print inserta el salto de línea automáticamente
 
 -- CONDICIONALES
 if (true) then
@@ -68,15 +62,7 @@ end
 
 -- Uso de NIL para inicializar variables sin un valor definido
 local resultado = nil
-local datos = { 10, 20, 30, 40, 50 }
-
--- Uso de IN para iterar sobre una estructura de datos (tabla)
-for indice, valor in pairs(datos) do
-	print(valor)
-	if valor == resultado 
-		break
-	end
-end
+--local datos = { 10, 20, 30, 40, 50 }
 
 -- Ciclo REPEAT ... UNTIL (evalúa la condición al final)
 local contador = 0

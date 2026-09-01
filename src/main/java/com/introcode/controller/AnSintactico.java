@@ -521,12 +521,4 @@ public class AnSintactico {
 			}
 		}
 	}
-
-	private RegistroLexico crearTokenError(String mensaje) {
-		RegistroLexico fake = new RegistroLexico("<error>", currentRow(), currentColumn());
-		fake.setToken(Token.ERROR_LEXICO);
-		fake.setId(-1);
-		errores.add(mensaje);
-		return fake;
-	}
 }
