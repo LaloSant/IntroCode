@@ -1,3 +1,4 @@
+¡ \n
 
 local  --Este es un comentario
 

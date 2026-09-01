@@ -306,7 +306,7 @@ public class PrincipalController implements Initializable {
 
 	@FXML
 	private void btnErroresLexicoGuardarOnAction() {
-		FileUtilities.guardarArchivo(txtAreaErroresLexico.getText());
+		FileUtilities.guardarArchivo(txtAreaErroresLexico.getText(), "ErrLexico");
 	}
 
 	//Tab an Sintacito
@@ -356,7 +356,7 @@ public class PrincipalController implements Initializable {
 
 	@FXML
 	private void btnErroresSintGuardarOnAction() {
-		FileUtilities.guardarArchivo(txtAreaErroresSint.getText());
+		FileUtilities.guardarArchivo(txtAreaErroresSint.getText(), "ErrSintact");
 	}
 
 	@FXML

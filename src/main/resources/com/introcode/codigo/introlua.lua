@@ -1,14 +1,18 @@
-"Cadena Sobreescribir ..."
+[[ one]] x 
+
+[[ Another
+multi
+line string ]]
 
 -- COMENTARIO
 
 -- DECLARACION VARIABLES (Tipado dinámico mediante 'local')
 local x = 15
-local y = "CADENA"Cadena"
+local y=="CADENA" 'Cadena' --comentario
 local z = 15.0
 local b1 = true
 local b2 = false
-print("Procesando ciclo secundario...")
+local n = nil; local n2=nil
 
 -- SOBREESCRITURA DE DATOS (Asignación directa)
 x = 10
@@ -69,7 +73,7 @@ local datos = { 10, 20, 30, 40, 50 }
 -- Uso de IN para iterar sobre una estructura de datos (tabla)
 for indice, valor in pairs(datos) do
 	print(valor)
-	if valor == resultado then
+	if valor == resultado 
 		break
 	end
 end

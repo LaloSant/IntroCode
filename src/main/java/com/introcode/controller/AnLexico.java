@@ -39,6 +39,14 @@ public class AnLexico {
 
 	private final ACadenas automCadenas;
 
+	private Boolean multiLinea = false;
+
+	private StringBuilder multiLineString = null;
+
+	private int multiLineaFila = 0;
+	
+	private int multiLineaCol = 0;
+
 	public AnLexico() {
 		this.automCadenas = new ACadenas();
 
@@ -83,13 +91,24 @@ public class AnLexico {
 		StringBuilder sbErrores = new StringBuilder();
 
 		for (int iRow = 0; iRow < this.texto.size(); iRow++) {
+			if (!multiLinea && multiLineString != null) {
+				RegistroLexico r = crearRegistro(multiLineString.toString(), multiLineaCol, multiLineaFila);
+				listaRegistros.add(r);
+				registroLexico.add(r);
+				multiLineString = null;
+				multiLinea = false;
+			}
 			String linea = this.texto.get(iRow);
 			String lineaLimpia = linea.trim();
-			if (lineaLimpia.isEmpty() || lineaLimpia.startsWith("--")) {
+			if (lineaLimpia.isEmpty()) {
 				continue;
 			}
 
-			for (RegistroLexico registro : extraerRegistrosLinea(linea, iRow + 1, sbErrores)) {
+			for (RegistroLexico registro : extraerRegistrosLinea(
+				linea,
+				iRow + 1,
+				sbErrores
+			)) {
 				listaRegistros.add(registro);
 				registroLexico.add(registro);
 			}
@@ -100,9 +119,10 @@ public class AnLexico {
 	}
 
 	private List<RegistroLexico> extraerRegistrosLinea(
-			String linea,
-			int fila,
-			StringBuilder sbErrores) {
+		String linea,
+		int fila,
+		StringBuilder sbErrores
+	) {
 		List<RegistroLexico> registros = new ArrayList<>();
 		int columna = 1;
 		int indice = 0;
@@ -111,21 +131,73 @@ public class AnLexico {
 			char actual = linea.charAt(indice);
 			int columnaInicio = columna;
 
+			if (multiLinea) {
+				if (linea.contains("]]")) {
+					multiLinea = false;
+				}
+				if (multiLinea && multiLineString != null) {
+					multiLineString.append("\n").append(linea);
+					indice = linea.length();
+					continue;
+				}
+				if (!multiLinea && multiLineString != null) {
+					int indiceCorchetes = linea.indexOf("]]");
+					multiLineString.append("\n").append(linea.substring(indice, indiceCorchetes + 2));
+					indice = indiceCorchetes + 2;
+					break;
+				}
+				break;
+			}
+
 			if (Character.isWhitespace(actual)) {
 				indice++;
 				columna++;
 				continue;
 			}
+
 			if (esComentario(linea, indice, actual)) {
+				indice += 2;
+				if (indice + 1 >= linea.length()) {
+					break;
+				}
+				if (esMultilinea(linea, indice)) {
+					multiLinea = true;
+				}
 				break;
 			}
 
 			if (esOperadorCompuesto(linea, indice)) {
 				String operador = linea.substring(indice, indice + 2);
-				registros.add(crearRegistro(operador, columnaInicio, fila));
-				indice += 2;
-				columna += 2;
-				continue;
+				if (!"[[".equals(operador)) {
+					registros.add(crearRegistro(operador, columnaInicio, fila));
+					indice += 2;
+					columna += 2;
+					continue;
+				}
+				multiLinea = true;
+				multiLineString = new StringBuilder(linea.substring(indice, indice + 2));
+				int indiceCorchetesFin = linea.indexOf("]]");
+				if (indiceCorchetesFin == -1) {
+					multiLineaFila = fila;
+					multiLineaCol = columnaInicio;
+					multiLineString.append(linea.substring(indice + 2));
+					indice = linea.length();
+					continue;
+				} else {
+					multiLineaFila = fila;
+					multiLineaCol = columna;
+					multiLineString.append(linea.substring(indice + 2, indiceCorchetesFin + 2));
+					indice = indiceCorchetesFin + 2;
+					columna = indice + 1;
+					actual = linea.charAt(indice);
+					RegistroLexico registro = crearRegistro(multiLineString.toString(), columnaInicio,fila);
+					registros.add(registro);
+					multiLineString = null;
+					multiLineaFila = 0;
+					multiLineaCol = 0;
+					multiLinea = false;
+					continue;
+				}
 			}
 
 			if (esSimboloSimple(actual)) {
@@ -138,11 +210,13 @@ public class AnLexico {
 
 			if (!Alfabeto.ALFABETO.contains(actual)) {
 				sbErrores.append(
-						String.format(
-								"Error lexico (0) en %d:%d -> %c%n",
-								fila,
-								columnaInicio,
-								actual));
+					String.format(
+						"Error lexico (0) en %d:%d -> %c%n",
+						fila,
+						columnaInicio,
+						actual
+					)
+				);
 				indice++;
 				columna++;
 				continue;
@@ -151,33 +225,46 @@ public class AnLexico {
 			StringBuilder lexemaActual = new StringBuilder();
 
 			int indiceEsCadena = esCadena(linea, indice);
-			if (indiceEsCadena != -1) {
-				String lexemaPropuesto = linea.substring(indice, indiceEsCadena + 1);
+			if (indiceEsCadena == -2) {
+				lexemaActual.append(linea.substring(indice));
+				indice = linea.length();
+			} else if (indiceEsCadena != -1) {
+				String lexemaPropuesto = linea.substring(
+					indice,
+					indiceEsCadena + 1
+				);
 				int diff = indiceEsCadena - indice;
 				indice += diff + 1;
 				columna += diff + 1;
 				lexemaActual.append(lexemaPropuesto);
 			} else {
-				while (indice < linea.length() &&
+				while (
+					indice < linea.length() &&
 					!Character.isWhitespace(linea.charAt(indice)) &&
 					!esSimboloSimple(linea.charAt(indice)) &&
 					!esOperadorCompuesto(linea, indice) &&
-					Alfabeto.ALFABETO.contains(linea.charAt(indice))) {
-				lexemaActual.append(linea.charAt(indice));
-				indice++;
-				columna++;
+					Alfabeto.ALFABETO.contains(linea.charAt(indice))
+				) {
+					lexemaActual.append(linea.charAt(indice));
+					indice++;
+					columna++;
 				}
 			}
-
 			String lexema = lexemaActual.toString();
-			RegistroLexico registro = crearRegistro(lexema, columnaInicio, fila);
+			RegistroLexico registro = crearRegistro(
+				lexema,
+				columnaInicio,
+				fila
+			);
 			if (registro.getToken().equals(Token.ERROR_LEXICO)) {
 				sbErrores.append(
-						String.format(
-								"Error lexico (1) en %d:%d -> %s%n",
-								fila,
-								columnaInicio,
-								lexema));
+					String.format(
+						"Error lexico (1) en %d:%d -> %s%n",
+						fila,
+						columnaInicio,
+						lexema
+					)
+				);
 			}
 			registros.add(registro);
 		}
@@ -185,8 +272,19 @@ public class AnLexico {
 		return registros;
 	}
 
-	private boolean esComentario(String linea, int indice, char actual){
-		return (actual == '-' && indice + 1 < linea.length() && linea.charAt(indice++) == '-');
+	private boolean esMultilinea(String linea, int indice) {
+		return (
+			linea.charAt(indice) == '[' &&
+			linea.charAt(indice + 1) == '['
+		);
+	}
+
+	private boolean esComentario(String linea, int indice, char actual) {
+		return (
+			actual == '-' &&
+			indice + 1 < linea.length() &&
+			linea.charAt(indice++) == '-'
+		);
 	}
 
 	private boolean esOperadorCompuesto(String linea, int indice) {
@@ -194,37 +292,46 @@ public class AnLexico {
 			return false;
 		}
 		String posible = linea.substring(indice, indice + 2);
-		return "==".equals(posible) || "~=".equals(posible) || "<=".equals(posible) || ">=".equals(posible);
+		return (
+			"==".equals(posible) ||
+			"~=".equals(posible) ||
+			"<=".equals(posible) ||
+			">=".equals(posible) ||
+			"[[".equals(posible)
+		);
 	}
 
 	private boolean esSimboloSimple(char valor) {
 		return "()+-*/%^=<>~,;:[]{}".indexOf(valor) >= 0;
 	}
 
-	private int esCadena(String linea, int indice){
-		// TODO: Validar cadenas, mismo cierre y mismo abre
-		if (linea.charAt(indice) != '\"') {
+	private int esCadena(String linea, int indice) {
+		int tipo = "\"\'".indexOf(linea.charAt(indice));
+		if (tipo == -1) {
 			return -1;
 		}
 		int indiceAux = indice;
-		do{
+		char charTipo = "\"\'".charAt(tipo);
+		do {
 			indiceAux++;
-		} while (indiceAux < linea.length() && linea.charAt(indiceAux) != '\"');
+		} while (
+			indiceAux < linea.length() && linea.charAt(indiceAux) != charTipo
+		);
 		if (indiceAux == linea.length()) {
-			return -1;
+			return -2;
 		}
-		return linea.charAt(indiceAux) == '\"' ? indiceAux : -1;
+		return linea.charAt(indiceAux) == charTipo ? indiceAux : -1;
 	}
 
 	@SuppressWarnings("rawtypes")
 	private RegistroLexico crearRegistro(String lexema, int iCol, int iRow) {
 		RegistroLexico rl = new RegistroLexico(lexema, iRow, iCol);
 		Set[] categoria = {
-				Alfabeto.PALABRAS_RESERVADAS,
-				Alfabeto.OPERADORES_ARITMETICOS,
-				Alfabeto.OPERADORES_RELACIONALES,
-				Alfabeto.OPERADORES_LOGICOS,
-				Alfabeto.SEPARADORES,
+			Alfabeto.PALABRAS_RESERVADAS,
+			Alfabeto.OPERADORES_ARITMETICOS,
+			Alfabeto.OPERADORES_RELACIONALES,
+			Alfabeto.OPERADORES_LOGICOS,
+			Alfabeto.SEPARADORES,
 		};
 
 		int i = 0;
@@ -283,8 +390,9 @@ public class AnLexico {
 
 	public void alerta() {
 		new Alert(
-				Alert.AlertType.WARNING,
-				"Han habido errores en el analisis lexico!",
-				ButtonType.CLOSE).show();
+			Alert.AlertType.WARNING,
+			"Han habido errores en el analisis lexico!",
+			ButtonType.CLOSE
+		).show();
 	}
 }
