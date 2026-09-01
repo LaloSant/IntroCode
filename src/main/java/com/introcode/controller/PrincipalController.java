@@ -87,6 +87,9 @@ public class PrincipalController implements Initializable {
 	@FXML
 	private TableColumn<RegistroLexico, Integer> tblColId;
 
+	@FXML
+	private TableColumn<RegistroLexico, Integer> tblColIdToken;
+
 	//Tab An Sintactico
 
 	@FXML
@@ -199,6 +202,10 @@ public class PrincipalController implements Initializable {
 			new SimpleStringProperty(cellData.getValue().getToken().toString())
 		);
 		tblColId.setCellValueFactory(cellData ->
+			new SimpleIntegerProperty(cellData.getValue().getId()).asObject()
+		);
+
+		tblColIdToken.setCellValueFactory(cellData ->
 			new SimpleIntegerProperty(cellData.getValue().getId()).asObject()
 		);
 

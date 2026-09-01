@@ -59,6 +59,7 @@ public class NodoSintactico {
 	public enum TipoSintactico {
 		PROGRAMA("Programa"),
 		SENTENCIA("Sentencia"),
+		PUNTOCOMAOPC("Punto y coma opcional"),
 		TERMINAL("Terminal"),
 		TERMINAL_INVALIDO("Terminal invalido"),
 		TERMINAL_ERRONEO("Terminal erroneo"),

@@ -6,6 +6,7 @@ import java.util.List;
 import com.introcode.automatas.ACadenas;
 import com.introcode.automatas.ANumeros;
 import com.introcode.automatas.AVariables;
+import com.introcode.entity.Alfabeto;
 import com.introcode.entity.NodoSintactico;
 import com.introcode.entity.RegistroLexico;
 import com.introcode.entity.ResultadoSintactico;
@@ -13,6 +14,49 @@ import com.introcode.entity.Token;
 import com.introcode.entity.NodoSintactico.TipoSintactico;
 
 public class AnSintactico {
+
+	private static final int LOCAL = 1;
+	private static final int TRUE = 2;
+	private static final int FALSE = 3;
+	private static final int IF = 4;
+	private static final int THEN = 5;
+	private static final int ELSE = 6;
+	private static final int ELSEIF = 7;
+	private static final int END = 8;
+	private static final int WHILE = 9;
+	private static final int DO = 10;
+	private static final int FOR = 11;
+	private static final int REPEAT = 12;
+	private static final int UNTIL = 13;
+	private static final int AND = 14;
+	private static final int OR = 15;
+	private static final int NOT = 16;
+	private static final int NIL = 17;
+	private static final int MAS = 18;
+	private static final int MENOS = 19;
+	private static final int MULTIPLICACION = 20;
+	private static final int DIVISION = 21;
+	private static final int POTENCIA = 22;
+	private static final int MODULO = 23;
+	private static final int IGUAL_IGUAL = 24;
+	private static final int DIFERENTE = 25;
+	private static final int MENOR = 26;
+	private static final int MAYOR = 27;
+	private static final int MENOR_IGUAL = 28;
+	private static final int MAYOR_IGUAL = 29;
+	private static final int ASIGNACION = 30;
+	private static final int PARENTESIS_ABRE = 31;
+	private static final int PARENTESIS_CIERRA = 32;
+	private static final int LLAVE_ABRE = 33;
+	private static final int LLAVE_CIERRA = 34;
+	private static final int CORCHETE_ABRE = 35;
+	private static final int CORCHETE_CIERRA = 36;
+	private static final int COMA = 37;
+	private static final int PUNTO_COMA = 38;
+	private static final int CADENA = 39;
+	private static final int PRINT = 41;
+	private static final int LIT_STR = 42;
+	private static final int LIT_NUM = 43;
 
 	private final List<RegistroLexico> tokens = new ArrayList<>();
 	private final List<String> errores = new ArrayList<>();
@@ -39,8 +83,12 @@ public class AnSintactico {
 
 		if (!estaAlFinal()) {
 			RegistroLexico token = tokenActual();
-			errores.add(String.format("Token inesperado al final: '%s' en %d:%d.", token.getLexema().getValor(),
-					token.getRow(), token.getColumn()));
+			errores.add(
+					String.format(
+							"Token inesperado al final: '%s' en %d:%d.",
+							token.getLexema().getValor(),
+							token.getRow(),
+							token.getColumn()));
 		}
 
 		return new ResultadoSintactico(raiz, errores);
@@ -48,364 +96,325 @@ public class AnSintactico {
 
 	private NodoSintactico parsePrograma() {
 		NodoSintactico programa = new NodoSintactico(TipoSintactico.PROGRAMA);
-		programa.agregarHijo(
-				esperarLexema(1, "Se esperaba la palabra reservada INICIO al inicio del programa."));
-
-		programa.agregarHijo(parseSentencias());
-
-		programa.agregarHijo(esperarLexema(2, "Se esperaba la palabra reservada FIN al final del programa."));
-
+		programa.agregarHijo(parseListaSentencias());
 		return programa;
 	}
 
-	private NodoSintactico parseSentencias() {
-		NodoSintactico sentencias = new NodoSintactico(TipoSintactico.SENTENCIA);
-		while (!estaAlFinal() && canStartSentencia()) {
-			sentencias.agregarHijo(parseSentencia());
+	private NodoSintactico parseListaSentencias() {
+		NodoSintactico secuencia = new NodoSintactico(TipoSintactico.SENTENCIA);
+		while (!estaAlFinal() && puedeIniciarSentencia()) {
+			secuencia.agregarHijo(parseSentencia());
+			consumirPuntoComaOpcional();
 		}
-		return sentencias;
+		return secuencia;
 	}
 
-	private boolean canStartSentencia() {
+	private boolean puedeIniciarSentencia() {
 		if (estaAlFinal()) {
 			return false;
 		}
-		int idLexema = idLexemaActual();
-		return idLexema == 7 || idLexema == 8 || idLexema == 3
-				|| idLexema == 5 || idLexema == 15 || idLexema == 20
-				|| idLexema == 23;
+		int id = idLexemaActual();
+		String lexema = lexemaActual();
+		return id == LOCAL || id == IF || id == WHILE || id == FOR || id == REPEAT ||
+				id == ASIGNACION || esVariable(lexema) || "print".equalsIgnoreCase(lexema);
 	}
 
 	private NodoSintactico parseSentencia() {
-		int idLexema = idLexemaActual();
-		return switch (idLexema) {
-			case 7 -> parseDecl();
-			case 8 -> parseSobrescribir();
-			case 3, 5 -> parseIO();
-			case 15 -> parseCondicional();
-			case 20 -> parseWhile();
-			case 23 -> parsePara();
-			default -> {
-				error(String.format("Sentencia inválida o no reconocida: '%s' en %d:%d.", idLexema,
-						tokenActual().getRow(), tokenActual().getColumn()));
-				avanzar();
-				yield new NodoSintactico(TipoSintactico.SENTENCIA_ERRONEA);
-			}
-		};
+		if (estaAlFinal()) {
+			error("Se esperaba una sentencia, pero no hay más tokens.");
+			return new NodoSintactico(TipoSintactico.SENTENCIA_ERRONEA);
+		}
+
+		int id = idLexemaActual();
+		String lexema = lexemaActual();
+
+		if (id == LOCAL) {
+			return parseDeclaracion();
+		}
+		if (id == IF) {
+			return parseEstructuraIf();
+		}
+		if (id == WHILE) {
+			return parseEstructuraWhile();
+		}
+		if (id == FOR) {
+			return parseEstructuraFor();
+		}
+		if (id == REPEAT) {
+			return parseEstructuraRepeat();
+		}
+		if ("print".equalsIgnoreCase(lexema)) {
+			return parseLlamadaIO();
+		}
+		if (esVariable(lexema)) {
+			return parseAsignacion();
+		}
+
+		error(String.format("Sentencia inválida o no reconocida: '%s' en %d:%d.", lexema, currentRow(),
+				currentColumn()));
+		avanzar();
+		return new NodoSintactico(TipoSintactico.SENTENCIA_ERRONEA);
 	}
 
-	private NodoSintactico parseDecl() {
+	private NodoSintactico parseDeclaracion() {
 		NodoSintactico decl = new NodoSintactico(TipoSintactico.DECLARACION);
-		NodoSintactico inicio = esperarLexema(7, "Se esperaba DECLARAR en la declaración.");
-		decl.agregarHijo(inicio);
-		decl.agregarHijo(parseTipo());
-		decl.agregarHijo(parseVariable("Se esperaba un identificador después del tipo."));
-		decl.agregarHijo(parseValOpt());
-		esperarLexema(43, "Se esperaba ';' al final de la declaración.");
+		decl.agregarHijo(esperarLexema(LOCAL, "Se esperaba 'local'."));
+		decl.agregarHijo(parseVariable("Se esperaba un identificador después de 'local'."));
+		decl.agregarHijo(parseAsignacionOpcional());
 		return decl;
 	}
 
-	private NodoSintactico parseTipo() {
-		return switch (lexemaActual()) {
-			case "ENTERO", "REAL", "CADENA", "BOOLEANO" -> {
-				RegistroLexico token = avanzar();
-				yield new NodoSintactico(TipoSintactico.TIPO, token.getLexema().getValor(), token.getRow(),
-						token.getColumn());
-			}
-			default -> {
-				error("Se esperaba un tipo de dato (ENTERO, REAL, CADENA, BOOLEANO).");
-				yield new NodoSintactico(TipoSintactico.TIPO_ERRONEO);
-			}
-		};
-	}
-
-	private NodoSintactico parseValOpt() {
-		if (matchLexema(42)) {
-			NodoSintactico valOpt = new NodoSintactico(TipoSintactico.VALOR_OPCIONAL);
-			valOpt.agregarHijo(new NodoSintactico(TipoSintactico.TERMINAL, "=", tokenActual().getRow(),
-					tokenActual().getColumn()));
-			valOpt.agregarHijo(parseExpresion());
-			return valOpt;
+	private NodoSintactico parseAsignacionOpcional() {
+		if (matchLexema(ASIGNACION)) {
+			NodoSintactico valorOpcional = new NodoSintactico(TipoSintactico.VALOR_OPCIONAL);
+			valorOpcional.agregarHijo(new NodoSintactico(TipoSintactico.TERMINAL, "=", currentRow(), currentColumn()));
+			valorOpcional.agregarHijo(parseExpresion());
+			return valorOpcional;
 		}
 		return new NodoSintactico(TipoSintactico.VALOR_OPCIONAL);
 	}
 
-	private NodoSintactico parseSobrescribir() {
-		NodoSintactico sobrescr = new NodoSintactico(TipoSintactico.SOBREESCRIBIR);
-		sobrescr.agregarHijo(esperarLexema(8, "Se esperaba SOBREESCRIBIR al inicio de la sentencia."));
-		sobrescr.agregarHijo(parseVariable("Se esperaba un identificador después de SOBREESCRIBIR."));
-		esperarLexema(42, "Se esperaba el operador de asignación '=' en la sobrescritura.");
-		sobrescr.agregarHijo(parseExpresion());
-		esperarLexema(43, "Se esperaba ';' al final de la sobrescritura.");
-		return sobrescr;
+	private NodoSintactico parseAsignacion() {
+		NodoSintactico asignacion = new NodoSintactico(TipoSintactico.SOBREESCRIBIR);
+		asignacion.agregarHijo(parseVariable("Se esperaba un identificador antes de la asignación."));
+		asignacion.agregarHijo(esperarLexema(ASIGNACION, "Se esperaba '=' en la asignación."));
+		asignacion.agregarHijo(parseExpresion());
+		return asignacion;
 	}
 
-	private NodoSintactico parseIO() {
-		if (matchLexema(3)) {
-			NodoSintactico leer = new NodoSintactico(TipoSintactico.LEER);
-			leer.agregarHijo(new NodoSintactico(TipoSintactico.TERMINAL, "LEER", tokenActual().getRow(),
-					tokenActual().getColumn()));
-			esperarLexema(4, "Se esperaba EN después de LEER.");
-			leer.agregarHijo(parseVariable("Se esperaba un identificador después de EN."));
-			esperarLexema(43, "Se esperaba ';' al final de la sentencia LEER.");
-			return leer;
-		}
-		NodoSintactico imprimir = new NodoSintactico(TipoSintactico.IMPRIMIR);
-		imprimir.agregarHijo(esperarLexema(5, "Se esperaba IMPRIMIR al inicio de la sentencia."));
-		imprimir.agregarHijo(parseListaImpr());
-		esperarLexema(43, "Se esperaba ';' al final de la sentencia IMPRIMIR.");
-		return imprimir;
+	private NodoSintactico parseEstructuraIf() {
+		NodoSintactico condicional = new NodoSintactico(TipoSintactico.CONDICIONAL);
+		condicional.agregarHijo(esperarLexema(IF, "Se esperaba 'if'."));
+		condicional.agregarHijo(parseExpresion());
+		condicional.agregarHijo(esperarLexema(THEN, "Se esperaba 'then' después de la condición."));
+		condicional.agregarHijo(parseListaSentencias());
+		condicional.agregarHijo(parseListaElseIf());
+		condicional.agregarHijo(parseElseOpcional());
+		condicional.agregarHijo(esperarLexema(END, "Se esperaba 'end' al final del bloque if."));
+		return condicional;
 	}
 
-	private NodoSintactico parseListaImpr() {
-		NodoSintactico lista = new NodoSintactico(TipoSintactico.LISTA_IMPRIMIR);
-		lista.agregarHijo(parseImprItem());
-		while (matchLexema(46)) {
-			lista.agregarHijo(new NodoSintactico(TipoSintactico.TERMINAL, ",", tokenActual().getRow(),
-					tokenActual().getColumn()));
-			lista.agregarHijo(parseImprItem());
+	private NodoSintactico parseListaElseIf() {
+		NodoSintactico lista = new NodoSintactico(TipoSintactico.RAMA_ELSE);
+		while (matchLexema(ELSEIF)) {
+			NodoSintactico bloque = new NodoSintactico(TipoSintactico.CONDICIONAL);
+			bloque.agregarHijo(new NodoSintactico(TipoSintactico.TERMINAL, "elseif", currentRow(), currentColumn()));
+			bloque.agregarHijo(parseExpresion());
+			bloque.agregarHijo(esperarLexema(THEN, "Se esperaba 'then' después de 'elseif'."));
+			bloque.agregarHijo(parseListaSentencias());
+			lista.agregarHijo(bloque);
 		}
 		return lista;
 	}
 
-	private NodoSintactico parseImprItem() {
-		if (matchLexema(6)) {
-			return new NodoSintactico(TipoSintactico.TERMINAL, "ENTER", tokenActual().getRow(),
-					tokenActual().getColumn());
-		}
-		return parseExpresion();
-	}
-
-	private NodoSintactico parseCondicional() {
-		NodoSintactico condicional = new NodoSintactico(TipoSintactico.CONDICIONAL);
-		condicional.agregarHijo(esperarLexema(15, "Se esperaba SI al inicio de la condicional."));
-		condicional.agregarHijo(parseCondicion());
-		esperarLexema(16, "Se esperaba ENTONCES después de la condición.");
-		condicional.agregarHijo(parseSentencias());
-		condicional.agregarHijo(parseRamaElse());
-		esperarLexema(18, "Se esperaba FINSI al final de la condicional.");
-		esperarLexema(43, "Se esperaba ';' después de FINSI.");
-		return condicional;
-	}
-
-	private NodoSintactico parseRamaElse() {
-		if (matchLexema(17)) {
+	private NodoSintactico parseElseOpcional() {
+		if (matchLexema(ELSE)) {
 			NodoSintactico rama = new NodoSintactico(TipoSintactico.RAMA_ELSE);
-			rama.agregarHijo(new NodoSintactico(TipoSintactico.TERMINAL, "SINO", tokenActual().getRow(),
-					tokenActual().getColumn()));
-			esperarLexema(16, "Se esperaba ENTONCES después de SINO.");
-			rama.agregarHijo(parseSentencias());
-			esperarLexema(19, "Se esperaba FINSINO al final de la rama SINO.");
-			esperarLexema(43, "Se esperaba ';' después de FINSINO.");
+			rama.agregarHijo(new NodoSintactico(TipoSintactico.TERMINAL, "else", currentRow(), currentColumn()));
+			rama.agregarHijo(parseListaSentencias());
 			return rama;
 		}
 		return new NodoSintactico(TipoSintactico.RAMA_ELSE);
 	}
 
-	private NodoSintactico parseWhile() {
+	private NodoSintactico parseEstructuraWhile() {
 		NodoSintactico ciclo = new NodoSintactico(TipoSintactico.WHILE);
-		ciclo.agregarHijo(esperarLexema(20, "Se esperaba MIENTRAS al inicio del ciclo."));
-		ciclo.agregarHijo(parseCondicion());
-		esperarLexema(21, "Se esperaba HACER después de la condición del ciclo.");
-		ciclo.agregarHijo(parseSentencias());
-		esperarLexema(22, "Se esperaba FINMIENTRAS al final del ciclo.");
-		esperarLexema(43, "Se esperaba ';' después de FINMIENTRAS.");
+		ciclo.agregarHijo(esperarLexema(WHILE, "Se esperaba 'while'."));
+		ciclo.agregarHijo(parseExpresion());
+		ciclo.agregarHijo(esperarLexema(DO, "Se esperaba 'do' después de la condición."));
+		ciclo.agregarHijo(parseListaSentencias());
+		ciclo.agregarHijo(esperarLexema(END, "Se esperaba 'end' al final del ciclo while."));
 		return ciclo;
 	}
 
-	private NodoSintactico parsePara() {
+	private NodoSintactico parseEstructuraRepeat() {
+		NodoSintactico ciclo = new NodoSintactico(TipoSintactico.WHILE);
+		ciclo.agregarHijo(esperarLexema(REPEAT, "Se esperaba 'repeat'."));
+		ciclo.agregarHijo(parseListaSentencias());
+		ciclo.agregarHijo(esperarLexema(UNTIL, "Se esperaba 'until' al final del bloque repeat."));
+		ciclo.agregarHijo(parseExpresion());
+		return ciclo;
+	}
+
+	private NodoSintactico parseEstructuraFor() {
 		NodoSintactico para = new NodoSintactico(TipoSintactico.PARA);
-		para.agregarHijo(esperarLexema(23, "Se esperaba PARA al inicio del ciclo para."));
-		esperarLexema(44, "Se esperaba '(' después de PARA.");
-		para.agregarHijo(parseDecl());
-		esperarLexema(45, "Se esperaba ')' después de la declaración inicial del ciclo PARA.");
-		esperarLexema(24, "Se esperaba HASTA después de la declaración del ciclo PARA.");
-		para.agregarHijo(parseCondicion());
-		para.agregarHijo(parsePaso());
-		esperarLexema(21, "Se esperaba HACER antes del cuerpo del ciclo PARA.");
-		para.agregarHijo(parseSentencias());
-		esperarLexema(27, "Se esperaba FINPARA al final del ciclo.");
-		esperarLexema(43, "Se esperaba ';' después de FINPARA.");
+		para.agregarHijo(esperarLexema(FOR, "Se esperaba 'for'."));
+		para.agregarHijo(parseVariable("Se esperaba un identificador después de 'for'."));
+		para.agregarHijo(esperarLexema(ASIGNACION, "Se esperaba '=' después del identificador del for."));
+		para.agregarHijo(parseExpresion());
+		para.agregarHijo(esperarLexema(COMA, "Se esperaba ',' después del inicio del for."));
+		para.agregarHijo(parseExpresion());
+		if (matchLexema(COMA)) {
+			para.agregarHijo(parseExpresion());
+		}
+		para.agregarHijo(esperarLexema(DO, "Se esperaba 'do' después del rango del for."));
+		para.agregarHijo(parseListaSentencias());
+		para.agregarHijo(esperarLexema(END, "Se esperaba 'end' al final del for."));
 		return para;
 	}
 
-	private NodoSintactico parsePaso() {
-		if (matchLexema(25) || matchLexema(26)) {
-			RegistroLexico operador = tokenAnterior();
-			NodoSintactico paso = new NodoSintactico(TipoSintactico.PASO);
-			paso.agregarHijo(new NodoSintactico(TipoSintactico.TERMINAL, operador.getLexema().getValor(),
-					operador.getRow(), operador.getColumn()));
-			esperarLexema(44, "Se esperaba '(' después de " + operador.getLexema().getValor() + ".");
-			RegistroLexico numero = esperarTipoToken(Token.NUMERO,
-					"Se esperaba un número entero en el paso de incremento/decremento.");
-			paso.agregarHijo(new NodoSintactico(TipoSintactico.NUM_ENTERO, numero.getLexema().getValor(),
-					numero.getRow(), numero.getColumn()));
-			esperarLexema(45, "Se esperaba ')' después del número en el paso de incremento/decremento.");
-			return paso;
+	private NodoSintactico parseLlamadaIO() {
+		NodoSintactico llamada = new NodoSintactico(TipoSintactico.IMPRIMIR);
+		RegistroLexico token = tokenActual();
+		String nombre = token.getLexema().getValor();
+		if (!"print".equalsIgnoreCase(nombre)) {
+			error(String.format("Llamada inválida: '%s'.", nombre));
+			return new NodoSintactico(TipoSintactico.SENTENCIA_ERRONEA);
 		}
-		error("Se esperaba INCREMENTA o DECREMENTA en el paso del ciclo PARA.");
 		avanzar();
-		return new NodoSintactico(TipoSintactico.PASO_ERRONEO);
+		llamada.agregarHijo(new NodoSintactico(TipoSintactico.TERMINAL, nombre, token.getRow(), token.getColumn()));
+		llamada.agregarHijo(esperarLexema(PARENTESIS_ABRE, "Se esperaba '(' después de print."));
+		if (!estaAlFinal() && idLexemaActual() != PARENTESIS_CIERRA) {
+			llamada.agregarHijo(parseListaExpresiones());
+		}
+		llamada.agregarHijo(esperarLexema(PARENTESIS_CIERRA, "Se esperaba ')' al final de print."));
+		return llamada;
 	}
 
-	private NodoSintactico parseCondicion() {
-		esperarLexema(44, "Se esperaba '(' al inicio de la condición.");
-		NodoSintactico condicion = parseExpresion();
-		esperarLexema(45, "Se esperaba ')' al final de la condición.");
-		if (!isCondicional(condicion)) {
-			error("La condición debe ser una expresión relacional o lógica.");
+	private NodoSintactico parseListaExpresiones() {
+		NodoSintactico lista = new NodoSintactico(TipoSintactico.LISTA_IMPRIMIR);
+		lista.agregarHijo(parseExpresion());
+		while (matchLexema(COMA)) {
+			lista.agregarHijo(new NodoSintactico(TipoSintactico.TERMINAL, ",", currentRow(), currentColumn()));
+			lista.agregarHijo(parseExpresion());
 		}
-		NodoSintactico nodoCond = new NodoSintactico(TipoSintactico.CONDICIONAL);
-		nodoCond.agregarHijo(condicion);
-		return nodoCond;
-	}
-
-	private boolean isCondicional(NodoSintactico expr) {
-		if (expr == null) {
-			return false;
-		}
-		TipoSintactico tipo = expr.getTipo();
-		return tipo.equals(TipoSintactico.OP_RELACIONAL) || tipo.equals(TipoSintactico.OP_LOGICO)
-				|| tipo.equals(TipoSintactico.OP_NOT);
+		return lista;
 	}
 
 	private NodoSintactico parseExpresion() {
-		return parseLogica();
+		return parseExpresionLogica();
 	}
 
-	private NodoSintactico parseLogica() {
-		NodoSintactico izquierda = parseRelacional();
-		while (matchLexema(39) || matchLexema(40)) {
+	private NodoSintactico parseExpresionLogica() {
+		NodoSintactico izquierda = parseExpresionRelacional();
+		while (matchLexema(AND) || matchLexema(OR)) {
 			RegistroLexico operador = tokenAnterior();
-			NodoSintactico raizLog = new NodoSintactico(TipoSintactico.OP_LOGICO, operador.getLexema().getValor(),
-					operador.getRow(), operador.getColumn());
-			raizLog.agregarHijo(izquierda);
-			raizLog.agregarHijo(parseRelacional());
-			izquierda = raizLog;
+			NodoSintactico nodo = new NodoSintactico(
+					TipoSintactico.OP_LOGICO,
+					operador.getLexema().getValor(),
+					operador.getRow(),
+					operador.getColumn());
+			nodo.agregarHijo(izquierda);
+			nodo.agregarHijo(parseExpresionRelacional());
+			izquierda = nodo;
 		}
 		return izquierda;
 	}
 
-	private NodoSintactico parseRelacional() {
-		NodoSintactico izquierda = parseAritmetica();
-		while (matchLexema(33) || matchLexema(34) || matchLexema(35) || matchLexema(36) || matchLexema(37)
-				|| matchLexema(38)) {
+	private NodoSintactico parseExpresionRelacional() {
+		NodoSintactico izquierda = parseExpresionAritmetica();
+		while (matchLexema(IGUAL_IGUAL) || matchLexema(DIFERENTE) || matchLexema(MENOR) || matchLexema(MAYOR) ||
+				matchLexema(MENOR_IGUAL) || matchLexema(MAYOR_IGUAL)) {
 			RegistroLexico operador = tokenAnterior();
-			NodoSintactico raizRel = new NodoSintactico(TipoSintactico.OP_RELACIONAL, operador.getLexema().getValor(),
-					operador.getRow(), operador.getColumn());
-			raizRel.agregarHijo(izquierda);
-			raizRel.agregarHijo(parseAritmetica());
-			izquierda = raizRel;
+			NodoSintactico nodo = new NodoSintactico(
+					TipoSintactico.OP_RELACIONAL,
+					operador.getLexema().getValor(),
+					operador.getRow(),
+					operador.getColumn());
+			nodo.agregarHijo(izquierda);
+			nodo.agregarHijo(parseExpresionAritmetica());
+			izquierda = nodo;
 		}
 		return izquierda;
 	}
 
-	private NodoSintactico parseAritmetica() {
+	private NodoSintactico parseExpresionAritmetica() {
 		NodoSintactico izquierda = parseTermino();
-		while (matchLexema(28) || matchLexema(29)) {
+		while (matchLexema(MAS) || matchLexema(MENOS)) {
 			RegistroLexico operador = tokenAnterior();
-			NodoSintactico raizArit = new NodoSintactico(TipoSintactico.OP_ARITMETICO, operador.getLexema().getValor(),
-					operador.getRow(), operador.getColumn());
-			raizArit.agregarHijo(izquierda);
-			raizArit.agregarHijo(parseTermino());
-			izquierda = raizArit;
+			NodoSintactico nodo = new NodoSintactico(
+					TipoSintactico.OP_ARITMETICO,
+					operador.getLexema().getValor(),
+					operador.getRow(),
+					operador.getColumn());
+			nodo.agregarHijo(izquierda);
+			nodo.agregarHijo(parseTermino());
+			izquierda = nodo;
 		}
 		return izquierda;
 	}
 
 	private NodoSintactico parseTermino() {
 		NodoSintactico izquierda = parseFactor();
-		while (matchLexema(30) || matchLexema(31) || matchLexema(32)) {
+		while (matchLexema(MULTIPLICACION) || matchLexema(DIVISION) || matchLexema(MODULO)) {
 			RegistroLexico operador = tokenAnterior();
-			NodoSintactico raiz = new NodoSintactico(TipoSintactico.OP_ARITMETICO, operador.getLexema().getValor(),
-					operador.getRow(), operador.getColumn());
-			raiz.agregarHijo(izquierda);
-			raiz.agregarHijo(parseFactor());
-			izquierda = raiz;
+			NodoSintactico nodo = new NodoSintactico(
+					TipoSintactico.OP_ARITMETICO,
+					operador.getLexema().getValor(),
+					operador.getRow(),
+					operador.getColumn());
+			nodo.agregarHijo(izquierda);
+			nodo.agregarHijo(parseFactor());
+			izquierda = nodo;
 		}
 		return izquierda;
 	}
 
 	private NodoSintactico parseFactor() {
-		if (matchLexema(41)) {
+		if (matchLexema(NOT)) {
 			RegistroLexico operador = tokenAnterior();
-			NodoSintactico not = new NodoSintactico(TipoSintactico.OP_NOT, operador.getLexema().getValor(),
+			NodoSintactico nodo = new NodoSintactico(TipoSintactico.OP_NOT, operador.getLexema().getValor(),
 					operador.getRow(), operador.getColumn());
-			esperarLexema(44, "Se esperaba '(' después de NOT.");
-			not.agregarHijo(parseExpresion());
-			esperarLexema(45, "Se esperaba ')' después de la expresión de NOT.");
-			return not;
+			nodo.agregarHijo(parseBase());
+			return nodo;
 		}
-
-		if (matchLexema(44)) {
+		if (matchLexema(MENOS)) {
+			RegistroLexico operador = tokenAnterior();
+			NodoSintactico nodo = new NodoSintactico(TipoSintactico.OP_ARITMETICO, operador.getLexema().getValor(),
+					operador.getRow(), operador.getColumn());
+			nodo.agregarHijo(parseBase());
+			return nodo;
+		}
+		if (matchLexema(PARENTESIS_ABRE)) {
 			NodoSintactico expresion = parseExpresion();
-			esperarLexema(45, "Se esperaba ')' después de la expresión entre paréntesis.");
+			esperarLexema(PARENTESIS_CIERRA, "Se esperaba ')' después de la expresión entre paréntesis.");
 			return expresion;
 		}
-
-		return parseTerminal();
+		if (matchLexema(POTENCIA)) {
+			RegistroLexico operador = tokenAnterior();
+			NodoSintactico nodo = new NodoSintactico(TipoSintactico.OP_ARITMETICO, operador.getLexema().getValor(),
+					operador.getRow(), operador.getColumn());
+			nodo.agregarHijo(parseFactor());
+			return nodo;
+		}
+		return parseBase();
 	}
 
-	private NodoSintactico parseTerminal() {
-		RegistroLexico token = tokenActual();
-		if (token == null) {
+	private NodoSintactico parseBase() {
+		if (estaAlFinal()) {
 			error("Expresión incompleta.");
 			return new NodoSintactico(TipoSintactico.TERMINAL_INVALIDO);
 		}
 
-		if (token.getToken() == Token.VARIABLE) {
-			avanzar();
-			if (!automVariables.simulate(token.getLexema().getValor())) {
-				error(String.format("Identificador inválido '%s' en %d:%d.", token.getLexema().getValor(),
-						token.getRow(), token.getColumn()));
-			}
-			return new NodoSintactico(TipoSintactico.VARIABLE, token.getLexema().getValor(), token.getRow(),
+		int id = idLexemaActual();
+		String lexema = lexemaActual();
+
+		if (tokenActual().getToken() == Token.VARIABLE) {
+			return parseVariable("Se esperaba una variable o literal.");
+		}
+		if (tokenActual().getToken() == Token.NUMERO) {
+			RegistroLexico token = avanzar();
+			return new NodoSintactico(TipoSintactico.NUM_ENTERO, token.getLexema().getValor(), token.getRow(),
 					token.getColumn());
 		}
-
-		if (token.getToken() == Token.NUMERO) {
-			avanzar();
-			int result = automNumeros.simulate(token.getLexema().getValor(), true);
-			if (result == -1) {
-				error(String.format("Número inválido '%s' en %d:%d.", token.getLexema().getValor(), token.getRow(),
-						token.getColumn()));
-			}
-			return new NodoSintactico(
-					token.getToken() == Token.NUMERO ? TipoSintactico.NUM_ENTERO : TipoSintactico.NUM_REAL,
-					token.getLexema().getValor(), token.getRow(), token.getColumn());
-		}
-
-		if (token.getToken() == Token.CADENA) {
-			avanzar();
-			if (!automCadenas.simulate(token.getLexema().getValor())) {
-				error(String.format("Cadena inválida '%s' en %d:%d.", token.getLexema().getValor(), token.getRow(),
-						token.getColumn()));
-			}
+		if (tokenActual().getToken() == Token.CADENA) {
+			RegistroLexico token = avanzar();
 			return new NodoSintactico(TipoSintactico.CADENA, token.getLexema().getValor(), token.getRow(),
 					token.getColumn());
 		}
 
-		if (token.getToken() == Token.PALABRA_RESERVADA) {
-			String lexema = token.getLexema().getValor();
-			int idLexema = token.getId();
-			if (idLexema == 13 || idLexema == 14) {
-				avanzar();
-				return new NodoSintactico(TipoSintactico.BOOLEANO, lexema, token.getRow(), token.getColumn());
-			}
+		if (id == TRUE || id == FALSE || id == NIL) {
+			RegistroLexico token = avanzar();
+			return new NodoSintactico(TipoSintactico.BOOLEANO, token.getLexema().getValor(), token.getRow(),
+					token.getColumn());
+		}
+		if (id == PARENTESIS_ABRE) {
+			return parseFactor();
 		}
 
-		error(String.format("Token inesperado en expresión: '%s' en %d:%d.", token.getLexema().getValor(),
-				token.getRow(), token.getColumn()));
+		error(String.format("Token inesperado en expresión: '%s' en %d:%d.", lexema, currentRow(), currentColumn()));
 		avanzar();
 		return new NodoSintactico(TipoSintactico.TERMINAL_INVALIDO);
-	}
-
-	private RegistroLexico esperarTipoToken(Token tipo, String mensaje) {
-		if (!estaAlFinal() && tokenActual().getToken() == tipo) {
-			return avanzar();
-		}
-		error(mensaje);
-		return crearTokenError(mensaje);
 	}
 
 	private NodoSintactico parseVariable(String mensajeError) {
@@ -439,6 +448,12 @@ public class AnSintactico {
 			return true;
 		}
 		return false;
+	}
+
+	private void consumirPuntoComaOpcional() {
+		if (matchLexema(PUNTO_COMA)) {
+			return;
+		}
 	}
 
 	private RegistroLexico avanzar() {
@@ -482,6 +497,11 @@ public class AnSintactico {
 		return estaAlFinal() ? -1 : tokenActual().getColumn();
 	}
 
+	private boolean esVariable(String lexema) {
+		return lexema != null && !lexema.isBlank() && !"print".equalsIgnoreCase(lexema)
+				&& automVariables.simulate(lexema) && !Alfabeto.PALABRAS_RESERVADAS.contains(lexema);
+	}
+
 	private void error(String mensaje) {
 		if (!estaAlFinal()) {
 			errores.add(String.format("Error sintáctico en %d:%d -> %s", currentRow(), currentColumn(), mensaje));
@@ -493,19 +513,12 @@ public class AnSintactico {
 
 	private void sincronizar() {
 		while (!estaAlFinal()) {
-			if (idLexemaActual() == 43 || idLexemaActual() == 2 || idLexemaActual() == 18
-					|| idLexemaActual() == 19 || idLexemaActual() == 22
-					|| idLexemaActual() == 27 || idLexemaActual() == 15
-					|| idLexemaActual() == 20
-					|| idLexemaActual() == 23 || idLexemaActual() == 7
-					|| idLexemaActual() == 8 || idLexemaActual() == 3
-					|| idLexemaActual() == 5) {
-				if (idLexemaActual() == 43) {
-					avanzar();
-				}
-				return;
+			int id = idLexemaActual();
+			if (id != PUNTO_COMA || id != END || id != ELSE || id != ELSEIF || id != UNTIL || id != DO || id != THEN
+					|| id != LOCAL ||
+					id != IF || id != WHILE || id != FOR || id != REPEAT || id != PRINT) {
+				avanzar();
 			}
-			avanzar();
 		}
 	}
 

@@ -52,8 +52,8 @@ public class Editor {
 		File archivoNuevo = null;
 		if (App.getWorkingFile() == null || openFileChooser) {
 			FileChooser fc = new FileChooser();
-			fc.setTitle("Guardar archivo IntroCode");
-			fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("IntroCode", "*.txt"));
+			fc.setTitle("Guardar archivo IntroLua");
+			fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Fuente de IntroLua", "*.lua"));
 			fc.setInitialDirectory(new File(App.defaultDir));
 			File f = fc.showSaveDialog(App.getStage());
 			if (f == null) {

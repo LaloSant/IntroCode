@@ -120,6 +120,7 @@
                                         <TableColumn fx:id="tblColLexema" editable="false" maxWidth="250.0" minWidth="60.0" prefWidth="182.0" sortable="false" text="LEXEMA" />
                                           <TableColumn fx:id="tblColId" editable="false" maxWidth="250.0" minWidth="60.0" prefWidth="182.0" sortable="false" text="#" />
                                         <TableColumn fx:id="tblColToken" editable="false" maxWidth="250.0" minWidth="60.0" prefWidth="182.0" sortable="false" text="TOKEN" />
+                                          <TableColumn fx:id="tblColIdToken" editable="false" maxWidth="250.0" minWidth="60.0" prefWidth="182.0" sortable="false" text="ID" />
                                       </columns>
                                        <columnResizePolicy>
                                           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

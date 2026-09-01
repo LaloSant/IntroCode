@@ -189,7 +189,9 @@ public class AnLexico {
 					multiLineString.append(linea.substring(indice + 2, indiceCorchetesFin + 2));
 					indice = indiceCorchetesFin + 2;
 					columna = indice + 1;
-					actual = linea.charAt(indice);
+					if (indice < linea.length()) {
+						actual = linea.charAt(indice);
+					}
 					RegistroLexico registro = crearRegistro(multiLineString.toString(), columnaInicio,fila);
 					registros.add(registro);
 					multiLineString = null;
@@ -283,7 +285,7 @@ public class AnLexico {
 		return (
 			actual == '-' &&
 			indice + 1 < linea.length() &&
-			linea.charAt(indice++) == '-'
+			linea.charAt(indice + 1) == '-'
 		);
 	}
 

@@ -1,0 +1,167 @@
+<programa> ::= <lista_sentencias> 
+
+  
+
+<lista_sentencias> ::= <sentencia_con_cierre>  
+
+                     | <sentencia_con_cierre> <lista_sentencias> 
+
+  
+
+<sentencia_con_cierre> ::= <sentencia> <punto_coma_opc> 
+
+  
+
+<punto_coma_opc> ::= ";"  
+
+                   | ε 
+
+  
+
+<sentencia> ::= <declaracion>  
+
+              | <asignacion>  
+
+              | <estructura_if>  
+
+              | <estructura_while>  
+
+              | <estructura_for>  
+
+              | <estructura_repeat>  
+
+              | <llamada_io> 
+
+  
+
+<declaracion> ::= "local" ID <asignacion_opc> 
+
+  
+
+<asignacion_opc> ::= "=" <expresion>  
+
+                   | ε 
+
+  
+
+<asignacion> ::= ID "=" <expresion> 
+
+  
+
+<estructura_if> ::= "if" <expresion> "then" <lista_sentencias> <lista_elseif> <else_opc> "end" 
+
+  
+
+<lista_elseif> ::= <bloque_elseif> <lista_elseif>  
+
+                 | ε 
+
+  
+
+<bloque_elseif> ::= "elseif" <expresion> "then" <lista_sentencias> 
+
+  
+
+<else_opc> ::= "else" <lista_sentencias>  
+
+             | ε 
+
+  
+
+<estructura_while> ::= "while" <expresion> "do" <lista_sentencias> "end" 
+
+  
+
+<estructura_repeat> ::= "repeat" <lista_sentencias> "until" <expresion> 
+
+  
+
+<estructura_for> ::= "for" ID "=" <expresion> "," <expresion> <paso_opc> "do" <lista_sentencias> "end" 
+
+  
+
+<paso_opc> ::= "," <expresion>  
+
+             | ε 
+
+  
+
+<llamada_io> ::= "print" "(" <lista_expresiones> ")"  
+
+               | ID "=" "io.read" "(" ")" 
+
+  
+
+<lista_expresiones> ::= <expresion>  
+
+                      | <expresion> "," <lista_expresiones> 
+
+  
+
+<expresion> ::= <expresion_logica> 
+
+  
+
+<expresion_logica> ::= <expresion_relacional>  
+
+                     | <expresion_relacional> <op_logico> <expresion_logica> 
+
+  
+
+<op_logico> ::= "and" | "or" 
+
+  
+
+<expresion_relacional> ::= <expresion_aritmetica>  
+
+                         | <expresion_aritmetica> <op_relacional> <expresion_aritmetica> 
+
+  
+
+<op_relacional> ::= "==" | "~=" | "<" | "<=" | ">" | ">=" 
+
+  
+
+<expresion_aritmetica> ::= <termino>  
+
+                         | <termino> <op_suma> <expresion_aritmetica> 
+
+  
+
+<op_suma> ::= "+" | "-" 
+
+  
+
+<termino> ::= <factor>  
+
+            | <factor> <op_mult> <termino> 
+
+  
+
+<op_mult> ::= "*" | "/" | "%" 
+
+  
+
+<factor> ::= <base>  
+
+           | <base> "^" <factor> 
+
+  
+
+<base> ::= ID  
+
+         | LIT_NUM  
+
+         | LIT_STR  
+
+         | "true"  
+
+         | "false"  
+
+         | "nil"  
+
+         | "not" <base>  
+
+         | "-" <base>  
+
+         | "(" <expresion> ")" 

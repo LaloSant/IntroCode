@@ -15,20 +15,24 @@ public class ANumeros extends AFD {
 		tabla.put(1, new HashMap<>());
 		tabla.put(2, new HashMap<>());
 		tabla.put(3, new HashMap<>());
+		tabla.put(4, new HashMap<>());
 
 		Map<Character, Integer> mapaS0 = tabla.get(0);
-
 		Map<Character, Integer> mapaS1 = tabla.get(1);
-		tabla.get(1).put('.', 2);
-
 		Map<Character, Integer> mapaS2 = tabla.get(2);
-
 		Map<Character, Integer> mapaS3 = tabla.get(3);
-		for (char c : Alfabeto.DIGITOS) {
-			mapaS0.put(c, 1);
-			mapaS1.put(c, 1);
-			mapaS2.put(c, 3);
-			mapaS3.put(c, 3);
+		Map<Character, Integer> mapaS4 = tabla.get(3);
+
+		mapaS0.put('-', 4);
+		mapaS1.put('.', 2);
+
+
+		for (char digit : Alfabeto.DIGITOS) {
+			mapaS0.put(digit, 1);
+			mapaS1.put(digit, 1);
+			mapaS2.put(digit, 3);
+			mapaS3.put(digit, 3);
+			mapaS4.put(digit, 1);
 		}
 		super(0, finales, tabla);
 	}
