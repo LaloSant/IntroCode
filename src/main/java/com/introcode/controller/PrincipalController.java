@@ -108,9 +108,6 @@ public class PrincipalController implements Initializable {
 	@FXML
 	private TextArea txtAreaSintactico;
 
-	@FXML
-	private TextArea txtAreaErroresSint;
-
 	// Propiedades
 	private AnLexico analizadorLexico = new AnLexico();
 
@@ -158,7 +155,6 @@ public class PrincipalController implements Initializable {
 	private void limpiarAnalizadores() {
 		tblAnalisLexico.setItems(null);
 		txtAreaErroresLexico.setText(null);
-		txtAreaErroresSint.setText(null);
 		txtAreaSintactico.setText(null);
 		btnAnSintactico.setDisable(true);
 		btnErroresLexicoGuardar.setDisable(true);
@@ -189,7 +185,7 @@ public class PrincipalController implements Initializable {
 							column++;
 						}
 					}
-					lblPosCursor.setText("Row: " + line + ", Column: " + column);
+					lblPosCursor.setText("Linea: " + line + ", Columna: " + column);
 				});
 	}
 
@@ -363,7 +359,6 @@ public class PrincipalController implements Initializable {
 		ResultadoSintactico resultado = an.analizar(
 				analizadorLexico.getRegistroLexico());
 		StringBuilder salida = new StringBuilder();
-		StringBuilder erroresSalida = new StringBuilder();
 		btnErroresSintGuardar.setDisable(false);
 
 		if (resultado.esValido()) {
@@ -373,7 +368,6 @@ public class PrincipalController implements Initializable {
 		} else {
 			salida.append("Hubo errores sintacticos:\n\n");
 			for (String error : resultado.getErrores()) {
-				erroresSalida.append(error).append("\n");
 				salida.append(error).append("\n");
 			}
 			if (resultado.getRaiz() != null) {
@@ -383,13 +377,12 @@ public class PrincipalController implements Initializable {
 		}
 
 		txtAreaSintactico.setText(salida.toString());
-		txtAreaErroresSint.setText(erroresSalida.toString());
 	}
 
 	@FXML
 	private void btnErroresSintGuardarOnAction() {
 		FileUtilities.guardarArchivo(
-				txtAreaErroresSint.getText(),
+				txtAreaSintactico.getText(),
 				"ErrSintact", FileType.TXT);
 	}
 

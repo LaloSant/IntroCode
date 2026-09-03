@@ -13,7 +13,7 @@ local nulo = nil
 local tabla = {1}
 
 -- Asignaciones y encadenamiento de expresiones aritméticas largas
-v1 = v1 + v2 * 10 ^ 2 % 3 - 5 / 2
+v1 = v1 + v2 * 102 % 3 - 5 / 2
 v2 = ( 100 + v1 ) * ( v2 - 10.5 ) ^ ( 2 % 1 )
 
 

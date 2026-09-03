@@ -82,31 +82,20 @@
                                     </HBox>
                                  </children>
                               </HBox>
-                              <TextArea fx:id="txtAreaErroresLexico" editable="false" minHeight="50.0" prefHeight="77.0" prefWidth="692.0" promptText="Errores Lexicos">
+                              <TextArea fx:id="txtAreaErroresLexico" editable="false" minHeight="125.0" prefHeight="77.0" prefWidth="692.0" promptText="Errores Lexicos">
                                  <font>
                                     <Font size="14.0" />
                                  </font>
                               </TextArea>
-                              <Separator prefWidth="200.0" />
                            </children>
                         </VBox>
                         <VBox alignment="CENTER" maxHeight="300.0" spacing="10.0">
                            <children>
                               <HBox alignment="CENTER" fillHeight="false">
                                  <children>
-                                    <Label minWidth="114.0" text="Errores Sintacticos" />
-                                    <HBox alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="503.0">
-                                       <children>
-                                          <Button fx:id="btnErroresSintGuardar" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnErroresSintGuardarOnAction" text="Guardar Como..." />
-                                       </children>
-                                    </HBox>
+                                    <HBox alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="503.0" />
                                  </children>
                               </HBox>
-                              <TextArea fx:id="txtAreaErroresSint" editable="false" minHeight="50.0" prefHeight="655.0" prefWidth="314.0" promptText="Errores Sintacticos">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                              </TextArea>
                            </children>
                         </VBox>
                      </children>
@@ -145,7 +134,12 @@
                            <content>
                               <VBox alignment="TOP_CENTER" spacing="5.0">
                                  <children>
-                                    <Button fx:id="btnAnSintactico" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnAnSintacticoOnAction" text="Realizar Analisis Sintactico" />
+                                    <HBox alignment="TOP_CENTER" spacing="10.0">
+                                       <children>
+                                          <Button fx:id="btnAnSintactico" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnAnSintacticoOnAction" text="Realizar Analisis Sintactico" />
+                                          <Button fx:id="btnErroresSintGuardar" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnErroresSintGuardarOnAction" text="Guardar txt" />
+                                       </children>
+                                    </HBox>
                                     <TextArea fx:id="txtAreaSintactico" editable="false" prefHeight="900.0" prefWidth="314.0" promptText="Salida Analisis Léxico">
                                        <font>
                                           <Font size="18.0" />

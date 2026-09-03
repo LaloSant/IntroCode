@@ -227,7 +227,7 @@ public class AnLexico {
 			if (!Alfabeto.ALFABETO.contains(actual)) {
 				sbErrores.append(
 					String.format(
-						"Error lexico (0) en %d:%d -> %c%n",
+						"Error lexico (Elemento no encontrado) en %d:%d -> %c%n",
 						fila,
 						columnaInicio,
 						actual
@@ -278,7 +278,7 @@ public class AnLexico {
 			if (registro.getToken().equals(TokenLexico.ERROR_LEXICO)) {
 				sbErrores.append(
 					String.format(
-						"Error lexico (1) en %d:%d -> %s%n",
+						"Error lexico (Cadena invalida) en %d:%d -> %s%n",
 						fila,
 						columnaInicio,
 						lexema
