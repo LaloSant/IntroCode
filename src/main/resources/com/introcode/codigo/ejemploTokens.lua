@@ -1,5 +1,3 @@
-¡ \n
-
 local  --Este es un comentario
 
 true --
@@ -76,8 +74,8 @@ nil
 
 ; 
 
-"
-' 
+""
+' '
 
 -- 
 

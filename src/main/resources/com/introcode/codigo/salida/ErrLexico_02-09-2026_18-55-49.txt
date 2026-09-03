@@ -1,0 +1,2 @@
+Error lexico (1) en 13:7 -> __va'2rrq53w6ynid_wfwhehs
+Error lexico (0) en 15:21 -> !

@@ -1,0 +1,52 @@
+Lexema,Col,Row,TokenDescripcionlocal,4,1,Palabra Reservada
+x,4,7,Variable
+=,4,9,Operador de Asignacion
+-,4,11,Operador Aritmetico
+15,4,12,Numero literal
+local,5,1,Palabra Reservada
+y,5,7,Variable
+=,5,9,Operador de Asignacion
+"Si",5,11,Cadena
+local,6,1,Palabra Reservada
+z,6,7,Variable
+=,6,9,Operador de Asignacion
+15.0,6,11,Numero literal
+local,7,1,Palabra Reservada
+b1,7,7,Variable
+=,7,10,Operador de Asignacion
+true,7,12,Palabra Reservada
+local,8,1,Palabra Reservada
+b2,8,7,Variable
+=,8,10,Operador de Asignacion
+false,8,12,Palabra Reservada
+local,9,1,Palabra Reservada
+n,9,7,Variable
+=,9,9,Operador de Asignacion
+nil,9,11,Palabra Reservada
+;,9,14,Delimitador
+local,9,16,Palabra Reservada
+n2,9,22,Variable
+=,9,24,Operador de Asignacion
+nil,9,25,Palabra Reservada
+local,9,29,Palabra Reservada
+n3,9,35,Variable
+local,9,38,Palabra Reservada
+n4,9,44,Variable
+x,11,1,Variable
+=,11,3,Operador de Asignacion
+10,11,5,Numero literal
+local,13,1,Palabra Reservada
+__va'2rrq53w6ynid_wfwhehs,13,7,---
+local,15,1,Palabra Reservada
+resultado,15,7,Variable
+=,15,17,Operador de Asignacion
+ni,15,19,Variable
+!,15,21,---
+l,15,22,Variable
+if,18,1,Palabra Reservada
+true,18,4,Palabra Reservada
+then,18,9,Palabra Reservada
+n3,18,14,Variable
+=,18,17,Operador de Asignacion
+nil,18,19,Palabra Reservada
+end,18,23,Palabra Reservada

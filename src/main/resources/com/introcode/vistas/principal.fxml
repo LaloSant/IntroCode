@@ -117,7 +117,12 @@
                            <content>
                               <VBox alignment="TOP_CENTER" spacing="5.0">
                                  <children>
-                                    <Button fx:id="btnAnLexico" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnAnLexicoOnAction" text="Realizar Analisis Lexico" />
+                                    <HBox alignment="TOP_CENTER" spacing="15.0">
+                                       <children>
+                                          <Button fx:id="btnAnLexico" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnAnLexicoOnAction" text="Realizar Analisis Lexico" />
+                                          <Button fx:id="btnGuardarAnLexico" alignment="CENTER" mnemonicParsing="false" onAction="#btnGuardarAnLexicoOnAction" text="Guardar CSV" />
+                                       </children>
+                                    </HBox>
                                     <TableView fx:id="tblAnalisLexico" prefHeight="850.0">
                                       <columns>
                                         <TableColumn fx:id="tblColLexema" editable="false" maxWidth="250.0" minWidth="60.0" prefWidth="182.0" sortable="false" text="LEXEMA" />

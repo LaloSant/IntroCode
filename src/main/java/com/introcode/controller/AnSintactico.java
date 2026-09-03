@@ -3,8 +3,6 @@ package com.introcode.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.introcode.automatas.ACadenas;
-import com.introcode.automatas.ANumeros;
 import com.introcode.automatas.AVariables;
 import com.introcode.entity.Alfabeto;
 import com.introcode.entity.NodoSintactico;
@@ -79,7 +77,7 @@ public class AnSintactico {
 		tokens.addAll(listaTokens);
 		raiz = parsePrograma();
 
-		if (!estaAlFinal()) {
+		while (!estaAlFinal()) {
 			RegistroLexico token = tokenActual();
 			errores.add(
 					String.format(
@@ -87,6 +85,11 @@ public class AnSintactico {
 							token.getLexema().getValor(),
 							token.getRow(),
 							token.getColumn()));
+			avanzar();
+		}
+
+		if (!estaAlFinal()) {
+			
 		}
 
 		return new ResultadoSintactico(raiz, errores);

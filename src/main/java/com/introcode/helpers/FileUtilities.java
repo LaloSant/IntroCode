@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import lombok.ToString;
 
 public class FileUtilities {
 
@@ -16,9 +17,9 @@ public class FileUtilities {
 		System.getProperty("user.dir") +
 		" src main resources com introcode codigo salida ".replaceAll(" ", App.getSep());
 
-	public static void guardarArchivo(String txt, String titulo) {
+	public static void guardarArchivo(String txt, String titulo, FileType ft) {
 		String timeStamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("_dd-MM-yyyy_HH-mm-ss")); // Current date & time
-		File file = new File(defaultOutDir, titulo + timeStamp + ".lua");
+		File file = new File(defaultOutDir, titulo + timeStamp + ft.toString());
 
 		String texto = txt == null ? "" : txt;
 		try {
@@ -31,4 +32,23 @@ public class FileUtilities {
 			new Alert(AlertType.ERROR, ex.getMessage()).show();
 		}
 	}
+
+	public enum FileType {
+		TXT(".txt"),
+		LUA(".lua"),
+		CSV(".csv");
+
+		private final String extension;
+	
+		FileType(String extension){
+			this.extension = extension;
+		}
+
+		@Override
+		public String toString(){
+			return this.extension;
+		}
+	}
+
+
 }

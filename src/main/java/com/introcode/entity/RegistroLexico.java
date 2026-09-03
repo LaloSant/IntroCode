@@ -1,9 +1,12 @@
 package com.introcode.entity;
 
+import java.util.concurrent.Flow.Publisher;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
@@ -24,5 +27,10 @@ public class RegistroLexico {
 		this.row = row;
 		this.column = column;
 		this.consecutivoID = consecutivo++;
+	}
+
+	@Override
+	public String toString(){
+		return String.format("%s,%s,%s,%s", this.lexema, this.row, this.column, this.getToken());
 	}
 }
