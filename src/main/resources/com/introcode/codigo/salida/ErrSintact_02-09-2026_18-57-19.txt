@@ -1,5 +1,0 @@
-Error sintáctico en 3:1 -> Se esperaba un identificador después de 'local'.
-Error sintáctico en 9:1 -> Token inesperado en expresión: 'then' en 9:1.
-Error sintáctico en 11:1 -> Se esperaba 'then' después de la condición.
-Error sintáctico en 13:1 -> Se esperaba 'end' al final del bloque if.
-Token inesperado al final: 'elseif' en 13:1.

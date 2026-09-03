@@ -9,13 +9,12 @@ import java.time.format.DateTimeFormatter;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import lombok.ToString;
 
 public class FileUtilities {
 
 	public static final String defaultOutDir =
 		System.getProperty("user.dir") +
-		" src main resources com introcode codigo salida ".replaceAll(" ", App.getSep());
+		" src main resources com introcode codigo salida ".replace(" ", App.getSep());
 
 	public static void guardarArchivo(String txt, String titulo, FileType ft) {
 		String timeStamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("_dd-MM-yyyy_HH-mm-ss")); // Current date & time
