@@ -10,7 +10,7 @@ import com.introcode.entity.Alfabeto;
 import com.introcode.entity.NodoSintactico;
 import com.introcode.entity.RegistroLexico;
 import com.introcode.entity.ResultadoSintactico;
-import com.introcode.entity.Token;
+import com.introcode.entity.TokenLexico;
 import com.introcode.entity.NodoSintactico.TipoSintactico;
 
 public class AnSintactico {
@@ -62,10 +62,8 @@ public class AnSintactico {
 	private final List<String> errores = new ArrayList<>();
 	private int posicion;
 	private NodoSintactico raiz;
-
-	private final ANumeros automNumeros = new ANumeros();
+	
 	private final AVariables automVariables = new AVariables();
-	private final ACadenas automCadenas = new ACadenas();
 
 	public ResultadoSintactico analizar(List<RegistroLexico> listaTokens) {
 		tokens.clear();
@@ -389,15 +387,15 @@ public class AnSintactico {
 		int id = idLexemaActual();
 		String lexema = lexemaActual();
 
-		if (tokenActual().getToken() == Token.VARIABLE) {
+		if (tokenActual().getToken() == TokenLexico.VARIABLE) {
 			return parseVariable("Se esperaba una variable o literal.");
 		}
-		if (tokenActual().getToken() == Token.NUMERO) {
+		if (tokenActual().getToken() == TokenLexico.NUMERO) {
 			RegistroLexico token = avanzar();
 			return new NodoSintactico(TipoSintactico.NUM_ENTERO, token.getLexema().getValor(), token.getRow(),
 					token.getColumn());
 		}
-		if (tokenActual().getToken() == Token.CADENA) {
+		if (tokenActual().getToken() == TokenLexico.CADENA) {
 			RegistroLexico token = avanzar();
 			return new NodoSintactico(TipoSintactico.CADENA, token.getLexema().getValor(), token.getRow(),
 					token.getColumn());
@@ -418,7 +416,7 @@ public class AnSintactico {
 	}
 
 	private NodoSintactico parseVariable(String mensajeError) {
-		if (!estaAlFinal() && tokenActual().getToken() == Token.VARIABLE) {
+		if (!estaAlFinal() && tokenActual().getToken() == TokenLexico.VARIABLE) {
 			RegistroLexico token = avanzar();
 			if (!automVariables.simulate(token.getLexema().getValor())) {
 				error(String.format("Identificador inválido '%s' en %d:%d.", token.getLexema().getValor(),
@@ -514,10 +512,11 @@ public class AnSintactico {
 	private void sincronizar() {
 		while (!estaAlFinal()) {
 			int id = idLexemaActual();
-			if (id != PUNTO_COMA || id != END || id != ELSE || id != ELSEIF || id != UNTIL || id != DO || id != THEN
-					|| id != LOCAL ||
-					id != IF || id != WHILE || id != FOR || id != REPEAT || id != PRINT) {
+			if (id != PUNTO_COMA && id != END && id != ELSE && id != ELSEIF && id != UNTIL && id != DO && id != THEN
+					&& id != LOCAL && id != IF && id != WHILE && id != FOR && id != REPEAT && id != PRINT) {
 				avanzar();
+			} else {
+				break;
 			}
 		}
 	}

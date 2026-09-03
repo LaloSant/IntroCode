@@ -12,8 +12,8 @@ local n = nil; local n2=nil
 x = 10
 
 -- LECTURA DE DATOS Y ESCRITURA EN CONSOLA
-z = 9 --io.read()
---print(z) -- print inserta el salto de línea automáticamente
+z = io.read()
+print(z) -- print inserta el salto de línea automáticamente
 
 -- CONDICIONALES
 if (true) then

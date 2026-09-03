@@ -13,7 +13,7 @@ public class RegistroLexico {
 	public static int consecutivo = 0;
 
 	private Lexema lexema;
-	private Token token;
+	private TokenLexico token;
 	private int id;
 	private int row;
 	private int column;

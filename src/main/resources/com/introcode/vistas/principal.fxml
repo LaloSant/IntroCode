@@ -63,7 +63,10 @@
                                     <Font size="14.0" />
                                  </font>
                               </TextArea>
-                              <Label fx:id="lblPosCursor" disable="true" text="Linea: N/A, Columna: N/A" />
+                              <Label fx:id="lblPosCursor" disable="true" text="Linea: N/A, Columna: N/A">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font></Label>
                               <Separator prefWidth="200.0" />
                            </children>
                         </VBox>

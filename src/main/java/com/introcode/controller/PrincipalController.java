@@ -3,6 +3,7 @@ package com.introcode.controller;
 import com.introcode.App;
 import com.introcode.entity.RegistroLexico;
 import com.introcode.entity.ResultadoSintactico;
+import com.introcode.entity.TokenLexico;
 import com.introcode.helpers.Editor;
 import com.introcode.helpers.FileUtilities;
 import java.io.File;
@@ -21,6 +22,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -189,6 +191,24 @@ public class PrincipalController implements Initializable {
 	}
 
 	private void inicializarTabla() {
+		tblAnalisLexico.setRowFactory(tblAnalisLexico ->
+			new TableRow<RegistroLexico>() {
+				@Override
+				protected void updateItem(RegistroLexico item, boolean empty) {
+					super.updateItem(item, empty);
+					if (empty || item == null) {
+						setStyle(""); // limpia estilo si la fila está vacía
+					} else {
+						String style =
+							item.getToken() == TokenLexico.ERROR_LEXICO
+								? "-fx-background-color: #FF6666;"
+								: "";
+						setStyle(style);
+					}
+				}
+			}
+		);
+
 		for (TableColumn<
 			RegistroLexico,
 			?
@@ -198,6 +218,7 @@ public class PrincipalController implements Initializable {
 		tblColLexema.setCellValueFactory(cellData ->
 			new SimpleStringProperty(cellData.getValue().getLexema().toString())
 		);
+
 		tblColToken.setCellValueFactory(cellData ->
 			new SimpleStringProperty(cellData.getValue().getToken().toString())
 		);
@@ -219,7 +240,7 @@ public class PrincipalController implements Initializable {
 	}
 
 	private void tabAnSintacticoOnChange() {
-		if (App.getWorkingFile() == null) {
+		if (App.getWorkingFile() == null || txtAreaErroresLexico.getText() == null || !txtAreaErroresLexico.getText().isBlank()) {
 			btnAnSintactico.setDisable(true);
 			return;
 		}
@@ -304,7 +325,9 @@ public class PrincipalController implements Initializable {
 			return;
 		}
 		btnErroresLexicoGuardar.setDisable(false);
-		txtAreaErroresLexico.setText(analizadorLexico.tokenizar(tblAnalisLexico));
+		txtAreaErroresLexico.setText(
+			analizadorLexico.tokenizar(tblAnalisLexico)
+		);
 		if (!txtAreaErroresLexico.getText().isBlank()) {
 			btnAnSintactico.setDisable(true);
 			analizadorLexico.alerta();
@@ -313,7 +336,10 @@ public class PrincipalController implements Initializable {
 
 	@FXML
 	private void btnErroresLexicoGuardarOnAction() {
-		FileUtilities.guardarArchivo(txtAreaErroresLexico.getText(), "ErrLexico");
+		FileUtilities.guardarArchivo(
+			txtAreaErroresLexico.getText(),
+			"ErrLexico"
+		);
 	}
 
 	//Tab an Sintacito
@@ -363,7 +389,10 @@ public class PrincipalController implements Initializable {
 
 	@FXML
 	private void btnErroresSintGuardarOnAction() {
-		FileUtilities.guardarArchivo(txtAreaErroresSint.getText(), "ErrSintact");
+		FileUtilities.guardarArchivo(
+			txtAreaErroresSint.getText(),
+			"ErrSintact"
+		);
 	}
 
 	@FXML

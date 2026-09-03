@@ -1,6 +1,6 @@
 package com.introcode.entity;
 
-public enum Token {
+public enum TokenLexico {
 	PALABRA_RESERVADA("Palabra Reservada", 1),
 	OPERADOR_LOGICO("Operador Logico", 14),
 	OPERADOR_ARITMETICO("Operador Aritmetico", 18),
@@ -15,7 +15,7 @@ public enum Token {
 	private final String descripcion;
 	private final int tokenId;
 
-	Token(String descripcion, int tokenId) {
+	TokenLexico(String descripcion, int tokenId) {
 		this.descripcion = descripcion;
 		this.tokenId = tokenId;
 	}

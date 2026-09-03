@@ -1,3 +1,6 @@
+local b1 = true local contador if (true) then contador = 0 end
+
+
 if (true) then
 	b1 = false
 end

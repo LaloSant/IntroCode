@@ -6,7 +6,7 @@ import com.introcode.automatas.ANumeros;
 import com.introcode.automatas.AVariables;
 import com.introcode.entity.Alfabeto;
 import com.introcode.entity.RegistroLexico;
-import com.introcode.entity.Token;
+import com.introcode.entity.TokenLexico;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -44,7 +44,7 @@ public class AnLexico {
 	private StringBuilder multiLineString = null;
 
 	private int multiLineaFila = 0;
-	
+
 	private int multiLineaCol = 0;
 
 	public AnLexico() {
@@ -92,7 +92,11 @@ public class AnLexico {
 
 		for (int iRow = 0; iRow < this.texto.size(); iRow++) {
 			if (!multiLinea && multiLineString != null) {
-				RegistroLexico r = crearRegistro(multiLineString.toString(), multiLineaCol, multiLineaFila);
+				RegistroLexico r = crearRegistro(
+					multiLineString.toString(),
+					multiLineaCol,
+					multiLineaFila
+				);
 				listaRegistros.add(r);
 				registroLexico.add(r);
 				multiLineString = null;
@@ -142,7 +146,9 @@ public class AnLexico {
 				}
 				if (!multiLinea && multiLineString != null) {
 					int indiceCorchetes = linea.indexOf("]]");
-					multiLineString.append("\n").append(linea.substring(indice, indiceCorchetes + 2));
+					multiLineString
+						.append("\n")
+						.append(linea.substring(indice, indiceCorchetes + 2));
 					indice = indiceCorchetes + 2;
 					break;
 				}
@@ -175,7 +181,9 @@ public class AnLexico {
 					continue;
 				}
 				multiLinea = true;
-				multiLineString = new StringBuilder(linea.substring(indice, indice + 2));
+				multiLineString = new StringBuilder(
+					linea.substring(indice, indice + 2)
+				);
 				int indiceCorchetesFin = linea.indexOf("]]");
 				if (indiceCorchetesFin == -1) {
 					multiLineaFila = fila;
@@ -186,13 +194,19 @@ public class AnLexico {
 				} else {
 					multiLineaFila = fila;
 					multiLineaCol = columna;
-					multiLineString.append(linea.substring(indice + 2, indiceCorchetesFin + 2));
+					multiLineString.append(
+						linea.substring(indice + 2, indiceCorchetesFin + 2)
+					);
 					indice = indiceCorchetesFin + 2;
 					columna = indice + 1;
 					if (indice < linea.length()) {
 						actual = linea.charAt(indice);
 					}
-					RegistroLexico registro = crearRegistro(multiLineString.toString(), columnaInicio,fila);
+					RegistroLexico registro = crearRegistro(
+						multiLineString.toString(),
+						columnaInicio,
+						fila
+					);
 					registros.add(registro);
 					multiLineString = null;
 					multiLineaFila = 0;
@@ -218,6 +232,9 @@ public class AnLexico {
 						columnaInicio,
 						actual
 					)
+				);
+				registros.add(
+					crearRegistro(String.valueOf(actual), columnaInicio, fila)
 				);
 				indice++;
 				columna++;
@@ -258,7 +275,7 @@ public class AnLexico {
 				columnaInicio,
 				fila
 			);
-			if (registro.getToken().equals(Token.ERROR_LEXICO)) {
+			if (registro.getToken().equals(TokenLexico.ERROR_LEXICO)) {
 				sbErrores.append(
 					String.format(
 						"Error lexico (1) en %d:%d -> %s%n",
@@ -275,10 +292,7 @@ public class AnLexico {
 	}
 
 	private boolean esMultilinea(String linea, int indice) {
-		return (
-			linea.charAt(indice) == '[' &&
-			linea.charAt(indice + 1) == '['
-		);
+		return linea.charAt(indice) == '[' && linea.charAt(indice + 1) == '[';
 	}
 
 	private boolean esComentario(String linea, int indice, char actual) {
@@ -338,8 +352,8 @@ public class AnLexico {
 
 		int i = 0;
 		if (lexema.equals("=")) {
-			rl.setToken(Token.OPERADOR_ASIGNACION);
-			rl.setId(Token.OPERADOR_ASIGNACION.getTokenId());
+			rl.setToken(TokenLexico.OPERADOR_ASIGNACION);
+			rl.setId(TokenLexico.OPERADOR_ASIGNACION.getTokenId());
 			return rl;
 		}
 		for (Set set : categoria) {
@@ -347,19 +361,19 @@ public class AnLexico {
 				rl.setId(IDTOKENS.get(lexema));
 				switch (i) {
 					case 0 -> {
-						rl.setToken(Token.PALABRA_RESERVADA);
+						rl.setToken(TokenLexico.PALABRA_RESERVADA);
 					}
 					case 1 -> {
-						rl.setToken(Token.OPERADOR_ARITMETICO);
+						rl.setToken(TokenLexico.OPERADOR_ARITMETICO);
 					}
 					case 2 -> {
-						rl.setToken(Token.OPERADOR_RELACIONAL);
+						rl.setToken(TokenLexico.OPERADOR_RELACIONAL);
 					}
 					case 3 -> {
-						rl.setToken(Token.OPERADOR_LOGICO);
+						rl.setToken(TokenLexico.OPERADOR_LOGICO);
 					}
 					case 4 -> {
-						rl.setToken(Token.DELIMITADOR);
+						rl.setToken(TokenLexico.DELIMITADOR);
 					}
 				}
 				return rl;
@@ -368,25 +382,25 @@ public class AnLexico {
 		}
 
 		if (automNumeros.simulate(lexema)) {
-			rl.setToken(Token.NUMERO);
-			rl.setId(Token.NUMERO.getTokenId());
+			rl.setToken(TokenLexico.NUMERO);
+			rl.setId(TokenLexico.NUMERO.getTokenId());
 			return rl;
 		}
 
 		if (automCadenas.simulate(lexema)) {
-			rl.setToken(Token.CADENA);
-			rl.setId(Token.CADENA.getTokenId());
+			rl.setToken(TokenLexico.CADENA);
+			rl.setId(TokenLexico.CADENA.getTokenId());
 			return rl;
 		}
 
 		if (automVariables.simulate(lexema)) {
-			rl.setToken(Token.VARIABLE);
-			rl.setId(Token.VARIABLE.getTokenId());
+			rl.setToken(TokenLexico.VARIABLE);
+			rl.setId(TokenLexico.VARIABLE.getTokenId());
 			return rl;
 		}
 
-		rl.setToken(Token.ERROR_LEXICO);
-		rl.setId(Token.ERROR_LEXICO.getTokenId());
+		rl.setToken(TokenLexico.ERROR_LEXICO);
+		rl.setId(TokenLexico.ERROR_LEXICO.getTokenId());
 		return rl;
 	}
 
