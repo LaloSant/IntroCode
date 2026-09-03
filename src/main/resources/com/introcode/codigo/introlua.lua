@@ -8,11 +8,12 @@ local b1 = true
 local b2 = false
 local n = nil; local n2=nil
 
+x = 15
+
 -- SOBREESCRITURA DE DATOS (Asignación directa)
 x = 10
 
 -- LECTURA DE DATOS Y ESCRITURA EN CONSOLA
-z = io.read()
 print(z) -- print inserta el salto de línea automáticamente
 
 -- CONDICIONALES

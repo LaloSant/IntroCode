@@ -74,7 +74,7 @@
                            <children>
                               <HBox alignment="CENTER" fillHeight="false">
                                  <children>
-                                    <Label minWidth="114.0" text="Errores Sintácticos" />
+                                    <Label minWidth="114.0" text="Errores Lexicos" />
                                     <HBox alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="503.0">
                                        <children>
                                         <Button fx:id="btnErroresLexicoGuardar" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnErroresLexicoGuardarOnAction" text="Guardar Como..." />
@@ -94,7 +94,7 @@
                            <children>
                               <HBox alignment="CENTER" fillHeight="false">
                                  <children>
-                                    <Label minWidth="114.0" text="Errores Lexicos" />
+                                    <Label minWidth="114.0" text="Errores Sintacticos" />
                                     <HBox alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="503.0">
                                        <children>
                                           <Button fx:id="btnErroresSintGuardar" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnErroresSintGuardarOnAction" text="Guardar Como..." />
