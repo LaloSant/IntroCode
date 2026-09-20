@@ -399,7 +399,7 @@ public class AnSintactico {
 		}
 		if (tokenActual().getToken() == TokenLexico.NUMERO) {
 			RegistroLexico token = avanzar();
-			return new NodoSintactico(TipoSintactico.NUM_ENTERO, token.getLexema().getValor(), token.getRow(),
+			return new NodoSintactico(TipoSintactico.NUMERO, token.getLexema().getValor(), token.getRow(),
 					token.getColumn());
 		}
 		if (tokenActual().getToken() == TokenLexico.CADENA) {
@@ -408,9 +408,14 @@ public class AnSintactico {
 					token.getColumn());
 		}
 
-		if (id == TRUE || id == FALSE || id == NIL) {
+		if (id == TRUE || id == FALSE ) {
 			RegistroLexico token = avanzar();
 			return new NodoSintactico(TipoSintactico.BOOLEANO, token.getLexema().getValor(), token.getRow(),
+					token.getColumn());
+		}
+		if (id == NIL){
+			RegistroLexico token = avanzar();
+			return new NodoSintactico(TipoSintactico.NIL, token.getLexema().getValor(), token.getRow(),
 					token.getColumn());
 		}
 		if (id == PARENTESIS_ABRE) {

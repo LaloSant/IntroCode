@@ -10,6 +10,7 @@ import com.introcode.helpers.FileUtilities.FileType;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -68,6 +69,9 @@ public class PrincipalController implements Initializable {
 	@FXML
 	private Tab tabAnSintactico;
 
+	@FXML
+	private Tab tabAnSemantico;
+
 	// Tab Analisis Lexico
 
 	@FXML
@@ -108,8 +112,25 @@ public class PrincipalController implements Initializable {
 	@FXML
 	private TextArea txtAreaSintactico;
 
+	// Tab An Sintactico
+
+	@FXML
+	private Button btnAnSemantico;
+
+	@FXML
+	private Button btnErroresSemanGuardar;
+
+	@FXML
+	private TextArea txtAreaSemantico;
+
 	// Propiedades
 	private AnLexico analizadorLexico = new AnLexico();
+
+	private ResultadoSintactico resultadoSintactico;
+
+	private AnSemantico analizadorSemantico = new AnSemantico();
+
+	
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
@@ -147,6 +168,18 @@ public class PrincipalController implements Initializable {
 									}
 								}
 							}
+							case "tabAnSemantico" -> {
+								tabAnSemanticoOnChange();
+								if (App.getWorkingFile() != null) {
+									Editor.guardarArchivoEditor(
+											txtAreaEditor,
+											false,
+											false);
+									if (!btnAnSemantico.isDisabled()) {
+										btnAnSemanticoOnAction();
+									}
+								}
+							}
 						}
 					}
 				});
@@ -156,9 +189,12 @@ public class PrincipalController implements Initializable {
 		tblAnalisLexico.setItems(null);
 		txtAreaErroresLexico.setText(null);
 		txtAreaSintactico.setText(null);
+		txtAreaSemantico.setText(null);
 		btnAnSintactico.setDisable(true);
+		btnAnSemantico.setDisable(true);
 		btnErroresLexicoGuardar.setDisable(true);
 		btnErroresSintGuardar.setDisable(true);
+		btnErroresSemanGuardar.setDisable(true);
 	}
 
 	private void inicializarEditor() {
@@ -236,6 +272,14 @@ public class PrincipalController implements Initializable {
 		btnAnSintactico.setDisable(false);
 	}
 
+	private void tabAnSemanticoOnChange() {
+		if (App.getWorkingFile() == null || txtAreaSintactico.getText() == null ||!txtAreaSintactico.getText().contains("correcto")) {
+			btnAnSemantico.setDisable(true);
+			return;
+		}
+		btnAnSemantico.setDisable(false);
+	}
+
 	// Menu Bar
 
 	@FXML
@@ -249,6 +293,7 @@ public class PrincipalController implements Initializable {
 		btnAnLexico.setDisable(false);
 		tblAnalisLexico.setItems(null);
 		txtAreaErroresLexico.setText(null);
+		btnAnLexicoOnAction();
 	}
 
 	@FXML
@@ -364,7 +409,8 @@ public class PrincipalController implements Initializable {
 		if (resultado.esValido()) {
 			salida.append("Analisis sintactico correcto.\n\n");
 			// salida.append("Arbol sintactico:\n");
-			// salida.append(resultado.getRaiz().toString());
+			salida.append(resultado.getRaiz().toString());
+			btnAnSemantico.setDisable(false);
 		} else {
 			salida.append("Hubo errores sintacticos:\n\n");
 			for (String error : resultado.getErrores()) {
@@ -375,8 +421,21 @@ public class PrincipalController implements Initializable {
 				// salida.append(resultado.getRaiz().toString());
 			}
 		}
-
+		this.resultadoSintactico = resultado;
 		txtAreaSintactico.setText(salida.toString());
+	}
+
+	@FXML
+	private void btnAnSemanticoOnAction() {
+		btnErroresSemanGuardar.setDisable(false);
+		String resultado = analizadorSemantico.analizar(resultadoSintactico.getRaiz());
+		resultado = (resultado.isBlank()) ? "Sin errores léxicos" : resultado;
+		StringBuilder tablaSimbolos = new StringBuilder("=== Tabla de Simbolos ===\n");
+		for (Map.Entry<String, Object> entry : analizadorSemantico.getTablaSimbolos().entrySet()) {
+			tablaSimbolos.append(entry.getKey()).append(" : ").append(entry.getValue()).append("\n");
+		}
+		txtAreaSemantico.setText(resultado + "\n" + tablaSimbolos.toString());
+
 	}
 
 	@FXML
@@ -387,13 +446,19 @@ public class PrincipalController implements Initializable {
 	}
 
 	@FXML
+	private void btnErroresSemanticoGuardarOnAction() {
+		FileUtilities.guardarArchivo(
+				txtAreaSemantico.getText(),
+				"ErrSemantico", FileType.TXT);
+	}
+
+	@FXML
 	private void mnuAcercaDeOnAction() {
 		new Alert(
 				Alert.AlertType.INFORMATION,
 				"Creado por: " +
 						"\nAlan Daniel Farfan Gomez" +
 						"\nEduardo Jair Bautista Santiesteban" +
-						"\nXimena Itzel Jimenez Hernandez" +
 						"\nYael Sampayo Marin",
 				ButtonType.CLOSE).show();
 	}

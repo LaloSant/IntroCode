@@ -1,7 +1,7 @@
 -- COMENTARIO
 
 -- DECLARACION VARIABLES (Tipado dinámico mediante 'local')
-local x = 15
+local x = not ((1 + 20 * 30 ^ 7) and 1 > 5 or 2 or true)
 local y="CADENA" --comentario
 local z = 15.0
 local b1 = true
@@ -63,7 +63,7 @@ end
 
 -- Uso de NIL para inicializar variables sin un valor definido
 local resultado = nil
---local datos = { 10, 20, 30, 40, 50 }
+local datos = { 10, 20, 30, 40, 50 }
 
 -- Ciclo REPEAT ... UNTIL (evalúa la condición al final)
 local contador = 0

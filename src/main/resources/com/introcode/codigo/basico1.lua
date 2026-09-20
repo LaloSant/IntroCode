@@ -1,1 +1,4 @@
-local x = 2 ^ (2+1)
+local datos
+ = {10,
+ x = 5, y = true and
+ false}

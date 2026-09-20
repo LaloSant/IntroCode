@@ -3,18 +3,18 @@
 -- ==========================================
 
 -- Declaraciones iniciales masivas
-local v1 = 10 ;
+local v1 =  1;
 local v2 = 20.5
 local texto_1 = "cadena de prueba"
 local texto_2 = 'otra cadena' ;
 local bandera = true
 local otraBandera = false
 local nulo = nil
-local tabla = {1}
+local tabla = {1, x=y, 5, "string", nil}
 
 -- Asignaciones y encadenamiento de expresiones aritméticas largas
 v1 = v1 + v2 * 102 % 3 - 5 / 2
-v2 = ( 100 + v1 ) * ( v2 - 10.5 ) ^ ( 2 % 1 )
+v2 = ( 100 + v1 ) * ( v2 - 10.5 ) + ( 2 % 1 ) 
 
 
 -- Bloque IF profundo y redundante con múltiples ramas
@@ -22,7 +22,7 @@ if ( v1 == 10 ) and ( v2 ~= 20.5 ) or not bandera then
     print ( "rama 1", v1, v2 ) ;
     local x = 0
     
-    if x < 10 then
+    if x > 10 then
         x = x + 1
     elseif x <= 50 then
         x = x * 2
