@@ -26,7 +26,7 @@ public class AnSemantico {
 		try {
 			return recorrer(raiz);
 		} catch (ErrorSemantico e) {
-			error = true;
+			// error = true;
 			return e.getMessage() + "\n";
 		}
 	}
@@ -35,14 +35,23 @@ public class AnSemantico {
 		if (error || padre == null) {
 			return "";
 		}
-		if (padre.getTipo() == TipoSintactico.DECLARACION) {
-			guardarVariable(padre);
-			return "";
+		try {
+			if (padre.getTipo() == TipoSintactico.DECLARACION) {
+				guardarVariable(padre);
+				return "";
+			}
+			if (padre.getTipo() == TipoSintactico.SOBREESCRIBIR) {
+				asignarVariable(padre);
+				return "";
+			}
+			if (padre.getTipo() == TipoSintactico.OP_RELACIONAL || padre.getTipo() == TipoSintactico.OP_LOGICO) {
+				evaluar(padre);
+			}
+		} catch (ErrorSemantico e) {
+			// error = true;
+			return e.getMessage() + "\n";
 		}
-		if (padre.getTipo() == TipoSintactico.SOBREESCRIBIR) {
-			asignarVariable(padre);
-			return "";
-		}
+		
 		StringBuilder resultado = new StringBuilder();
 		for (NodoSintactico nodo : padre.getHijos()) {
 			resultado.append(recorrer(nodo));

@@ -1,6 +1,7 @@
 package com.introcode.controller;
 
 import com.introcode.App;
+import com.introcode.entity.AppStatus;
 import com.introcode.entity.RegistroLexico;
 import com.introcode.entity.ResultadoSintactico;
 import com.introcode.entity.TokenLexico;
@@ -72,6 +73,9 @@ public class PrincipalController implements Initializable {
 	@FXML
 	private Tab tabAnSemantico;
 
+	@FXML
+	private Tab tabPrePosFija;
+
 	// Tab Analisis Lexico
 
 	@FXML
@@ -123,14 +127,28 @@ public class PrincipalController implements Initializable {
 	@FXML
 	private TextArea txtAreaSemantico;
 
+	// Tab Pre Pos Fija
+
+	@FXML
+	private Button btnPrePosFija;
+
+	@FXML
+	private Button btnPrePosFijaGuardar;
+
+	@FXML
+	private TextArea txtAreaPrePosFija;
+
 	// Propiedades
+
+	private AppStatus LOCAL_APPSTATUS = AppStatus.PREPOSFIJA;
+
 	private AnLexico analizadorLexico = new AnLexico();
 
 	private ResultadoSintactico resultadoSintactico;
 
 	private AnSemantico analizadorSemantico = new AnSemantico();
 
-	
+	private PrePosFija convertidorPrePosFija = new PrePosFija();
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
@@ -180,22 +198,22 @@ public class PrincipalController implements Initializable {
 									}
 								}
 							}
+							case "tabPrePosFija" -> {
+								tabPrePosFijaOnChange();
+								if (App.getWorkingFile() != null) {
+									Editor.guardarArchivoEditor(
+											txtAreaEditor,
+											false,
+											false);
+									if (!btnPrePosFija.isDisabled()) {
+										btnPrePosFijaOnAction();									}
+								}
+							}
 						}
 					}
 				});
 	}
 
-	private void limpiarAnalizadores() {
-		tblAnalisLexico.setItems(null);
-		txtAreaErroresLexico.setText(null);
-		txtAreaSintactico.setText(null);
-		txtAreaSemantico.setText(null);
-		btnAnSintactico.setDisable(true);
-		btnAnSemantico.setDisable(true);
-		btnErroresLexicoGuardar.setDisable(true);
-		btnErroresSintGuardar.setDisable(true);
-		btnErroresSemanGuardar.setDisable(true);
-	}
 
 	private void inicializarEditor() {
 		txtAreaEditor.textProperty().addListener((obs, oldValue, newValue) -> {
@@ -257,15 +275,66 @@ public class PrincipalController implements Initializable {
 		tblAnalisLexico.setItems(null);
 	}
 
+	//UTILES
+
+	private void limpiarAnalizadores() {
+		LOCAL_APPSTATUS = AppStatus.NONE;
+		tblAnalisLexico.setItems(null);
+		txtAreaErroresLexico.setText(null);
+		txtAreaSintactico.setText(null);
+		txtAreaSemantico.setText(null);
+		btnAnSintactico.setDisable(true);
+		btnAnSemantico.setDisable(true);
+		btnErroresLexicoGuardar.setDisable(true);
+		btnErroresSintGuardar.setDisable(true);
+		btnErroresSemanGuardar.setDisable(true);
+	}
+
+	//TODO: Terminar de implementar
+	// private void cambiarEstado(AppStatus nuevoStatus){
+	// 	switch (nuevoStatus) {
+	// 		case NONE -> {
+
+	// 		}
+	// 		case FILE_READ -> {
+				
+	// 		}	
+	// 		case ANLEXICO -> {
+				
+	// 		}	
+	// 		case ANSINTACTICO -> {
+				
+	// 		}	
+	// 		case ANSEMANTICO -> {
+				
+	// 		}	
+	// 		case PREPOSFIJA -> {
+				
+	// 		}		
+	// 		default -> {
+
+	// 		}
+	// 	}
+	// }
+
+	// TABS ON CHANGE
+
 	private void tabAnLexicoOnChange() {
-		if (App.getWorkingFile() == null) {
+		// if (App.getWorkingFile() == null) {
+		// btnAnLexico.setDisable(true);
+		// }
+		if (LOCAL_APPSTATUS.compareTo(AppStatus.FILE_READ) < 0) {
 			btnAnLexico.setDisable(true);
 		}
 	}
 
 	private void tabAnSintacticoOnChange() {
-		if (App.getWorkingFile() == null || txtAreaErroresLexico.getText() == null
-				|| !txtAreaErroresLexico.getText().isBlank()) {
+		// if (App.getWorkingFile() == null || txtAreaErroresLexico.getText() == null
+		// || !txtAreaErroresLexico.getText().isBlank()) {
+		// btnAnSintactico.setDisable(true);
+		// return;
+		// }
+		if (LOCAL_APPSTATUS.compareTo(AppStatus.ANLEXICO) < 0) {
 			btnAnSintactico.setDisable(true);
 			return;
 		}
@@ -273,11 +342,28 @@ public class PrincipalController implements Initializable {
 	}
 
 	private void tabAnSemanticoOnChange() {
-		if (App.getWorkingFile() == null || txtAreaSintactico.getText() == null ||!txtAreaSintactico.getText().contains("correcto")) {
+		// if (App.getWorkingFile() == null || txtAreaSintactico.getText() == null
+		// || !txtAreaSintactico.getText().contains("correcto")) {
+		// btnAnSemantico.setDisable(true);
+		// return;
+		// }
+		if (LOCAL_APPSTATUS.compareTo(AppStatus.ANSINTACTICO) < 0) {
 			btnAnSemantico.setDisable(true);
 			return;
 		}
 		btnAnSemantico.setDisable(false);
+	}
+
+	private void tabPrePosFijaOnChange() {
+		// if (App.getWorkingFile() == null || txtAreaSemantico.getText() == null) {
+		// btnAnSemantico.setDisable(true);
+		// return;
+		// }
+		if (LOCAL_APPSTATUS.compareTo(AppStatus.ANSINTACTICO) < 0) {
+			btnPrePosFija.setDisable(true);
+			return;
+		}
+		btnPrePosFija.setDisable(false);
 	}
 
 	// Menu Bar
@@ -288,6 +374,7 @@ public class PrincipalController implements Initializable {
 		if (f == null) {
 			return;
 		}
+		LOCAL_APPSTATUS = AppStatus.FILE_READ;
 		lblFilePath.setText(f.getPath());
 		App.setWorkingFile(f);
 		btnAnLexico.setDisable(false);
@@ -332,6 +419,7 @@ public class PrincipalController implements Initializable {
 		} else if (alert.getResult() == ButtonType.CANCEL) {
 			return;
 		}
+		LOCAL_APPSTATUS = AppStatus.NONE;
 		lblFilePath.setText(null);
 		App.setWorkingFile(null);
 		txtAreaEditor.setText(null);
@@ -362,7 +450,9 @@ public class PrincipalController implements Initializable {
 		if (!txtAreaErroresLexico.getText().isBlank()) {
 			btnAnSintactico.setDisable(true);
 			analizadorLexico.alerta();
+			return;
 		}
+		LOCAL_APPSTATUS = AppStatus.ANLEXICO;
 	}
 
 	@FXML
@@ -375,13 +465,6 @@ public class PrincipalController implements Initializable {
 			sb.append(registro.toString()).append("\n");
 		}
 		FileUtilities.guardarArchivo(sb.toString(), "TablaAnLexico", FileType.CSV);
-	}
-
-	@FXML
-	private void btnErroresLexicoGuardarOnAction() {
-		FileUtilities.guardarArchivo(
-				txtAreaErroresLexico.getText(),
-				"ErrLexico", FileType.TXT);
 	}
 
 	// Tab an Sintacito
@@ -411,6 +494,7 @@ public class PrincipalController implements Initializable {
 			// salida.append("Arbol sintactico:\n");
 			salida.append(resultado.getRaiz().toString());
 			btnAnSemantico.setDisable(false);
+			LOCAL_APPSTATUS = AppStatus.ANSINTACTICO;
 		} else {
 			salida.append("Hubo errores sintacticos:\n\n");
 			for (String error : resultado.getErrores()) {
@@ -429,13 +513,45 @@ public class PrincipalController implements Initializable {
 	private void btnAnSemanticoOnAction() {
 		btnErroresSemanGuardar.setDisable(false);
 		String resultado = analizadorSemantico.analizar(resultadoSintactico.getRaiz());
+		boolean error = resultado.isBlank();
 		resultado = (resultado.isBlank()) ? "Sin errores léxicos" : resultado;
 		StringBuilder tablaSimbolos = new StringBuilder("=== Tabla de Simbolos ===\n");
 		for (Map.Entry<String, Object> entry : analizadorSemantico.getTablaSimbolos().entrySet()) {
 			tablaSimbolos.append(entry.getKey()).append(" : ").append(entry.getValue()).append("\n");
 		}
 		txtAreaSemantico.setText(resultado + "\n" + tablaSimbolos.toString());
+		if (!error) {
+			LOCAL_APPSTATUS = AppStatus.ANSEMANTICO;
+		}
 
+	}
+
+	// Tab Pre Pos Fija
+
+	@FXML
+	private void btnPrePosFijaOnAction() {
+		if (LOCAL_APPSTATUS.compareTo(AppStatus.ANSEMANTICO) < 0) {
+			txtAreaSintactico.setText(
+					"Ejecute primero los analisis previos");
+			return;
+		}
+
+		if (analizadorLexico.getRegistroLexico().isEmpty()) {
+			txtAreaSintactico.setText(
+					"No hay tokens disponibles. Ejecute el análisis léxico.");
+			return;
+		}
+		txtAreaPrePosFija.setText(convertidorPrePosFija.convertirPrefija(resultadoSintactico.getRaiz()));
+		LOCAL_APPSTATUS = AppStatus.PREPOSFIJA;
+	}
+
+	// GUARDAR ARCHIVOS
+
+	@FXML
+	private void btnErroresLexicoGuardarOnAction() {
+		FileUtilities.guardarArchivo(
+				txtAreaErroresLexico.getText(),
+				"ErrLexico", FileType.TXT);
 	}
 
 	@FXML
@@ -451,6 +567,16 @@ public class PrincipalController implements Initializable {
 				txtAreaSemantico.getText(),
 				"ErrSemantico", FileType.TXT);
 	}
+
+	@FXML
+	private void btnPrePosFijaGuardarOnAction() {
+		FileUtilities.guardarArchivo(
+				txtAreaPrePosFija.getText(),
+				"PREPOSFIJA", FileType.TXT);
+
+	}
+
+	//ACERCA DE
 
 	@FXML
 	private void mnuAcercaDeOnAction() {

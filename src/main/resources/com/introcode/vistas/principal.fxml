@@ -60,7 +60,7 @@
                            <children>
                               <TextArea fx:id="txtAreaEditor" prefHeight="741.0" prefWidth="1270.0" promptText="Empieze a escribir Codigo">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font name="Adwaita Mono" size="14.0" />
                                  </font>
                               </TextArea>
                               <Label fx:id="lblPosCursor" disable="true" text="Linea: N/A, Columna: N/A">
@@ -142,7 +142,7 @@
                                     </HBox>
                                     <TextArea fx:id="txtAreaSintactico" editable="false" prefHeight="900.0" prefWidth="314.0" promptText="Salida Analisis Léxico">
                                        <font>
-                                          <Font size="18.0" />
+                                          <Font name="Adwaita Mono" size="18.0" />
                                        </font>
                                     </TextArea>
                                  </children>
@@ -164,7 +164,30 @@
                                     </HBox>
                                     <TextArea fx:id="txtAreaSemantico" editable="false" prefHeight="900.0" prefWidth="314.0" promptText="Salida Analisis Semántico">
                                        <font>
-                                          <Font size="18.0" />
+                                          <Font name="Adwaita Mono" size="18.0" />
+                                       </font>
+                                    </TextArea>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </VBox>
+                           </content>
+                        </Tab>
+                        <Tab fx:id="tabPrePosFija" text="Convertir pre/pos fija">
+                           <content>
+                              <VBox alignment="TOP_CENTER" spacing="5.0">
+                                 <children>
+                                    <HBox alignment="TOP_CENTER" spacing="10.0">
+                                       <children>
+                                          <Button fx:id="btnPrePosFija" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnPrePosFijaOnAction" text="Realizar Conversion a pre/pos fija" />
+                                          <Button fx:id="btnPrePosFijaGuardar" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnPrePosFijaGuardarOnAction" text="Guardar txt" />
+                                          <Button fx:id="btnPrePosFijaGuardar1" alignment="CENTER" disable="true" layoutX="356.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnPrePosFijaGuardarOnAction" text="Guardar txt" />
+                                       </children>
+                                    </HBox>
+                                    <TextArea fx:id="txtAreaPrePosFija" editable="false" prefHeight="900.0" prefWidth="314.0" promptText="Salida Conversion Prefija y posfija">
+                                       <font>
+                                          <Font name="Adwaita Mono" size="18.0" />
                                        </font>
                                     </TextArea>
                                  </children>
