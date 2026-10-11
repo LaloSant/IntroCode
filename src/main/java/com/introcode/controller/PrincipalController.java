@@ -55,6 +55,9 @@ public class PrincipalController implements Initializable {
 
 	// Layout Izq
 	@FXML
+	private TextArea txtAreaNumerosLinea;
+
+	@FXML
 	private TextArea txtAreaEditor;
 
 	@FXML
@@ -216,7 +219,12 @@ public class PrincipalController implements Initializable {
 
 
 	private void inicializarEditor() {
+		txtAreaNumerosLinea.setText("1");
+		txtAreaEditor.scrollTopProperty().addListener(
+				(obs, oldValue, newValue) -> txtAreaNumerosLinea.setScrollTop(newValue.doubleValue()));
+
 		txtAreaEditor.textProperty().addListener((obs, oldValue, newValue) -> {
+			actualizarNumerosLinea(newValue);
 			limpiarAnalizadores();
 			App.changeTitle("INTROCODE (*)");
 			Editor.isEdited = true;
@@ -241,6 +249,24 @@ public class PrincipalController implements Initializable {
 					}
 					lblPosCursor.setText("Linea: " + line + ", Columna: " + column);
 				});
+	}
+
+	private void actualizarNumerosLinea(String texto) {
+		int totalLineas = 1;
+		for (int i = 0; i < texto.length(); i++) {
+			if (texto.charAt(i) == '\n') {
+				totalLineas++;
+			}
+		}
+
+		StringBuilder numeros = new StringBuilder();
+		for (int linea = 1; linea <= totalLineas; linea++) {
+			if (linea > 1) {
+				numeros.append('\n');
+			}
+			numeros.append(linea);
+		}
+		txtAreaNumerosLinea.setText(numeros.toString());
 	}
 
 	private void inicializarTabla() {
@@ -520,7 +546,7 @@ public class PrincipalController implements Initializable {
 			tablaSimbolos.append(entry.getKey()).append(" : ").append(entry.getValue()).append("\n");
 		}
 		txtAreaSemantico.setText(resultado + "\n" + tablaSimbolos.toString());
-		if (!error) {
+		if (error) {
 			LOCAL_APPSTATUS = AppStatus.ANSEMANTICO;
 		}
 
@@ -531,13 +557,13 @@ public class PrincipalController implements Initializable {
 	@FXML
 	private void btnPrePosFijaOnAction() {
 		if (LOCAL_APPSTATUS.compareTo(AppStatus.ANSEMANTICO) < 0) {
-			txtAreaSintactico.setText(
+			txtAreaPrePosFija.setText(
 					"Ejecute primero los analisis previos");
 			return;
 		}
 
 		if (analizadorLexico.getRegistroLexico().isEmpty()) {
-			txtAreaSintactico.setText(
+			txtAreaPrePosFija.setText(
 					"No hay tokens disponibles. Ejecute el análisis léxico.");
 			return;
 		}

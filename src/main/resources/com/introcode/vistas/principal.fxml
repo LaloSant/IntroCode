@@ -58,14 +58,23 @@
                      <children>
                         <VBox alignment="TOP_RIGHT">
                            <children>
-                              <TextArea fx:id="txtAreaEditor" prefHeight="741.0" prefWidth="1270.0" promptText="Empieze a escribir Codigo">
-                                 <font>
-                                    <Font name="Adwaita Mono" size="14.0" />
-                                 </font>
-                              </TextArea>
-                              <Label fx:id="lblPosCursor" disable="true" text="Linea: N/A, Columna: N/A">
-                                 <font>
-                                    <Font size="18.0" />
+                              <HBox spacing="0.0">
+                                 <children>
+                                    <TextArea fx:id="txtAreaNumerosLinea" editable="false" focusTraversable="false" mouseTransparent="true" prefHeight="741.0" prefWidth="48.0" style="-fx-control-inner-background: #f4f4f4; -fx-text-fill: #777777;" wrapText="false">
+                                       <font>
+                                          <Font name="Adwaita Mono" size="14.0" />
+                                       </font>
+                                    </TextArea>
+                                    <TextArea fx:id="txtAreaEditor" prefHeight="741.0" prefWidth="1222.0" promptText="Empieze a escribir Codigo" wrapText="false">
+                                       <font>
+                                          <Font name="Adwaita Mono" size="14.0" />
+                                       </font>
+                                    </TextArea>
+                                 </children>
+                              </HBox>
+                        <Label fx:id="lblPosCursor" disable="true" text="Linea: N/A, Columna: N/A">
+                           <font>
+                              <Font size="18.0" />
                                  </font></Label>
                               <Separator prefWidth="200.0" />
                            </children>
@@ -182,7 +191,6 @@
                                        <children>
                                           <Button fx:id="btnPrePosFija" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnPrePosFijaOnAction" text="Realizar Conversion a pre/pos fija" />
                                           <Button fx:id="btnPrePosFijaGuardar" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnPrePosFijaGuardarOnAction" text="Guardar txt" />
-                                          <Button fx:id="btnPrePosFijaGuardar1" alignment="CENTER" disable="true" layoutX="356.0" layoutY="10.0" mnemonicParsing="false" onAction="#btnPrePosFijaGuardarOnAction" text="Guardar txt" />
                                        </children>
                                     </HBox>
                                     <TextArea fx:id="txtAreaPrePosFija" editable="false" prefHeight="900.0" prefWidth="314.0" promptText="Salida Conversion Prefija y posfija">
