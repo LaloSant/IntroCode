@@ -1,5 +1,7 @@
 package com.introcode.controller;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,9 +42,11 @@ public class PrePosFija {
             if (numeroExpresion[0] > 0) {
                 salidaExpresiones.append(System.lineSeparator()).append(System.lineSeparator());
             }
-            salidaExpresiones.append("EXPRESION ").append(++numeroExpresion[0])
-                    .append(": (PREFIJA) -> ")
+            salidaExpresiones.append("EXPRESION ").append(++numeroExpresion[0]).append(':')
+                    .append(System.lineSeparator()).append("PREFIJA -> ")
                     .append(imprimirPrefija(padre, new StringBuilder()))
+                    .append(System.lineSeparator()).append("POSFIJA -> ")
+                    .append(imprimirPosfija(padre, new StringBuilder()))
                     .append(System.lineSeparator()).append(imprimirExpresiones());
             return;
         }
@@ -55,11 +59,48 @@ public class PrePosFija {
         List<NodoSintactico> hijos = operador.getHijos();
         String argumento1 = hijos.isEmpty() ? "" : obtenerArgumento(hijos.get(0));
         String argumento2 = hijos.size() < 2 ? "" : obtenerArgumento(hijos.get(1));
-        String resultado = "T" + (++temporal);
+        String resultado = evaluarConstante(operador, argumento1, argumento2);
+        if (resultado == null) {
+            resultado = "T" + (++temporal);
+        }
         cuadruplas.add(new String[] {
             String.valueOf(++consecutivo), operador.getValor(), argumento1, argumento2, resultado
         });
         return resultado;
+    }
+
+    private String evaluarConstante(NodoSintactico operador, String argumento1, String argumento2) {
+        if (operador.getTipo() != TipoSintactico.OP_ARITMETICO) {
+            return null;
+        }
+        try {
+            BigDecimal izquierda = new BigDecimal(argumento1);
+            if (operador.getHijos().size() == 1) {
+                return "-".equals(operador.getValor()) ? formatearNumero(izquierda.negate()) : null;
+            }
+            BigDecimal derecha = new BigDecimal(argumento2);
+            BigDecimal resultado = switch (operador.getValor()) {
+                case "+" -> izquierda.add(derecha);
+                case "-" -> izquierda.subtract(derecha);
+                case "*" -> izquierda.multiply(derecha);
+                case "/" -> derecha.signum() == 0 ? null : izquierda.divide(derecha, MathContext.DECIMAL128);
+                case "%" -> derecha.signum() == 0 ? null : izquierda.remainder(derecha);
+                case "^" -> evaluarPotencia(izquierda, derecha);
+                default -> null;
+            };
+            return resultado == null ? null : formatearNumero(resultado);
+        } catch (NumberFormatException | ArithmeticException exception) {
+            return null;
+        }
+    }
+
+    private BigDecimal evaluarPotencia(BigDecimal base, BigDecimal exponente) {
+        double resultado = Math.pow(base.doubleValue(), exponente.doubleValue());
+        return Double.isFinite(resultado) ? BigDecimal.valueOf(resultado) : null;
+    }
+
+    private String formatearNumero(BigDecimal numero) {
+        return numero.stripTrailingZeros().toPlainString();
     }
 
     private String obtenerArgumento(NodoSintactico nodo) {
@@ -97,6 +138,19 @@ public class PrePosFija {
         }
         for (NodoSintactico hijo : padre.getHijos()) {
             imprimirPrefija(hijo, sb);
+        }
+        return sb.toString();
+    }
+
+    public String imprimirPosfija(NodoSintactico padre, StringBuilder sb) {
+        if (padre == null) {
+            return sb.toString();
+        }
+        for (NodoSintactico hijo : padre.getHijos()) {
+            imprimirPosfija(hijo, sb);
+        }
+        if (padre.getValor() != null) {
+            sb.append(padre.getValor()).append(' ');
         }
         return sb.toString();
     }

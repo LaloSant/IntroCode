@@ -309,8 +309,11 @@ public class PrincipalController implements Initializable {
 		txtAreaErroresLexico.setText(null);
 		txtAreaSintactico.setText(null);
 		txtAreaSemantico.setText(null);
+		txtAreaPrePosFija.setText(null);
 		btnAnSintactico.setDisable(true);
 		btnAnSemantico.setDisable(true);
+		btnPrePosFija.setDisable(true);
+		btnPrePosFijaGuardar.setDisable(true);
 		btnErroresLexicoGuardar.setDisable(true);
 		btnErroresSintGuardar.setDisable(true);
 		btnErroresSemanGuardar.setDisable(true);
@@ -556,7 +559,7 @@ public class PrincipalController implements Initializable {
 
 	@FXML
 	private void btnPrePosFijaOnAction() {
-		if (LOCAL_APPSTATUS.compareTo(AppStatus.ANSEMANTICO) < 0) {
+		if (LOCAL_APPSTATUS.compareTo(AppStatus.ANSINTACTICO) < 0) {
 			txtAreaPrePosFija.setText(
 					"Ejecute primero los analisis previos");
 			return;
@@ -569,6 +572,7 @@ public class PrincipalController implements Initializable {
 		}
 		txtAreaPrePosFija.setText(convertidorPrePosFija.convertirPrefija(resultadoSintactico.getRaiz()));
 		LOCAL_APPSTATUS = AppStatus.PREPOSFIJA;
+		btnErroresSemanGuardar.setDisable(false);
 	}
 
 	// GUARDAR ARCHIVOS
