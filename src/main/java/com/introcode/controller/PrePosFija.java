@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.introcode.entity.NodoSintactico;
 import com.introcode.entity.NodoSintactico.TipoSintactico;
@@ -14,15 +15,18 @@ public class PrePosFija {
 
 	private final List<String[]> cuadruplas = new ArrayList<>();
 
+	private Map<String, Object> tablaSimbolos;
+
 	private int consecutivo;
 
 	private int temporal;
 	
 
-	public String convertirPrefija(NodoSintactico raiz) {
+	public String convertirPrefija(NodoSintactico raiz, Map<String, Object> tablaSimbolos) {
 		if (raiz == null) {
 			return "SIN EXPRESIONES ENCONTRADAS";
 		}
+		this.tablaSimbolos = tablaSimbolos;
 		recorrer(raiz);
 		return salidaExpresiones.toString();
 	}
@@ -38,6 +42,24 @@ public class PrePosFija {
 	}
 
 	private void recolectarExpresiones(NodoSintactico padre, int[] numeroExpresion) {
+		recolectarExpresiones(padre, numeroExpresion, null);
+	}
+
+	private void recolectarExpresiones(NodoSintactico padre, int[] numeroExpresion, String variableAsignada) {
+		if (padre.getTipo() == TipoSintactico.DECLARACION) {
+			List<NodoSintactico> hijos = padre.getHijos();
+			if (hijos.size() > 2 && hijos.get(2).getHijos().size() > 1) {
+				recolectarExpresiones(hijos.get(2).getHijos().get(1), numeroExpresion, hijos.get(1).getValor());
+			}
+			return;
+		}
+		if (padre.getTipo() == TipoSintactico.SOBREESCRIBIR) {
+			List<NodoSintactico> hijos = padre.getHijos();
+			if (hijos.size() > 2) {
+				recolectarExpresiones(hijos.get(2), numeroExpresion, hijos.get(0).getValor());
+			}
+			return;
+		}
 		if (esOperador(padre)) {
 			cuadruplas.clear();
 			consecutivo = 0;
@@ -51,12 +73,22 @@ public class PrePosFija {
 					.append(imprimirPrefija(padre, new StringBuilder()))
 					.append(System.lineSeparator()).append("POSFIJA -> ")
 					.append(imprimirPosfija(padre, new StringBuilder()))
-					.append(System.lineSeparator()).append(imprimirExpresiones());
+					.append(System.lineSeparator()).append(imprimirExpresiones())
+					.append(System.lineSeparator()).append("VALOR: ")
+					.append(obtenerValorFinal(variableAsignada));
 			return;
 		}
 		for (NodoSintactico nodo : padre.getHijos()) {
-			recolectarExpresiones(nodo, numeroExpresion);
+			recolectarExpresiones(nodo, numeroExpresion, variableAsignada);
 		}
+	}
+
+	private String obtenerValorFinal(String variableAsignada) {
+		if (variableAsignada == null || tablaSimbolos == null || !tablaSimbolos.containsKey(variableAsignada)) {
+			return "";
+		}
+		Object valor = tablaSimbolos.get(variableAsignada);
+		return valor == null ? "nil" : valor.toString();
 	}
 
 	private String generarCuadrupla(NodoSintactico operador) {

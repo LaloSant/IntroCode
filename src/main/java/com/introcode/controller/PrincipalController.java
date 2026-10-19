@@ -388,7 +388,7 @@ public class PrincipalController implements Initializable {
 		// btnAnSemantico.setDisable(true);
 		// return;
 		// }
-		if (LOCAL_APPSTATUS.compareTo(AppStatus.ANSINTACTICO) < 0) {
+		if (LOCAL_APPSTATUS.compareTo(AppStatus.ANSEMANTICO) < 0) {
 			btnPrePosFija.setDisable(true);
 			return;
 		}
@@ -559,7 +559,7 @@ public class PrincipalController implements Initializable {
 
 	@FXML
 	private void btnPrePosFijaOnAction() {
-		if (LOCAL_APPSTATUS.compareTo(AppStatus.ANSINTACTICO) < 0) {
+		if (LOCAL_APPSTATUS.compareTo(AppStatus.ANSEMANTICO) < 0) {
 			txtAreaPrePosFija.setText(
 					"Ejecute primero los analisis previos");
 			return;
@@ -570,7 +570,7 @@ public class PrincipalController implements Initializable {
 					"No hay tokens disponibles. Ejecute el análisis léxico.");
 			return;
 		}
-		txtAreaPrePosFija.setText(convertidorPrePosFija.convertirPrefija(resultadoSintactico.getRaiz()));
+		txtAreaPrePosFija.setText(convertidorPrePosFija.convertirPrefija(resultadoSintactico.getRaiz(), analizadorSemantico.getTablaSimbolos()));
 		LOCAL_APPSTATUS = AppStatus.PREPOSFIJA;
 		btnErroresSemanGuardar.setDisable(false);
 	}
