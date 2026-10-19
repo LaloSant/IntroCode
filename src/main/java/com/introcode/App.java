@@ -9,6 +9,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,18 +38,15 @@ public class App extends Application {
 	@Getter
 	private static final String sep = File.separator;
 
-	public static final String defaultDir =
-		System.getProperty("user.dir") +
-		" src main resources com introcode codigo".replace(" ", sep);
+	public static final String defaultDir = System.getProperty("user.dir") +
+			" src main resources com introcode codigo".replace(" ", sep);
 
 	public static void main(String[] args) {
 		launch();
 	}
 
 	private static Parent loadFXML(String fxml) throws IOException {
-		FXMLLoader fxmlLoader = new FXMLLoader(
-			App.class.getResource(fxml + ".fxml")
-		);
+		FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
 		return fxmlLoader.load();
 	}
 
@@ -56,12 +54,13 @@ public class App extends Application {
 	public void start(Stage stage) throws IOException {
 		//App.setUserAgentStylesheet(STYLESHEET_CASPIAN);
 		//App.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
+		Font.loadFont(App.class.getResourceAsStream("fonts/adwaita-mono.ttf"), 14);
+
 		App.setUserAgentStylesheet(new Dracula().getUserAgentStylesheet());
 		App.setStage(stage);
 		scene = new Scene(loadFXML("vistas/principal"));
 		stage.setTitle("INTROCODE");
 		stage.setScene(scene);
-		//stage.getIcons().add(new Image(getClass().getResourceAsStream("img/Mio.png")));
 		stage.show();
 	}
 
