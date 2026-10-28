@@ -79,6 +79,9 @@ public class PrincipalController implements Initializable {
 	@FXML
 	private Tab tabPrePosFija;
 
+	@FXML
+	private Tab tabOptimizar;
+
 	// Tab Analisis Lexico
 
 	@FXML
@@ -141,6 +144,17 @@ public class PrincipalController implements Initializable {
 	@FXML
 	private TextArea txtAreaPrePosFija;
 
+	// Tab optmizar
+
+	@FXML
+	private Button btnOptimizar;
+
+	@FXML
+	private Button btnOptimizarGuardar;
+
+	@FXML
+	private TextArea txtAreaOptimizar;
+
 	// Propiedades
 
 	private AppStatus LOCAL_APPSTATUS = AppStatus.PREPOSFIJA;
@@ -152,6 +166,8 @@ public class PrincipalController implements Initializable {
 	private AnSemantico analizadorSemantico = new AnSemantico();
 
 	private PrePosFija convertidorPrePosFija = new PrePosFija();
+
+	private Optimizador optimizador = new Optimizador();
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
@@ -209,7 +225,20 @@ public class PrincipalController implements Initializable {
 											false,
 											false);
 									if (!btnPrePosFija.isDisabled()) {
-										btnPrePosFijaOnAction();									}
+										btnPrePosFijaOnAction();									
+									}
+								}
+							}
+							case "tabOptimizar" -> {
+								tabOptimizarOnChange();
+								if (App.getWorkingFile() != null) {
+									Editor.guardarArchivoEditor(
+											txtAreaEditor,
+											false,
+											false);
+									if (!btnOptimizar.isDisabled()) {
+										btnOptimizarOnAction();									
+									}
 								}
 							}
 						}
@@ -275,7 +304,7 @@ public class PrincipalController implements Initializable {
 			protected void updateItem(RegistroLexico item, boolean empty) {
 				super.updateItem(item, empty);
 				if (empty || item == null) {
-					setStyle(""); // limpia estilo si la fila está vacía
+					setStyle("");
 				} else {
 					String style = item.getToken() == TokenLexico.ERROR_LEXICO
 							? "-fx-background-color: #FF6666;"
@@ -310,13 +339,16 @@ public class PrincipalController implements Initializable {
 		txtAreaSintactico.setText(null);
 		txtAreaSemantico.setText(null);
 		txtAreaPrePosFija.setText(null);
+		txtAreaOptimizar.setText(null);
 		btnAnSintactico.setDisable(true);
 		btnAnSemantico.setDisable(true);
 		btnPrePosFija.setDisable(true);
+		btnOptimizar.setDisable(true);
 		btnPrePosFijaGuardar.setDisable(true);
 		btnErroresLexicoGuardar.setDisable(true);
 		btnErroresSintGuardar.setDisable(true);
 		btnErroresSemanGuardar.setDisable(true);
+		btnOptimizarGuardar.setDisable(true);
 	}
 
 	//TODO: Terminar de implementar
@@ -393,6 +425,18 @@ public class PrincipalController implements Initializable {
 			return;
 		}
 		btnPrePosFija.setDisable(false);
+	}
+
+	private void tabOptimizarOnChange() {
+		// if (App.getWorkingFile() == null || txtAreaSemantico.getText() == null) {
+		// btnAnSemantico.setDisable(true);
+		// return;
+		// }
+		if (LOCAL_APPSTATUS.compareTo(AppStatus.PREPOSFIJA) < 0) {
+			btnOptimizar.setDisable(true);
+			return;
+		}
+		btnOptimizar.setDisable(false);
 	}
 
 	// Menu Bar
@@ -572,7 +616,28 @@ public class PrincipalController implements Initializable {
 		}
 		txtAreaPrePosFija.setText(convertidorPrePosFija.convertirPrefija(resultadoSintactico.getRaiz(), analizadorSemantico.getTablaSimbolos()));
 		LOCAL_APPSTATUS = AppStatus.PREPOSFIJA;
-		btnErroresSemanGuardar.setDisable(false);
+		btnPrePosFijaGuardar.setDisable(false);
+	}
+
+	// TAB OPTIMIZAR
+
+	@FXML
+	private void btnOptimizarOnAction() {
+		if (LOCAL_APPSTATUS.compareTo(AppStatus.PREPOSFIJA) < 0) {
+			txtAreaOptimizar.setText(
+					"Ejecute primero los analisis previos");
+			return;
+		}
+
+		if (analizadorLexico.getRegistroLexico().isEmpty()) {
+			txtAreaPrePosFija.setText(
+					"No hay tokens disponibles. Ejecute el análisis léxico.");
+			return;
+		}
+		txtAreaOptimizar.setText(optimizador.optimizar(resultadoSintactico.getRaiz()));
+		
+		LOCAL_APPSTATUS = AppStatus.PREPOSFIJA;
+		btnOptimizarGuardar.setDisable(false);
 	}
 
 	// GUARDAR ARCHIVOS
@@ -603,6 +668,14 @@ public class PrincipalController implements Initializable {
 		FileUtilities.guardarArchivo(
 				txtAreaPrePosFija.getText(),
 				"PREPOSFIJA", FileType.TXT);
+
+	}
+
+	@FXML
+	private void btnOptimizarGuardarOnAction() {
+		FileUtilities.guardarArchivo(
+				txtAreaOptimizar.getText(),
+				"OPTIMIZADO", FileType.TXT);
 
 	}
 

@@ -6,7 +6,8 @@ public enum AppStatus {
     ANLEXICO(2),
     ANSINTACTICO(3),
     ANSEMANTICO(4),
-    PREPOSFIJA(5);
+    PREPOSFIJA(5),
+    OPTIMIZAR(6);;
 
     private AppStatus(int value){
     }

@@ -205,6 +205,28 @@
                               </VBox>
                            </content>
                         </Tab>
+                        <Tab fx:id="tabOptimizar" text="Optimizacion">
+                           <content>
+                              <VBox alignment="TOP_CENTER" spacing="5.0">
+                                 <children>
+                                    <HBox alignment="TOP_CENTER" spacing="10.0">
+                                       <children>
+                                          <Button fx:id="btnOptimizar" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnPrePosFijaOnAction" text="Optimizar codigo" />
+                                          <Button fx:id="btnOptimizarGuardar" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnOptimizarGuardarOnAction" text="Guardar txt" />
+                                       </children>
+                                    </HBox>
+                                    <TextArea fx:id="txtAreaOptimizar" editable="false" prefHeight="900.0" prefWidth="314.0" promptText="Salida de Optimizacion">
+                                       <font>
+                                          <Font name="Adwaita Mono" size="18.0" />
+                                       </font>
+                                    </TextArea>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </padding>
+                              </VBox>
+                           </content>
+                        </Tab>
                     </tabs>
                   </TabPane>
                </children>
