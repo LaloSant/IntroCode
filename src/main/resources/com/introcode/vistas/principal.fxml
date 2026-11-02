@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" maxHeight="1080.0" maxWidth="1920.0" minHeight="1000.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.introcode.controller.PrincipalController">
+<VBox alignment="CENTER" maxHeight="1080.0" maxWidth="1920.0" minHeight="1000.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.introcode.controller.PrincipalController">
    <children>
       <VBox>
          <children>
@@ -54,7 +54,7 @@
             </HBox>
             <HBox fillHeight="false" spacing="10.0">
                <children>
-                  <VBox alignment="CENTER_RIGHT" spacing="10.0">
+                  <VBox alignment="CENTER_RIGHT" prefHeight="908.0" prefWidth="1105.0" spacing="10.0">
                      <children>
                         <VBox alignment="TOP_RIGHT">
                            <children>
@@ -72,11 +72,21 @@
                                     </TextArea>
                                  </children>
                               </HBox>
-                        <Label fx:id="lblPosCursor" disable="true" text="Linea: N/A, Columna: N/A">
-                           <font>
-                              <Font size="18.0" />
-                                 </font></Label>
                               <Separator prefWidth="200.0" />
+                              <HBox alignment="CENTER" spacing="50.0">
+                                 <children>
+                              <Label fx:id="lblPosCursor" disable="true" minWidth="210.0" text="Linea: %s, Columna: %s">
+                                 <font>
+                                    <Font size="18.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="lblCaracteresEditor" disable="true" text="Caracteres: %s">
+                                       <font>
+                                          <Font size="18.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </HBox>
                            </children>
                         </VBox>
                         <VBox alignment="CENTER" maxHeight="300.0" spacing="10.0">
@@ -117,6 +127,11 @@
                                  <children>
                                     <HBox alignment="TOP_CENTER" spacing="15.0">
                                        <children>
+                                          <Label fx:id="lblAnLexicoTiempo" disable="true" text="Tiempo de ejecucion: %s">
+                                             <font>
+                                                <Font size="18.0" />
+                                             </font>
+                                          </Label>
                                           <Button fx:id="btnAnLexico" alignment="CENTER" disable="true" mnemonicParsing="false" onAction="#btnAnLexicoOnAction" text="Realizar Analisis Lexico" />
                                           <Button fx:id="btnGuardarAnLexico" alignment="CENTER" mnemonicParsing="false" onAction="#btnGuardarAnLexicoOnAction" text="Guardar CSV" />
                                        </children>
@@ -220,6 +235,15 @@
                                           <Font name="Adwaita Mono" size="18.0" />
                                        </font>
                                     </TextArea>
+                                    <HBox alignment="CENTER" spacing="50.0">
+                                       <children>
+                                          <Label fx:id="lblOptimizarDetalles" disable="true" text="Lineas: %s Caracteres: %s">
+                                             <font>
+                                                <Font size="18.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </HBox>
                                  </children>
                                  <padding>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

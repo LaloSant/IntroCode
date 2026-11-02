@@ -63,7 +63,10 @@ public class PrincipalController implements Initializable {
 	@FXML
 	private Label lblPosCursor;
 
-	// Layout
+	@FXML
+	private Label lblCaracteresEditor;
+
+	// Layout Der
 	@FXML
 	private TabPane tabPane;
 
@@ -86,6 +89,9 @@ public class PrincipalController implements Initializable {
 
 	@FXML
 	private TextArea txtAreaErroresLexico;
+
+	@FXML 
+	private Label lblAnLexicoTiempo;
 
 	@FXML
 	private Button btnAnLexico;
@@ -154,6 +160,9 @@ public class PrincipalController implements Initializable {
 
 	@FXML
 	private TextArea txtAreaOptimizar;
+
+	@FXML
+	private Label lblOptimizarDetalles;
 
 	// Propiedades
 
@@ -225,7 +234,7 @@ public class PrincipalController implements Initializable {
 											false,
 											false);
 									if (!btnPrePosFija.isDisabled()) {
-										btnPrePosFijaOnAction();									
+										btnPrePosFijaOnAction();
 									}
 								}
 							}
@@ -237,7 +246,7 @@ public class PrincipalController implements Initializable {
 											false,
 											false);
 									if (!btnOptimizar.isDisabled()) {
-										btnOptimizarOnAction();									
+										btnOptimizarOnAction();
 									}
 								}
 							}
@@ -246,7 +255,6 @@ public class PrincipalController implements Initializable {
 				});
 	}
 
-
 	private void inicializarEditor() {
 		txtAreaNumerosLinea.setText("1");
 		txtAreaEditor.scrollTopProperty().addListener(
@@ -254,6 +262,7 @@ public class PrincipalController implements Initializable {
 
 		txtAreaEditor.textProperty().addListener((obs, oldValue, newValue) -> {
 			actualizarNumerosLinea(newValue);
+			lblCaracteresEditor.setText(String.format("Caracteres: %s", newValue.length()));
 			limpiarAnalizadores();
 			App.changeTitle("INTROCODE (*)");
 			Editor.isEdited = true;
@@ -281,6 +290,9 @@ public class PrincipalController implements Initializable {
 	}
 
 	private void actualizarNumerosLinea(String texto) {
+		if (texto == null) {
+			texto = "";
+		}
 		int totalLineas = 1;
 		for (int i = 0; i < texto.length(); i++) {
 			if (texto.charAt(i) == '\n') {
@@ -334,6 +346,8 @@ public class PrincipalController implements Initializable {
 
 	private void limpiarAnalizadores() {
 		LOCAL_APPSTATUS = AppStatus.NONE;
+		lblPosCursor.setText("Linea: %s, Columna: %s");
+		lblAnLexicoTiempo.setText("Tiempo de ejecucion: %s");
 		tblAnalisLexico.setItems(null);
 		txtAreaErroresLexico.setText(null);
 		txtAreaSintactico.setText(null);
@@ -358,19 +372,19 @@ public class PrincipalController implements Initializable {
 
 	// 		}
 	// 		case FILE_READ -> {
-				
+
 	// 		}	
 	// 		case ANLEXICO -> {
-				
+
 	// 		}	
 	// 		case ANSINTACTICO -> {
-				
+
 	// 		}	
 	// 		case ANSEMANTICO -> {
-				
+
 	// 		}	
 	// 		case PREPOSFIJA -> {
-				
+
 	// 		}		
 	// 		default -> {
 
@@ -390,11 +404,6 @@ public class PrincipalController implements Initializable {
 	}
 
 	private void tabAnSintacticoOnChange() {
-		// if (App.getWorkingFile() == null || txtAreaErroresLexico.getText() == null
-		// || !txtAreaErroresLexico.getText().isBlank()) {
-		// btnAnSintactico.setDisable(true);
-		// return;
-		// }
 		if (LOCAL_APPSTATUS.compareTo(AppStatus.ANLEXICO) < 0) {
 			btnAnSintactico.setDisable(true);
 			return;
@@ -403,11 +412,6 @@ public class PrincipalController implements Initializable {
 	}
 
 	private void tabAnSemanticoOnChange() {
-		// if (App.getWorkingFile() == null || txtAreaSintactico.getText() == null
-		// || !txtAreaSintactico.getText().contains("correcto")) {
-		// btnAnSemantico.setDisable(true);
-		// return;
-		// }
 		if (LOCAL_APPSTATUS.compareTo(AppStatus.ANSINTACTICO) < 0) {
 			btnAnSemantico.setDisable(true);
 			return;
@@ -416,10 +420,6 @@ public class PrincipalController implements Initializable {
 	}
 
 	private void tabPrePosFijaOnChange() {
-		// if (App.getWorkingFile() == null || txtAreaSemantico.getText() == null) {
-		// btnAnSemantico.setDisable(true);
-		// return;
-		// }
 		if (LOCAL_APPSTATUS.compareTo(AppStatus.ANSEMANTICO) < 0) {
 			btnPrePosFija.setDisable(true);
 			return;
@@ -428,10 +428,6 @@ public class PrincipalController implements Initializable {
 	}
 
 	private void tabOptimizarOnChange() {
-		// if (App.getWorkingFile() == null || txtAreaSemantico.getText() == null) {
-		// btnAnSemantico.setDisable(true);
-		// return;
-		// }
 		if (LOCAL_APPSTATUS.compareTo(AppStatus.PREPOSFIJA) < 0) {
 			btnOptimizar.setDisable(true);
 			return;
@@ -517,9 +513,16 @@ public class PrincipalController implements Initializable {
 			btnAnSintactico.setDisable(true);
 			return;
 		}
+		long timpoInicio = System.nanoTime();
+
+		String resultadoErrores = analizadorLexico.tokenizar(tblAnalisLexico);
+
+		long tiempoFin = System.nanoTime();
+		double durationMs = (tiempoFin - timpoInicio) / 1_000_000.0;
+		lblAnLexicoTiempo.setText(String.format("Tiempo de ejecucion: %f", durationMs));
+
 		btnErroresLexicoGuardar.setDisable(false);
-		txtAreaErroresLexico.setText(
-				analizadorLexico.tokenizar(tblAnalisLexico));
+		txtAreaErroresLexico.setText(resultadoErrores);
 		if (!txtAreaErroresLexico.getText().isBlank()) {
 			btnAnSintactico.setDisable(true);
 			analizadorLexico.alerta();
@@ -614,7 +617,8 @@ public class PrincipalController implements Initializable {
 					"No hay tokens disponibles. Ejecute el análisis léxico.");
 			return;
 		}
-		txtAreaPrePosFija.setText(convertidorPrePosFija.convertirPrefija(resultadoSintactico.getRaiz(), analizadorSemantico.getTablaSimbolos()));
+		txtAreaPrePosFija.setText(convertidorPrePosFija.convertirPrefija(resultadoSintactico.getRaiz(),
+				analizadorSemantico.getTablaSimbolos()));
 		LOCAL_APPSTATUS = AppStatus.PREPOSFIJA;
 		btnPrePosFijaGuardar.setDisable(false);
 	}
@@ -634,8 +638,11 @@ public class PrincipalController implements Initializable {
 					"No hay tokens disponibles. Ejecute el análisis léxico.");
 			return;
 		}
-		txtAreaOptimizar.setText(optimizador.optimizar(resultadoSintactico.getRaiz()));
-		
+		String resultado = optimizador.optimizar(resultadoSintactico.getRaiz());
+		txtAreaOptimizar.setText(resultado);
+		lblOptimizarDetalles
+				.setText(String.format("Lineas: %s Caracteres: %s", resultado.lines().count(), resultado.length()));
+
 		LOCAL_APPSTATUS = AppStatus.PREPOSFIJA;
 		btnOptimizarGuardar.setDisable(false);
 	}
@@ -675,7 +682,7 @@ public class PrincipalController implements Initializable {
 	private void btnOptimizarGuardarOnAction() {
 		FileUtilities.guardarArchivo(
 				txtAreaOptimizar.getText(),
-				"OPTIMIZADO", FileType.TXT);
+				"OPTIMIZADO", FileType.LUA);
 
 	}
 

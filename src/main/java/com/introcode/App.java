@@ -2,6 +2,7 @@ package com.introcode;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 //import atlantafx.base.theme.PrimerDark;
 import atlantafx.base.theme.Dracula;
@@ -9,6 +10,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import lombok.Getter;
@@ -52,6 +54,8 @@ public class App extends Application {
 
 	@Override
 	public void start(Stage stage) throws IOException {
+		stage.getIcons().add(new Image(Objects.requireNonNull(
+				getClass().getResourceAsStream("/com/introcode/introlua.png"))));
 		//App.setUserAgentStylesheet(STYLESHEET_CASPIAN);
 		//App.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
 		Font.loadFont(App.class.getResourceAsStream("fonts/adwaita-mono.ttf"), 14);
