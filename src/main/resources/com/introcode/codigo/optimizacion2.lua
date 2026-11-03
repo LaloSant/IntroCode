@@ -1,3 +1,6 @@
+--[[ ELIMINACION DE CODIGO MUERTO
+]]
+
 -- Variables utilizadas por el programa
    	local suma = 4 + 1;
 			local bandera = false;
@@ -7,6 +10,7 @@
 	temporal     = 		200;
 local 					tambienInutil = 		
 50;
+
 
 -- Se elimina este bloque porque la condición siempre es falsa
 if false then
@@ -35,3 +39,15 @@ local resultado = suma * 2;
 
 -- Varias instrucciones en una sola línea también se separan al optimizar
 local comprimida = 4 + 1; if (comprimida >= 5) then local comprimidaR = true end;
+
+
+
+--[[
+	DOBLAMIENTO DE CONSTANTES
+]]
+
+local desdoblada = (5 + 3 * 2 ^ 2) % 2 / 5;
+temporal = 5 + 3 * 2 ^ 2;
+local mixed= x + 6;
+
+

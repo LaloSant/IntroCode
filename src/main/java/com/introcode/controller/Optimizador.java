@@ -1,5 +1,7 @@
 package com.introcode.controller;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,15 +24,16 @@ public class Optimizador {
 		renderizarSecuencia(raiz, valoresBooleanos, lineas);
 		eliminarCodigoMuerto(lineas);
 		StringBuilder sb = new StringBuilder();
-        for (Linea linea : lineas) {
+		for (Linea linea : lineas) {
 			sb.append(linea.texto).append(System.lineSeparator());
 		}
-		return  sb.toString();
+		return sb.toString();
 		// return lineas.stream()
-		// 		.filter(linea -> linea.activa)
-		// 		.map(linea -> linea.texto)
-		// 		.reduce((anterior, siguiente) -> anterior + System.lineSeparator() + siguiente)
-		// 		.orElse("");
+		// .filter(linea -> linea.activa)
+		// .map(linea -> linea.texto)
+		// .reduce((anterior, siguiente) -> anterior + System.lineSeparator() +
+		// siguiente)
+		// .orElse("");
 	}
 
 	private void renderizarSecuencia(NodoSintactico secuencia, Map<String, Boolean> valoresBooleanos,
@@ -76,7 +79,7 @@ public class Optimizador {
 				}
 				String nombre = hijos.get(0).getValor();
 				NodoSintactico expresion = hijos.get(2);
-				salida.add(linea(nombre + "=" + formatearExpresion(expresion) + ";", nombre, false, expresion));
+				salida.add(linea(nombre + "=" + formatearExpresion(expresion) + "", nombre, false, expresion));
 				actualizarValorBooleano(nombre, expresion, valoresBooleanos);
 			}
 			case IMPRIMIR -> renderizarImprimir(hijos, salida);
@@ -304,6 +307,12 @@ public class Optimizador {
 			return "";
 		}
 		TipoSintactico tipo = nodo.getTipo();
+		if (tipo == TipoSintactico.OP_ARITMETICO) {
+			BigDecimal constante = evaluarConstante(nodo);
+			if (constante != null) {
+				return formatearNumero(constante);
+			}
+		}
 		if (tipo == TipoSintactico.OP_ARITMETICO || tipo == TipoSintactico.OP_RELACIONAL
 				|| tipo == TipoSintactico.OP_LOGICO || tipo == TipoSintactico.OP_NOT) {
 			String operador = nodo.getValor() == null ? "" : nodo.getValor();
@@ -337,6 +346,58 @@ public class Optimizador {
 			return formatearTabla(nodo);
 		}
 		return nodo.getValor() == null ? "" : nodo.getValor();
+	}
+
+	private BigDecimal evaluarConstante(NodoSintactico nodo) {
+		if (nodo.getTipo() == TipoSintactico.NUMERO) {
+			try {
+				return new BigDecimal(nodo.getValor());
+			} catch (NumberFormatException exception) {
+				return null;
+			}
+		}
+		if (nodo.getTipo() != TipoSintactico.OP_ARITMETICO || nodo.getHijos().isEmpty()) {
+			return null;
+		}
+
+		List<NodoSintactico> hijos = nodo.getHijos();
+		BigDecimal izquierda = evaluarConstante(hijos.get(0));
+		if (izquierda == null) {
+			return null;
+		}
+		if (hijos.size() == 1) {
+			return "-".equals(nodo.getValor()) ? izquierda.negate() : null;
+		}
+		if (hijos.size() != 2) {
+			return null;
+		}
+
+		BigDecimal derecha = evaluarConstante(hijos.get(1));
+		if (derecha == null) {
+			return null;
+		}
+		try {
+			return switch (nodo.getValor()) {
+				case "+" -> izquierda.add(derecha);
+				case "-" -> izquierda.subtract(derecha);
+				case "*" -> izquierda.multiply(derecha);
+				case "/" -> derecha.signum() == 0 ? null : izquierda.divide(derecha, MathContext.DECIMAL128);
+				case "%" -> derecha.signum() == 0 ? null : izquierda.remainder(derecha);
+				case "^" -> evaluarPotencia(izquierda, derecha);
+				default -> null;
+			};
+		} catch (ArithmeticException exception) {
+			return null;
+		}
+	}
+
+	private BigDecimal evaluarPotencia(BigDecimal base, BigDecimal exponente) {
+		double resultado = Math.pow(base.doubleValue(), exponente.doubleValue());
+		return Double.isFinite(resultado) ? BigDecimal.valueOf(resultado) : null;
+	}
+
+	private String formatearNumero(BigDecimal numero) {
+		return numero.stripTrailingZeros().toPlainString();
 	}
 
 	private String formatearTabla(NodoSintactico tabla) {

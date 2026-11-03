@@ -90,7 +90,7 @@ public class PrincipalController implements Initializable {
 	@FXML
 	private TextArea txtAreaErroresLexico;
 
-	@FXML 
+	@FXML
 	private Label lblAnLexicoTiempo;
 
 	@FXML
@@ -342,12 +342,13 @@ public class PrincipalController implements Initializable {
 		tblAnalisLexico.setItems(null);
 	}
 
-	//UTILES
+	// UTILES
 
 	private void limpiarAnalizadores() {
 		LOCAL_APPSTATUS = AppStatus.NONE;
 		lblPosCursor.setText("Linea: %s, Columna: %s");
 		lblAnLexicoTiempo.setText("Tiempo de ejecucion: %s");
+		lblOptimizarDetalles.setText("Lineas: %s Caracteres: %s");
 		tblAnalisLexico.setItems(null);
 		txtAreaErroresLexico.setText(null);
 		txtAreaSintactico.setText(null);
@@ -364,33 +365,6 @@ public class PrincipalController implements Initializable {
 		btnErroresSemanGuardar.setDisable(true);
 		btnOptimizarGuardar.setDisable(true);
 	}
-
-	//TODO: Terminar de implementar
-	// private void cambiarEstado(AppStatus nuevoStatus){
-	// 	switch (nuevoStatus) {
-	// 		case NONE -> {
-
-	// 		}
-	// 		case FILE_READ -> {
-
-	// 		}	
-	// 		case ANLEXICO -> {
-
-	// 		}	
-	// 		case ANSINTACTICO -> {
-
-	// 		}	
-	// 		case ANSEMANTICO -> {
-
-	// 		}	
-	// 		case PREPOSFIJA -> {
-
-	// 		}		
-	// 		default -> {
-
-	// 		}
-	// 	}
-	// }
 
 	// TABS ON CHANGE
 
@@ -686,7 +660,7 @@ public class PrincipalController implements Initializable {
 
 	}
 
-	//ACERCA DE
+	// ACERCA DE
 
 	@FXML
 	private void mnuAcercaDeOnAction() {
