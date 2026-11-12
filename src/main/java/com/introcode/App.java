@@ -52,7 +52,7 @@ public class App extends Application {
 			"optimizacion2.lua",
 			"prefijas.lua");
 
-	public static final Path defaultDir = Path.of(System.getProperty("user.home"), "IntroCode", "codigo");
+	public static final Path defaultDir = Path.of(System.getProperty("user.home"), "IntroLua", "codigo");
 
 	public static void main(String[] args) {
 		launch();
@@ -95,7 +95,7 @@ public class App extends Application {
 		App.setUserAgentStylesheet(new Dracula().getUserAgentStylesheet());
 		App.setStage(stage);
 		scene = new Scene(loadFXML("vistas/principal"));
-		stage.setTitle("INTROCODE");
+		stage.setTitle("IntroLua");
 		stage.setScene(scene);
 		stage.show();
 	}

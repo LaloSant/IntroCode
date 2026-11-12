@@ -264,7 +264,7 @@ public class PrincipalController implements Initializable {
 			actualizarNumerosLinea(newValue);
 			lblCaracteresEditor.setText(String.format("Caracteres: %s", newValue.length()));
 			limpiarAnalizadores();
-			App.changeTitle("INTROCODE (*)");
+			App.changeTitle("IntroLua (*)");
 			Editor.isEdited = true;
 			btnAnLexico.setDisable(false);
 		});

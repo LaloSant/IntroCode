@@ -20,7 +20,7 @@ public class Editor {
 
 	public static File abrirArchivo(TextArea txtAr) {
 		FileChooser fc = new FileChooser();
-		fc.setTitle("Abrir archivo IntroCode");
+		fc.setTitle("Abrir archivo IntroLua");
 		fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Fuente de IntroLua", "*.lua"));
 		fc.setInitialDirectory(App.defaultDir.toFile());
 		File f = fc.showOpenDialog(App.getStage());
@@ -69,7 +69,7 @@ public class Editor {
 		String texto = (txtAr.getText() == null) ? "" : txtAr.getText();
 		try (FileWriter writer = new FileWriter(fileName)) {
 			writer.write(texto);
-			App.changeTitle("INTROCODE");
+			App.changeTitle("IntroLua");
 			
 			if (printAlert) {
 				new Alert(AlertType.INFORMATION, "Guardado Exitosamente");
