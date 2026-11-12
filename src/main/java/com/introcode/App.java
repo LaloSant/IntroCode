@@ -2,6 +2,11 @@ package com.introcode;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 
 //import atlantafx.base.theme.PrimerDark;
@@ -37,11 +42,17 @@ public class App extends Application {
 	@Setter
 	private static File workingFile;
 
-	@Getter
-	private static final String sep = File.separator;
+	private static final List<String> exampleFiles = List.of(
+			"basico1.lua",
+			"bloques.lua",
+			"ejemploTokens.lua",
+			"introlua.lua",
+			"introluav2.lua",
+			"optimizacion.lua",
+			"optimizacion2.lua",
+			"prefijas.lua");
 
-	public static final String defaultDir = System.getProperty("user.dir") +
-			" src main resources com introcode codigo".replace(" ", sep);
+	public static final Path defaultDir = Path.of(System.getProperty("user.home"), "IntroCode", "codigo");
 
 	public static void main(String[] args) {
 		launch();
@@ -52,8 +63,29 @@ public class App extends Application {
 		return fxmlLoader.load();
 	}
 
+	private static void prepareCodeDirectory() throws IOException {
+		Files.createDirectories(defaultDir);
+		for (String fileName : exampleFiles) {
+			Path destination = defaultDir.resolve(fileName);
+			if (Files.exists(destination)) {
+				continue;
+			}
+			try (InputStream example = App.class.getResourceAsStream("/com/introcode/codigo/" + fileName)) {
+				if (example == null) {
+					throw new IOException("No se encontró el ejemplo incluido: " + fileName);
+				}
+				try {
+					Files.copy(example, destination);
+				} catch (FileAlreadyExistsException ignored) {
+					// Another app instance may have copied the same example.
+				}
+			}
+		}
+	}
+
 	@Override
 	public void start(Stage stage) throws IOException {
+		prepareCodeDirectory();
 		stage.getIcons().add(new Image(Objects.requireNonNull(
 				getClass().getResourceAsStream("/com/introcode/introlua.png"))));
 		//App.setUserAgentStylesheet(STYLESHEET_CASPIAN);

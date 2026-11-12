@@ -22,7 +22,7 @@ public class Editor {
 		FileChooser fc = new FileChooser();
 		fc.setTitle("Abrir archivo IntroCode");
 		fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Fuente de IntroLua", "*.lua"));
-		fc.setInitialDirectory(new File(App.defaultDir));
+		fc.setInitialDirectory(App.defaultDir.toFile());
 		File f = fc.showOpenDialog(App.getStage());
 		if (f == null || !f.exists()) {
 			alertaArchivo();
@@ -54,7 +54,7 @@ public class Editor {
 			FileChooser fc = new FileChooser();
 			fc.setTitle("Guardar archivo IntroLua");
 			fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Fuente de IntroLua", "*.lua"));
-			fc.setInitialDirectory(new File(App.defaultDir));
+			fc.setInitialDirectory(App.defaultDir.toFile());
 			File f = fc.showSaveDialog(App.getStage());
 			if (f == null) {
 				alertaArchivo();

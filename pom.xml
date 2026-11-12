@@ -9,6 +9,8 @@
 	<artifactId>introcode</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<properties>
+		<main.class>com.introcode.App</main.class>
+		<installer.version>1.0.0</installer.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>25</maven.compiler.target>
 	</properties>
@@ -34,48 +36,128 @@
 			<version>1.18.42</version>
 			<scope>provided</scope>
 		</dependency>
-
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
-				<configuration>
-					<release>25</release>
-					<source>25</source>
-					<target>25</target>
-					<annotationProcessorPaths>
-					<path>
-						<groupId>org.projectlombok</groupId>
-						<artifactId>lombok</artifactId>
-						<version>1.18.42</version>
-					</path>
-				</annotationProcessorPaths>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.openjfx</groupId>
-				<artifactId>javafx-maven-plugin</artifactId>
-				<version>0.0.8</version>
-				<executions>
-					<execution>
-						<!-- Default configuration for running -->
-						<!-- Usage: mvn clean javafx:run -->
-						<id>default-cli</id>
-						<configuration>
-							<mainClass>com.introcode/com.introcode.App</mainClass>
-							<options>
-								<option>--add-opens=java.base/sun.misc=ALL-UNNAMED</option>
-								<option>--enable-native-access=javafx.graphics</option>
-							</options>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+
+<build>
+	<plugins>
+
+		<!-- Compilador configurado para Java 25 -->
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>3.13.0</version>
+			<configuration>
+				<release>25</release>
+				<annotationProcessorPaths>
+				<path>
+					<groupId>org.projectlombok</groupId>
+					<artifactId>lombok</artifactId>
+					<version>1.18.42</version>
+				</path>
+			</annotationProcessorPaths>
+			</configuration>
+		</plugin>
+
+		<!-- Ejecución local durante desarrollo (mvn javafx:run) -->
+		<plugin>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-maven-plugin</artifactId>
+			<version>0.0.8</version>
+			<executions>
+				<execution>
+					<!-- Default configuration for running -->
+					<!-- Usage: mvn clean javafx:run -->
+					<id>default-cli</id>
+					<configuration>
+						<mainClass>com.introcode/com.introcode.App</mainClass>
+						<options>
+							<option>--add-opens=java.base/sun.misc=ALL-UNNAMED</option>
+							<option>--enable-native-access=javafx.graphics</option>
+						</options>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+
+		<!-- De aqui para abajo es para empaquetamiento de: Jar Empaquetado con javafx y atlanta && exe -->
+		<!-- Uso: mvn clean package -->
+
+
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-jar-plugin</artifactId>
+			<version>3.4.2</version>
+			<configuration>
+				<archive>
+					<manifest>
+						<mainClass>${main.class}</mainClass>
+					</manifest>
+				</archive>
+			</configuration>
+		</plugin>
+		<!-- Copia todas las dependencias a target/libs para uso de jpackage -->
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-dependency-plugin</artifactId>
+			<version>3.6.1</version>
+			<executions>
+				<execution>
+					<id>copy-dependencies</id>
+					<phase>package</phase>
+					<goals>
+						<goal>copy-dependencies</goal>
+					</goals>
+					<configuration>
+						<outputDirectory>${project.build.directory}/libs</outputDirectory>
+						<includeScope>runtime</includeScope>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+
+		<!-- Invoca jpackage para crear un runtime modular con JavaFX -->
+		<plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>exec-maven-plugin</artifactId>
+			<version>3.2.0</version>
+			<executions>
+				<execution>
+					<id>jpackage-installer</id>
+					<phase>package</phase>
+					<goals>
+						<goal>exec</goal>
+					</goals>
+					<configuration>
+						<executable>${java.home}/bin/jpackage</executable>
+						<arguments>
+							<argument>--type</argument>
+							<argument>msi</argument>
+							<argument>--name</argument>
+							<argument>IntroCodeApp</argument>
+							<argument>--app-version</argument>
+							<argument>${installer.version}</argument>
+							<argument>--module-path</argument>
+							<argument>${project.build.directory}/${project.build.finalName}.jar</argument>
+							<argument>--module-path</argument>
+							<argument>${project.build.directory}/libs</argument>
+							<argument>--module</argument>
+							<argument>com.introcode/${main.class}</argument>
+							<argument>--java-options</argument>
+							<argument>--enable-native-access=javafx.graphics</argument>
+							<argument>--win-shortcut</argument>
+							<argument>--win-menu</argument>
+							<argument>--win-dir-chooser</argument>
+							<argument>--dest</argument>
+							<argument>${project.build.directory}/installer</argument>
+							<argument>--icon</argument>
+							<argument>src/main/resources/com/introcode/introlua.ico</argument>
+						</arguments>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+	</plugins>
+</build>
 	<profiles>
 		<profile>
 			<id>default</id>
