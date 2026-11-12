@@ -28,12 +28,6 @@ public class Optimizador {
 			sb.append(linea.texto).append(System.lineSeparator());
 		}
 		return sb.toString();
-		// return lineas.stream()
-		// .filter(linea -> linea.activa)
-		// .map(linea -> linea.texto)
-		// .reduce((anterior, siguiente) -> anterior + System.lineSeparator() +
-		// siguiente)
-		// .orElse("");
 	}
 
 	private void renderizarSecuencia(NodoSintactico secuencia, Map<String, Boolean> valoresBooleanos,
