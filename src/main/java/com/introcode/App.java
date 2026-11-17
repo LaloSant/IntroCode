@@ -43,14 +43,8 @@ public class App extends Application {
 	private static File workingFile;
 
 	private static final List<String> exampleFiles = List.of(
-			"basico1.lua",
-			"bloques.lua",
-			"ejemploTokens.lua",
-			"introlua.lua",
-			"introluav2.lua",
-			"optimizacion.lua",
-			"optimizacion2.lua",
-			"prefijas.lua");
+			"ejemplo_integral_con_errores.lua",
+			"ejemplo_integral_valido.lua");
 
 	public static final Path defaultDir = Path.of(System.getProperty("user.home"), "IntroLua", "codigo");
 
