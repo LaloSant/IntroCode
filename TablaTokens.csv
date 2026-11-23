@@ -1,0 +1,45 @@
+﻿
+,Categoría ,Lexema (IntroLua) ,Token ,ID ,Ejemplo de Uso 
+,Declaración de Variables ,local ,P.R. ,1,local x = 5 
+, ,true ,P.R. ,2,local b = true 
+, ,false ,P.R. ,3,local b = false 
+,Condicionales ,if ,P.R. ,4,if ( x > 0 ) then 
+, ,then ,P.R. ,5,if cond then 
+, ,else ,P.R. ,6,else 
+, ,elseif ,P.R. ,7,elseif ( x == 0 ) then 
+, ,end ,P.R. ,8,end 
+,Ciclos ,while ,P.R. ,9,while ( x < 10 ) do 
+, ,do ,P.R. ,10,while cond do 
+, ,for ,P.R. ,11,"for i = 1, 10 do "
+, ,repeat ,P.R ,12,repeat ... 
+, ,until ,P.R. ,13,Until (x < 1) 
+,Operadores Lógicos ,and ,P.R. ,14,(x > 0) and (y > 0) 
+, ,or ,P.R. ,15,(x == 0) or (y == 0) 
+, ,not ,P.R. ,16,not (b) 
+,Tipos de datos ,nil ,P.R. ,17,a = nil 
+,Operadores Aritméticos ,+ ,OP_ARIT ,18,x + y 
+, ,- ,OP_ARIT ,19,x - y 
+, ,* ,OP_ARIT ,20,x * y 
+, ,/ ,OP_ARIT ,21,x / y 
+, ,^ ,OP_ARIT ,22,x ^ 2 
+, ,% ,OP_ARIT ,23,x % 2 
+,Operadores Relacionales ,== ,OP_REL ,24,x == 10 
+, ,~= ,OP_REL ,25,x ~= 0 (Reemplaza a !=) 
+, ,< ,OP_REL ,26,x < 10 
+, ,> ,OP_REL ,27,x > 0 
+, ,<= ,OP_REL ,28,x <= 10 
+, ,>= ,OP_REL ,29,x >= 1 
+,Asignación ,= ,OP_ASIG ,30,x = 5 
+,Separadores y Estructura ,( ,SEP ,31,if ( cond ) 
+, ,) ,SEP ,32,if ( cond ) 
+, ,{ ,SEP ,33,local t = { } 
+, ,} ,SEP ,34,local t = { } 
+, ,[ ,SEP ,35,"t[1] = ""A"" "
+, ,] ,SEP ,36,"t[1] = ""A"" "
+, ,", ",SEP ,37,"for i = 1, 10, 1 "
+, ,; ,SEP ,38,print(x); (Opcional) 
+, ,""", ' ",SEP ,39,"""hola"" o 'hola' "
+,Comentarios ,-- ,COMENT ,40,-- esto es un comentario 
+,Identificadores y Literales ,"x, suma ",ID ,41,local suma = 0 
+, ,"""cadena"" ",LIT_STR ,42,"local s = ""CADENA"" "
+, ,"10, 10.2 ",LIT_NUM ,43,local n = 10.2 

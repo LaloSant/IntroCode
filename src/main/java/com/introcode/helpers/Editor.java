@@ -1,4 +1,4 @@
-package com.introcode.controller;
+package com.introcode.helpers;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,11 +15,14 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 
 public class Editor {
-	public static File setTextArea(TextArea txtAr) {
+
+	public static boolean isEdited = false;
+
+	public static File abrirArchivo(TextArea txtAr) {
 		FileChooser fc = new FileChooser();
-		fc.setTitle("Abrir archivo IntroCode");
-		fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("IntroCode", "*.txt"));
-		fc.setInitialDirectory(new File(App.defaultDir));
+		fc.setTitle("Abrir archivo IntroLua");
+		fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Fuente de IntroLua", "*.lua"));
+		fc.setInitialDirectory(App.defaultDir.toFile());
 		File f = fc.showOpenDialog(App.getStage());
 		if (f == null || !f.exists()) {
 			alertaArchivo();
@@ -44,19 +47,21 @@ public class Editor {
 		return null;
 	}
 
-	public static void guardarArchivo(TextArea txtAr, boolean printAlert) {
+	public static void guardarArchivoEditor(TextArea txtAr, boolean printAlert, boolean openFileChooser) {
+		Editor.isEdited = false;
 		File archivoNuevo = null;
-		if (App.getWorkingFile() == null) {
+		if (App.getWorkingFile() == null || openFileChooser) {
 			FileChooser fc = new FileChooser();
-			fc.setTitle("Guardar archivo IntroCode");
-			fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("IntroCode", "*.txt"));
-			fc.setInitialDirectory(new File(App.defaultDir));
+			fc.setTitle("Guardar archivo IntroLua");
+			fc.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Fuente de IntroLua", "*.lua"));
+			fc.setInitialDirectory(App.defaultDir.toFile());
 			File f = fc.showSaveDialog(App.getStage());
 			if (f == null) {
 				alertaArchivo();
 				return;
 			}
 			archivoNuevo = f;
+			App.setWorkingFile(archivoNuevo);
 		}
 		String fileName = (archivoNuevo == null) ? App.getWorkingFile().getAbsolutePath()
 				: archivoNuevo.getAbsolutePath();
@@ -64,7 +69,8 @@ public class Editor {
 		String texto = (txtAr.getText() == null) ? "" : txtAr.getText();
 		try (FileWriter writer = new FileWriter(fileName)) {
 			writer.write(texto);
-			App.changeTitle("INTROCODE");
+			App.changeTitle("IntroLua");
+			
 			if (printAlert) {
 				new Alert(AlertType.INFORMATION, "Guardado Exitosamente");
 			}

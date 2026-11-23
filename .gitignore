@@ -3,6 +3,7 @@ target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+src/main/resources/com/introcode/codigo/salida/*
 
 ### STS ###
 .apt_generated
@@ -12,6 +13,8 @@ target/
 .settings
 .springBeans
 .sts4-cache
+.zed
+bin/
 
 ### IntelliJ IDEA ###
 .idea
